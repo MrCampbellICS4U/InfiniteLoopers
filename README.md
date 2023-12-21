@@ -1,18 +1,4 @@
 # InfiniteLoopers
-Ethan, Stoyan and Brian's Team
+Ethan, Stoyan and Brian's Team  
 
-## Topic
-2D top down survival game.  
-Graphics and perspective like surviv.io
-
-## Setting
-- 
-
-## brainstorming:
-- finite world, randomly generated
-- enemies
-- bosses
-- structures
-
-##Enemies  
-- Zombies
+[Planning doc](https://docs.google.com/document/d/1hbj9Qk5E5bjvUshHamrvtHdDFZhmCvz4Bq9szGMPqUg/edit)

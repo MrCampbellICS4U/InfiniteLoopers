@@ -9,7 +9,7 @@ got serialization working, had to debug odd thing where ObjectInputStreams block
 got a packet system working  
 implemented ids and basic ping  
 todo:
-- ~~eliminate sendToClient~~
+- ~~eliminate sendToClient~~ (uneliminated after further investigation)
 - ~~make id system nice~~
 - handle all the exceptions
 - clean up imports

@@ -35,4 +35,5 @@ public class Server {
 	private int nextID() { return id++; }
 
 	public Client getClient(int id) { return clients.get(id); }
+	public void sendToClient(int id, Packet p) { clients.get(id).send(p); }
 }

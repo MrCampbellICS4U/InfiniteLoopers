@@ -38,4 +38,9 @@ public class Client implements LastWish {
 		e.printStackTrace();
 		System.exit(1);
 	}
+	public void handleDisconnection(int id, Exception e) {
+		System.out.println("Server closed");
+		e.printStackTrace();
+		System.exit(1);
+	}
 }

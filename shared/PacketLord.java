@@ -50,7 +50,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 				castP.handle(dest);
 			}
 		} catch (EOFException e) {
-			dest.handleException("Connection closed", e);
+			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
 			dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {

@@ -37,10 +37,12 @@ public class Server implements LastWish {
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);
-		if (!e.getClass().getName().equals("java.io.EOFException")) {
-			// don't print the stack trace if the connection was closed
-			// since that isn't usually an error (but java still uses an exception to signal it :rage:)
-			e.printStackTrace();
-		}
+		e.printStackTrace();
+	}
+	public void handleDisconnection(int id, Exception e) {
+		System.out.println("Client disconnected");
+		Client c = getClient(id);
+		c.close();
+		clients.remove(id);
 	}
 }

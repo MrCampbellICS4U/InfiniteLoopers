@@ -33,7 +33,7 @@ public class Server implements LastWish {
 	private int nextID() { return id++; }
 
 	public Client getClient(int id) { return clients.get(id); }
-	public void sendToClient(int id, Packet p) { clients.get(id).send(p); }
+	public void sendToClient(int id, PacketTo p) { clients.get(id).send(p); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

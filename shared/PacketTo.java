@@ -1,8 +1,8 @@
 package shared;
 
-public abstract class Packet<State> implements java.io.Serializable {
+public abstract class PacketTo<Dest> implements java.io.Serializable {
 	// what this packet should do when it's received
-	abstract void handle(State state);
+	abstract void handle(Dest dest);
 
 
 	// used by the PacketLord when receiving packets

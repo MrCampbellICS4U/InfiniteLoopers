@@ -23,7 +23,8 @@ public class Client implements LastWish {
 		}
 	}
 
-	// server acknowledged connection
+	// server acknowledged connection, we can start sending packets
+	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
 		System.out.println("Connected!");

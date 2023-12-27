@@ -11,7 +11,7 @@ implemented ids and basic ping
 todo:
 - ~~eliminate sendToClient~~ (uneliminated after further investigation, to remove it meant that server.Client had to be exposed)
 - ~~make id system nice~~
-- handle all the exceptions
+- ~~handle all the exceptions~~
 - ~~clean up imports~~
 - write docs
 - optimize ping (93 is way too high)

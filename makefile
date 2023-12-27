@@ -16,6 +16,6 @@ server: shared
 .PHONY: client server shared
 
 clean:
-	rm server/*.class
-	rm shared/*.class
-	rm client/*.class
+	rm -f server/*.class
+	rm -f shared/*.class
+	rm -f client/*.class

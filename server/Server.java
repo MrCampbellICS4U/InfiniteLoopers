@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 
 import shared.*;
 
-public class Server {
+public class Server implements LastWish {
 	public static void main(String[] args) {
 		new Server();
 	}
@@ -25,9 +25,7 @@ public class Server {
 				System.out.println("Client connected");
 			}
 		} catch (IOException e) {
-			System.out.println("IOException:");
-			System.out.println(e.getMessage());
-			System.exit(1);
+			handleException("IOException when connecting client", e);
 		}
 	}
 
@@ -36,4 +34,13 @@ public class Server {
 
 	public Client getClient(int id) { return clients.get(id); }
 	public void sendToClient(int id, Packet p) { clients.get(id).send(p); }
+
+	public void handleException(String message, Exception e) {
+		System.out.println(message);
+		if (!e.getClass().getName().equals("java.io.EOFException")) {
+			// don't print the stack trace if the connection was closed
+			// since that isn't usually an error (but java still uses an exception to signal it :rage:)
+			e.printStackTrace();
+		}
+	}
 }

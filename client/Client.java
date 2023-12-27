@@ -1,8 +1,8 @@
 package client;
 
+import java.net.Socket;
+
 import shared.*;
-import java.io.*;
-import java.net.*;
 
 public class Client {
 	public static void main(String[] args) {

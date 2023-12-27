@@ -1,7 +1,9 @@
 package shared;
 
-import java.io.*;
-import java.net.*;
+import java.net.Socket;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class PacketLord<State> extends Thread {
 	private Socket socket;

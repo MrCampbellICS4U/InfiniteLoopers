@@ -9,9 +9,9 @@ got serialization working, had to debug odd thing where ObjectInputStreams block
 got a packet system working  
 implemented ids and basic ping  
 todo:
-- ~~eliminate sendToClient~~ (uneliminated after further investigation)
+- ~~eliminate sendToClient~~ (uneliminated after further investigation, to remove it meant that server.Client had to be exposed)
 - ~~make id system nice~~
 - handle all the exceptions
-- clean up imports
+- ~~clean up imports~~
 - write docs
 - optimize ping (93 is way too high)

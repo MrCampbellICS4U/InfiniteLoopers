@@ -15,3 +15,4 @@ todo:
 - ~~clean up imports~~
 - write docs
 - optimize ping (93 is way too high)
+switched the shell scripts to run to a makefile (probably overkill but it's fun! + i get a way to clean the .class files)

@@ -8,3 +8,4 @@ Ethan, Stoyan and Brian's Team
 2. start client
 3. ??
 4. profit
+if you're on the command line, `make server` and `make client` will compile and start the server and the client, respectively

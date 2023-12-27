@@ -3,15 +3,15 @@ package shared;
 import java.io.*;
 import java.net.*;
 
-import shared.Ping;
-
-public class PacketLord extends Thread {
+public class PacketLord<State> extends Thread {
 	Socket socket;
 	ObjectOutputStream out;
 	ObjectInputStream in;
-	public PacketLord(Socket socket) {
+	State state;
+	public PacketLord(Socket socket, State state) {
 		try {
 		this.socket = socket;
+		this.state = state;
 		// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 		// this is being done on both the client and the server, and an ObjectInputStream
 		// will block until the corresponding ObjectOutputStream is opened
@@ -37,9 +37,9 @@ public class PacketLord extends Thread {
 		Packet p;
 		try {
 			while ((p = (Packet)in.readObject()) != null) {
-				System.out.println("Received " + p.getType());
+				//System.out.println("Received " + p.getType());
 				p = (Packet)Class.forName("shared."+p.getType()).cast(p);
-				p.handle();
+				p.handle(state);
 			}
 		} catch (Exception e) {
 			System.out.println("Unknown packet type bozo");
@@ -48,7 +48,7 @@ public class PacketLord extends Thread {
 	}
 	public void send(Packet p) {
 		p.setType(p.getClass().getSimpleName());
-		System.out.println("Sending " + p.getType());
+		//System.out.println("Sending " + p.getType());
 		try { out.writeObject(p); out.flush(); } catch (Exception e) { e.printStackTrace(); }
 	}
 }

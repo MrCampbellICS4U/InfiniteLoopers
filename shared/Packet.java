@@ -7,5 +7,7 @@ public abstract class Packet<State> implements java.io.Serializable {
 
 	abstract void handle(State state);
 
-	int id;
+	private int id;
+	public void setID(int id) { this.id = id; }
+	public int getID() { return id; }
 }

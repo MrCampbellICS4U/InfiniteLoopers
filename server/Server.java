@@ -21,7 +21,7 @@ public class Server {
 				int id = nextID();
 				Client c = new Client(serverSocket.accept(), this, id);
 				clients.put(id, c);
-				c.send(new Start(id));
+				c.send(new Start());
 				System.out.println("Client connected");
 			}
 		} catch (IOException e) {

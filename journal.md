@@ -10,7 +10,7 @@ got a packet system working
 implemented ids and basic ping  
 todo:
 - eliminate sendToClient
-- make id system nice
+- ~~make id system nice~~
 - handle all the exceptions
 - write docs
 - optimize ping (93 is way too high)

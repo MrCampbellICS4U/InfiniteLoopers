@@ -19,13 +19,11 @@ public class Client {
 		} catch (Exception e) {}
 	}
 
-	private int id;
 	// server acknowledged connection
 	public void start(int id) {
+		pl.setID(id);
 		System.out.println("Connected!");
-		this.id = id;
-
-		pl.send(new Ping(id));
+		pl.send(new Ping());
 	}
 
 	public void handlePing(int ms) { System.out.println("Ping: " + ms); }

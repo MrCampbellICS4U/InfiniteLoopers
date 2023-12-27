@@ -4,10 +4,11 @@ import java.io.*;
 import java.net.*;
 
 public class PacketLord<State> extends Thread {
-	Socket socket;
-	ObjectOutputStream out;
-	ObjectInputStream in;
-	State state;
+	private Socket socket;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+	private State state;
+	private int id;
 	public PacketLord(Socket socket, State state) {
 		try {
 		this.socket = socket;
@@ -46,8 +47,10 @@ public class PacketLord<State> extends Thread {
 			e.printStackTrace();
 		}
 	}
+	public void setID(int id) { this.id = id; }
 	public void send(Packet p) {
 		p.setType(p.getClass().getSimpleName());
+		p.setID(id);
 		//System.out.println("Sending " + p.getType());
 		try { out.writeObject(p); out.flush(); } catch (Exception e) { e.printStackTrace(); }
 	}

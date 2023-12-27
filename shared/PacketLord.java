@@ -3,12 +3,15 @@ package shared;
 import java.io.*;
 import java.net.*;
 
-public class PacketLord<State> extends Thread {
-	State state;
+import shared.Ping;
+
+public class PacketLord extends Thread {
+	Socket socket;
 	ObjectOutputStream out;
 	ObjectInputStream in;
-	public PacketLord(Socket socket, State state) {
+	public PacketLord(Socket socket) {
 		try {
+		this.socket = socket;
 		// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 		// this is being done on both the client and the server, and an ObjectInputStream
 		// will block until the corresponding ObjectOutputStream is opened
@@ -20,19 +23,32 @@ public class PacketLord<State> extends Thread {
 		} catch (Exception e) {}
 		start();
 	}
-	public void run() {
+	public void close() {
 		try {
-		Packet p;
-		while ((p = (Packet)in.readObject()) != null) {
-			System.out.println("Received " + p.type + ", took " + (System.currentTimeMillis() - p.time) + " ms");
-			//IncommingPacket inc = Class.forName(p.type).cast(p);
-			//inc.handle(state);
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			System.out.println("IOException when closing a PacketLord: " + e.getMessage());
+			System.exit(1);
 		}
-
-		} catch (Exception e) {}
+	}
+	public void run() {
+		Packet p;
+		try {
+			while ((p = (Packet)in.readObject()) != null) {
+				System.out.println("Received " + p.getType());
+				p = (Packet)Class.forName("shared."+p.getType()).cast(p);
+				p.handle();
+			}
+		} catch (Exception e) {
+			System.out.println("Unknown packet type bozo");
+			e.printStackTrace();
+		}
 	}
 	public void send(Packet p) {
-		System.out.println("sending " + p.type);
-		try { out.writeObject(p); out.flush(); } catch (Exception e) {}
+		p.setType(p.getClass().getSimpleName());
+		System.out.println("Sending " + p.getType());
+		try { out.writeObject(p); out.flush(); } catch (Exception e) { e.printStackTrace(); }
 	}
 }

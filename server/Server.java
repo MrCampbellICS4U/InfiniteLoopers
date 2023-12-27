@@ -17,7 +17,7 @@ class Server {
 
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
-				new PacketLord(serverSocket.accept(), this);
+				new PacketLord(serverSocket.accept());
 				System.out.println("Client connected");
 			}
 		} catch (IOException e) {

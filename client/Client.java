@@ -12,9 +12,9 @@ class Client {
 	Client(String ip, int port) {
 		try {
 		Socket socket = new Socket(ip, port);
-		PacketLord pl = new PacketLord(socket, this);
+		PacketLord pl = new PacketLord(socket);
 
-		pl.send(new Packet("ping", System.currentTimeMillis()));
+		pl.send(new Ping());
 		} catch (Exception e) {}
 	}
 }

@@ -24,7 +24,7 @@ public class PacketLord<State> extends Thread {
 		try {
 		Packet p;
 		while ((p = (Packet)in.readObject()) != null) {
-			System.out.println("Received " + p.type);
+			System.out.println("Received " + p.type + ", took " + (System.currentTimeMillis() - p.time) + " ms");
 			//IncommingPacket inc = Class.forName(p.type).cast(p);
 			//inc.handle(state);
 		}

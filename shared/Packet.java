@@ -6,5 +6,6 @@ package shared;
 
 public class Packet implements java.io.Serializable {
 	String type;
-	public Packet(String t) { type = t; }
+	long time;
+	public Packet(String t, long tm) { type = t; time = tm; }
 }

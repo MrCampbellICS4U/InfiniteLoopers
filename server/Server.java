@@ -17,7 +17,7 @@ class Server {
 
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
-				new PacketLord(serverSocket.accept(), this).send(new Packet("bruh to client"));
+				new PacketLord(serverSocket.accept(), this);
 				System.out.println("Client connected");
 			}
 		} catch (IOException e) {

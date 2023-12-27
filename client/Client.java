@@ -14,8 +14,7 @@ class Client {
 		Socket socket = new Socket(ip, port);
 		PacketLord pl = new PacketLord(socket, this);
 
-		pl.send(new Packet("test"));
-		pl.send(new Packet("asdf"));
+		pl.send(new Packet("ping", System.currentTimeMillis()));
 		} catch (Exception e) {}
 	}
 }

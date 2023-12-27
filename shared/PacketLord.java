@@ -12,8 +12,7 @@ public class PacketLord<State> extends Thread {
 		// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 		// this is being done on both the client and the server, and an ObjectInputStream
 		// will block until the corresponding ObjectOutputStream is opened
-		// so if both ObjectInputStreams are opeend first, both the client and server
-		// will block
+		// so if both ObjectInputStreams are opeend first, both the client and server will block
 		// and then neither can get around to opening an ObjectOutputStream to unblock the other
 		out = new ObjectOutputStream(socket.getOutputStream());
 

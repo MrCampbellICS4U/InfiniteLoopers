@@ -11,7 +11,7 @@ public class Client implements LastWish {
 		new Client("127.0.0.1", 2000);
 	}
 
-	PacketLord pl;
+	private PacketLord pl;
 	Client(String ip, int port) {
 		try {
 			Socket socket = new Socket(ip, port);
@@ -28,7 +28,8 @@ public class Client implements LastWish {
 	public void start(int id) {
 		pl.setID(id);
 		System.out.println("Connected!");
-		pl.send(new Ping());
+
+		pl.send(new PingPacket());
 	}
 
 	public void handlePing(int ms) { System.out.println("Ping: " + ms); }

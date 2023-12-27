@@ -6,6 +6,11 @@ import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+// legends speak of a primeval being: the PACKETLORD
+// this creatures, shrouded in mystery, have the power to open CONNECTIONS
+// which allow them to communicate with each other, sending and receiving messages called PACKETS
+
+// Dest is the type of some external state that we use when receiving packets
 public class PacketLord<Dest extends LastWish> extends Thread {
 	private Socket socket;
 	private ObjectOutputStream out;
@@ -20,9 +25,9 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		this.dest = dest;
 		try {
 			// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
-			// this is being done on both the client and the server, and an ObjectInputStream
-			// will block until the corresponding ObjectOutputStream is opened
-			// so if both ObjectInputStreams are opeend first, both the client and server will block
+			// it appears that ObjectInputStreams are very social creatures
+			// who will throw sissy fits (block the thread) until they have their ObjectOutputStream
+			// so if both ObjectInputStreams are opened first, both the client and server will block
 			// and then neither can get around to opening an ObjectOutputStream to unblock the other
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
@@ -42,6 +47,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		}
 	}
 
+	// start receiving packets!
 	public void run() {
 		try {
 			while (true) {
@@ -58,6 +64,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		}
 	}
 
+	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
 	public void send(PacketTo p) {
 		p.setType(p.getClass().getSimpleName());
 		p.setID(id);

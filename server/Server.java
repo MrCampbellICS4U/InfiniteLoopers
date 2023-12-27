@@ -11,17 +11,16 @@ public class Server implements LastWish {
 		new Server();
 	}
 
-	final int port = 2000;
-	HashMap<Integer, Client> clients = new HashMap<>();
+	private final int port = 2000;
+	private HashMap<Integer, Client> clients = new HashMap<>(); // map from ids to clients
 	Server() {
 		System.out.println("Running server on port " + port);
 
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				Client c = new Client(serverSocket.accept(), this, id);
-				clients.put(id, c);
-				c.send(new Start());
+				clients.put(id, new Client(serverSocket.accept(), this, id));
+				sendToClient(id, new StartPacket());
 				System.out.println("Client connected");
 			}
 		} catch (IOException e) {
@@ -29,11 +28,11 @@ public class Server implements LastWish {
 		}
 	}
 
-	int id = 0;
+	private int id = 0;
 	private int nextID() { return id++; }
 
 	public Client getClient(int id) { return clients.get(id); }
-	public void sendToClient(int id, PacketTo p) { clients.get(id).send(p); }
+	public void sendToClient(int id, PacketTo p) { getClient(id).send(p); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);
@@ -41,8 +40,7 @@ public class Server implements LastWish {
 	}
 	public void handleDisconnection(int id, Exception e) {
 		System.out.println("Client disconnected");
-		Client c = getClient(id);
-		c.close();
+		getClient(id).close();
 		clients.remove(id);
 	}
 }

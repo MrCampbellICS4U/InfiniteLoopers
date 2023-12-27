@@ -1,8 +1,8 @@
 package client;
 
+import shared.*;
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 class Client {
 	public static void main(String[] args) {
@@ -10,21 +10,12 @@ class Client {
 	}
 
 	Client(String ip, int port) {
-		try (Socket clientSocket = new Socket(ip, port);
-			 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		     Scanner sc = new Scanner(System.in)) {
-			while (true) {
-				out.println(sc.next());
-				String response = in.readLine();
-				System.out.println(response);
-				if (response.equals("goodbye")) break;
-			}
-		} catch (IOException e) {
-			System.out.println("IOException:");
-			System.out.println(e.getMessage());
-			System.exit(1);
-		}
-	}
+		try {
+		Socket socket = new Socket(ip, port);
+		PacketLord pl = new PacketLord(socket, this);
 
+		pl.send("test");
+		pl.send("asdf");
+		} catch (Exception e) {}
+	}
 }

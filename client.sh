@@ -1,1 +1,1 @@
-javac client/*.java && java client.Client
+javac shared/*.java && javac client/*.java && java client.Client

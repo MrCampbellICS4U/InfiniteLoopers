@@ -1,1 +1,1 @@
-javac server/*.java && java server.Server
+javac shared/*.java && javac server/*.java && java server.Server

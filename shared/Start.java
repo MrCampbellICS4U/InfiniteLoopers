@@ -1,6 +1,5 @@
 package shared;
 
-import shared.Packet;
 import client.Client;
 
 public class Start extends Packet<Client> {

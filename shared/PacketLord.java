@@ -3,6 +3,7 @@ package shared;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.EOFException;
+import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -24,6 +25,9 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		this.socket = socket;
 		this.dest = dest;
 		try {
+			// disable nagle's algorithm to speed up sending packets
+			socket.setTcpNoDelay(true);
+
 			// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 			// it appears that ObjectInputStreams are very social creatures
 			// who will throw sissy fits (block the thread) until they have their ObjectOutputStream
@@ -31,6 +35,8 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			// and then neither can get around to opening an ObjectOutputStream to unblock the other
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
+		} catch (SocketException e) {
+			dest.handleException("SocketException when disabling Nagle's algorithm", e);
 		} catch (IOException e) {
 			dest.handleException("IOException when opening PacketLord", e);
 		}

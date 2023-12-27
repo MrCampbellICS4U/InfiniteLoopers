@@ -14,5 +14,6 @@ todo:
 - ~~handle all the exceptions~~
 - ~~clean up imports~~
 - ~~write docs~~
-- optimize ping (93 is way too high)
-switched the shell scripts to run to a makefile (probably overkill but it's fun! + i get a way to clean the .class files)
+- ~~optimize ping (93 is way too high)~~
+switched the shell scripts to run to a makefile (probably overkill but it's fun! + i get a way to clean the .class files)  
+improved ping with help from [this stackoverflow answer](https://stackoverflow.com/a/49058389), learned about nagle's algorithm

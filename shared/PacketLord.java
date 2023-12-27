@@ -43,11 +43,11 @@ public class PacketLord<State extends LastWish> extends Thread {
 	}
 
 	public void run() {
-		Packet p;
 		try {
-			while ((p = (Packet)in.readObject()) != null) {
-				p = (Packet)Class.forName("shared."+p.getType()).cast(p);
-				p.handle(state);
+			while (true) {
+				Packet p = (Packet)in.readObject();
+				Packet castP = (Packet)Class.forName("shared." + p.getType()).cast(p);
+				castP.handle(state);
 			}
 		} catch (EOFException e) {
 			state.handleException("Connection closed", e);

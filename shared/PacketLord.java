@@ -5,36 +5,35 @@ import java.net.*;
 
 public class PacketLord<State> extends Thread {
 	State state;
-	//ObjectOutputStream out;
-	BufferedReader in;
-	PrintWriter out;
+	ObjectOutputStream out;
+	ObjectInputStream in;
 	public PacketLord(Socket socket, State state) {
 		try {
-		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
+		// this is being done on both the client and the server, and an ObjectInputStream
+		// will block until the corresponding ObjectOutputStream is opened
+		// so if both ObjectInputStreams are opeend first, both the client and server
+		// will block
+		// and then neither can get around to opening an ObjectOutputStream to unblock the other
+		out = new ObjectOutputStream(socket.getOutputStream());
 
-		//out = new ObjectOutputStream(socket.getOutputStream());
-		out = new PrintWriter(socket.getOutputStream(), true);
+		in = new ObjectInputStream(socket.getInputStream());
 		} catch (Exception e) {}
 		start();
 	}
 	public void run() {
 		try {
-		//Packet p;
-		//while (p = (Packet)in.readObject()) {
-		//	IncommingPacket inc = Class.forName(p.type).cast(p);
-		//	inc.handle(state);
-		//}
-
-		String s;
-		while ((s = in.readLine()) != null) {
-			System.out.println("Received " + s);
+		Packet p;
+		while ((p = (Packet)in.readObject()) != null) {
+			System.out.println("Received " + p.type);
+			//IncommingPacket inc = Class.forName(p.type).cast(p);
+			//inc.handle(state);
 		}
-		} catch (IOException e) {}
+
+		} catch (Exception e) {}
 	}
-	//void send(Packet p) {
-	public void send(String s) {
-		//out.writeObject(p);
-		out.println(s);
-		System.out.println("sending " + s);
+	public void send(Packet p) {
+		System.out.println("sending " + p.type);
+		try { out.writeObject(p); out.flush(); } catch (Exception e) {}
 	}
 }

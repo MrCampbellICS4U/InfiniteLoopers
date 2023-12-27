@@ -16,7 +16,10 @@ class Server {
 		System.out.println("Running server on port " + port);
 
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
-			while (true) new PacketLord(serverSocket.accept(), this).send("bruh to client");
+			while (true) {
+				new PacketLord(serverSocket.accept(), this).send(new Packet("bruh to client"));
+				System.out.println("Client connected");
+			}
 		} catch (IOException e) {
 			System.out.println("IOException:");
 			System.out.println(e.getMessage());

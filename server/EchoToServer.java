@@ -1,6 +1,6 @@
 package server;
 
-import shared.IncomingPacket;
+//import shared.IncomingPacket;
 
 //class EchoToServer extends IncomingPacket {
 //	String type = "EchoToServer";

@@ -1,6 +1,6 @@
 package client;
 
-import shared.IncomingPacket;
+//import shared.IncomingPacket;
 
 //class EchoToClient extends IncomingPacket {
 //	String type = "EchoToClient";

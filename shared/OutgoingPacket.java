@@ -1,3 +1,3 @@
 package shared;
 
-public abstract class OutgoingPacket extends Packet { }
+//public abstract class OutgoingPacket extends Packet { }

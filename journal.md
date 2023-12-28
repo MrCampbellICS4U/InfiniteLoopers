@@ -20,4 +20,4 @@ switched the shell scripts to run to a makefile (probably overkill but it's fun!
 improved ping with help from [this stackoverflow answer](https://stackoverflow.com/a/49058389), learned about nagle's algorithm
 
 ## dec 28 2023
-got eclipse to run the project (had to change the whole file format, it was a drag)  
+got eclipse to run the project (had to change the whole file structure, it was a drag)  

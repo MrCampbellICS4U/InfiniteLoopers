@@ -56,4 +56,9 @@ java.io.OptionalDataException
         at shared.PacketLord.run(PacketLord.java:62)
 ```
 GOT BASIC MULTIPLAYER WORKING!!!  
-but there are a ton of random exceptions from the packets that i still need to handle
+
+https://github.com/MrCampbellICS4U/InfiniteLoopers/assets/154549832/bd0d4583-2af2-456e-8e1b-b17851f25a72
+
+
+but there are a ton of random exceptions from the packets that i still need to handle  
+(also as i watch that video i realize that the players are kinda floating around, independent of the grid... i should fix that)

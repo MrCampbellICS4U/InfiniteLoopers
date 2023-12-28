@@ -6,6 +6,7 @@ import java.io.EOFException;
 import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.BufferedInputStream;
 
 // legends speak of a primeval being: the PACKETLORD
 // this creatures, shrouded in mystery, have the power to open CONNECTIONS
@@ -33,8 +34,9 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			// who will throw sissy fits (block the thread) until they have their ObjectOutputStream
 			// so if both ObjectInputStreams are opened first, both the client and server will block
 			// and then neither can get around to opening an ObjectOutputStream to unblock the other
+
 			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new ObjectInputStream(socket.getInputStream());
+			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream())); // buffering might increase performance?
 		} catch (SocketException e) {
 			dest.handleException("SocketException when disabling Nagle's algorithm", e);
 		} catch (IOException e) {
@@ -62,11 +64,17 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 				castP.handle(dest);
 			}
 		} catch (EOFException e) {
+ 			// this what's supposed to be thrown on disconnection
+			dest.handleDisconnection(id, e);
+		} catch (SocketException e) {
+			// sometimes when disconnecting it throws this for some reason, with the message "Connection reset"
 			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
 			dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {
 			dest.handleException("Undefined packet type; something is very wrong with the packet system", e);
+		} catch (ClassCastException e) {
+			dest.handleException("What even...", e);
 		}
 	}
 

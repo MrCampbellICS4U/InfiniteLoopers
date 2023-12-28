@@ -6,10 +6,10 @@ shared:
 	cd src ; javac shared/*.java
 
 client: shared
-	cd src ; javac client/*.java ; java client.Client
+	cd src ; javac client/*.java && java client.Client
 
 server: shared
-	cd src ; javac server/*.java ; java server.Server
+	cd src ; javac server/*.java && java server.Server
 
 .PHONY: client server shared
 

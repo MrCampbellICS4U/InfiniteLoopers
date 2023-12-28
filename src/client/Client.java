@@ -1,6 +1,8 @@
 package client;
 
+import java.awt.Point;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -25,14 +27,19 @@ public class Client implements LastWish {
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
-	public void start(int id) {
+	Game game;
+	public void start(int id, int x, int y) {
 		pl.setID(id);
+		pl.send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 
-		pl.send(new PingPacket());
+		game = new Game(id, pl, x, y);
 	}
 
-	public void handlePing(int ms) { System.out.println("Ping: " + ms); }
+	public void handlePing(int ms) { game.setPing(ms); }
+	public void handleTPS(int ms) { game.setTPS(ms); }
+	public void handlePosition(int x, int y) { game.setPosition(x, y); }
+	public void handleOtherPlayers(ArrayList<Point> players) { game.setOtherPlayers(players); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

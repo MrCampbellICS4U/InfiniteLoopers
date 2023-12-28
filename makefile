@@ -3,19 +3,17 @@
 SHELL := /bin/bash
 
 shared:
-	javac shared/*.java
+	cd src ; javac shared/*.java
 
 client: shared
-	javac client/*.java
-	java client.Client
+	cd src ; javac client/*.java ; java client.Client
 
 server: shared
-	javac server/*.java
-	java server.Server
+	cd src ; javac server/*.java ; java server.Server
 
 .PHONY: client server shared
 
 clean:
-	rm -f server/*.class
-	rm -f shared/*.class
-	rm -f client/*.class
+	rm -f src/server/*.class
+	rm -f src/shared/*.class
+	rm -f src/client/*.class

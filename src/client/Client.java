@@ -11,11 +11,11 @@ public class Client implements LastWish {
 		new Client("127.0.0.1", 2000);
 	}
 
-	private PacketLord pl;
+	private PacketLord<Client> pl;
 	Client(String ip, int port) {
 		try {
 			Socket socket = new Socket(ip, port);
-			pl = new PacketLord(socket, this);
+			pl = new PacketLord<Client>(socket, this);
 		} catch (UnknownHostException e) {
 			handleException("Could not connect to server", e);
 		} catch (IOException e) {

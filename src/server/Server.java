@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import shared.*;
+import client.Client;
 
 public class Server implements LastWish {
 	public static void main(String[] args) {
@@ -12,14 +13,14 @@ public class Server implements LastWish {
 	}
 
 	private final int port = 2000;
-	private HashMap<Integer, Client> clients = new HashMap<>(); // map from ids to clients
+	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	Server() {
 		System.out.println("Running server on port " + port);
 
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				clients.put(id, new Client(serverSocket.accept(), this, id));
+				clients.put(id, new SClient(serverSocket.accept(), this, id));
 				sendToClient(id, new StartPacket());
 				System.out.println("Client connected");
 			}
@@ -31,8 +32,8 @@ public class Server implements LastWish {
 	private int id = 0;
 	private int nextID() { return id++; }
 
-	public Client getClient(int id) { return clients.get(id); }
-	public void sendToClient(int id, PacketTo p) { getClient(id).send(p); }
+	public SClient getClient(int id) { return clients.get(id); }
+	public void sendToClient(int id, PacketTo<Client> p) { getClient(id).send(p); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

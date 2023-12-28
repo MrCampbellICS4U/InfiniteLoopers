@@ -57,8 +57,8 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				PacketTo<Dest> p = (PacketTo)in.readObject();
-				PacketTo<Dest> castP = (PacketTo)Class.forName("shared." + p.getType()).cast(p);
+				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
+				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("shared." + p.getType()).cast(p);
 				castP.handle(dest);
 			}
 		} catch (EOFException e) {
@@ -71,7 +71,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	}
 
 	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
-	public void send(PacketTo p) {
+	public void send(PacketTo<?> p) {
 		p.setType(p.getClass().getSimpleName());
 		p.setID(id);
 		try {

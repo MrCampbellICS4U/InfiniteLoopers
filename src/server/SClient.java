@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import shared.*;
+import client.Client;
 
 // clients from the server's perspective
 class SClient extends PacketLord<Server> {
@@ -49,15 +50,21 @@ class SClient extends PacketLord<Server> {
 		yy += dy;
 	}
 
-	public void sendPackets() {
-		if (!ready) return;
-
-		send(new PositionPacket(getX(), getY()));
-		send(new OtherPlayersPacket(otherPlayers));
-	}
-
 	// all the other players this one can see
 	private ArrayList<Point> otherPlayers;
 	public void clearOtherPlayers() { otherPlayers = new ArrayList<>(); }
 	public void addOtherPlayer(Point player) { otherPlayers.add(player); }
+
+	// send everything that should be sent every tick
+	public void sendTickPackets() {
+		if (!ready) return;
+
+		ArrayList<PacketTo<Client>> packets = new ArrayList<>();
+		packets.add(new PositionPacket(getX(), getY()));
+		packets.add(new OtherPlayersPacket(otherPlayers));
+		send(new PacketListTo<Client>(packets));
+
+		// send(new PositionPacket(getX(), getY()));
+		// send(new OtherPlayersPacket(otherPlayers));
+	}
 }

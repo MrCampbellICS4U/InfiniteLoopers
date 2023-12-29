@@ -59,9 +59,17 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
-				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("shared." + p.getType()).cast(p);
-				castP.handle(dest);
+				UrPacketTo<Dest> origP = (UrPacketTo<Dest>)in.readObject();
+				System.out.println(origP.getType());
+
+				if (origP.getType().equals("PacketListTo")) {
+					// packet list
+					PacketListTo<Dest> pList = (PacketListTo<Dest>)origP;
+					for (PacketTo<Dest> p : pList.getPackets()) handlePacket(p);
+				} else {
+					// normal single packet
+					handlePacket((PacketTo<Dest>)origP);
+				}
 			}
 		} catch (EOFException e) {
  			// this what's supposed to be thrown on disconnection
@@ -78,15 +86,29 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		}
 	}
 
-	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
-	public void send(PacketTo<?> p) {
-		p.setType(p.getClass().getSimpleName());
-		p.setID(id);
+	private void handlePacket(PacketTo<Dest> origP) throws ClassNotFoundException {
+		PacketTo<Dest> p = (PacketTo<Dest>)Class.forName("shared." + origP.getType()).cast(origP);
+		p.handle(dest);
+	}
+
+	// the type of p isn't UrPacketTo<Dest>, since we are the Destination and we're sending it somewhere else
+	public void send(UrPacketTo<?> p) {
+		setInfo(p);
+		if (p.getType().equals("PacketListTo")) {
+			PacketListTo<?> pList = (PacketListTo<?>)p;
+			for (PacketTo<?> pac : pList.getPackets()) setInfo(pac);
+		}
+
 		try {
 			out.writeObject(p);
 			out.flush();
 		} catch (IOException e) {
 			dest.handleException("Something went wrong when sending a packet", e);
 		}
+	}
+
+	private void setInfo(UrPacketTo<?> p) {
+		p.setType(p.getClass().getSimpleName());
+		p.setID(id);
 	}
 }

@@ -67,7 +67,7 @@ public class Server implements LastWish, ActionListener {
 			}
 		}
 
-		for (SClient c : clients.values()) c.sendPackets();
+		for (SClient c : clients.values()) c.sendTickPackets();
 	}
 
 	// gets called once a second

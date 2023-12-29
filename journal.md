@@ -65,3 +65,6 @@ this would mix the packets, making the connection at the other side just die
 my solution is to use a queue to handle sending packets  
 i learned about volatile from https://stackoverflow.com/a/30060021  
 one problem now is that i'm opening 2 threads per connection, and it's starting to lag (you can see it pull on the fps)  
+https://github.com/MrCampbellICS4U/InfiniteLoopers/assets/154549832/bd0d4583-2af2-456e-8e1b-b17851f25a72
+but there are a ton of random exceptions from the packets that i still need to handle  
+(also as i watch that video i realize that the players are kinda floating around, independent of the grid... i should fix that)

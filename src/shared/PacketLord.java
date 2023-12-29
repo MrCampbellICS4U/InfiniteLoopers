@@ -1,8 +1,10 @@
 package shared;
 
 import java.net.Socket;
+import java.util.Queue;
 import java.io.IOException;
 import java.io.EOFException;
+import java.util.ArrayDeque;
 import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -42,8 +44,44 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		} catch (IOException e) {
 			dest.handleException("IOException when opening PacketLord", e);
 		}
+
+		startListening();
 		start();
 	}
+
+
+	// a queue is needed to handle sending packets
+	// otherwise, if multiple threads try to send a packet at the same time,
+	// it will send the second in the middle of sending the first.
+	// on the receiving end, the packets will be pied and it will error
+
+	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
+	private volatile Queue<PacketTo<?>> packetQueue = new ArrayDeque<>();
+	public void send(PacketTo<?> p) {
+		packetQueue.add(p);
+	}
+	private void startListening() {
+		new Thread(() -> {
+			while (true) {
+				if (!packetQueue.isEmpty()) {
+					actuallySend(packetQueue.remove());
+				}
+			}
+		}).start();
+	}
+	// DO NOT USE THIS FUNCTION! TO SEND PACKETS, USE public void send(PacketTo<?> p)
+	private void actuallySend(PacketTo<?> p) {
+		p.setType(p.getClass().getSimpleName());
+		p.setID(id);
+		try {
+			out.writeObject(p);
+			out.flush();
+		} catch (IOException e) {
+			dest.handleException("Something went wrong when sending a packet", e);
+		}
+	}
+
+
 
 	public void close() {
 		try {
@@ -54,6 +92,8 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			dest.handleException("IOException when closing PacketLord", e);
 		}
 	}
+
+
 
 	// start receiving packets!
 	public void run() {
@@ -73,20 +113,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {
 			dest.handleException("Undefined packet type; something is very wrong with the packet system", e);
-		} catch (ClassCastException e) {
-			dest.handleException("What even...", e);
 		}
 	}
 
-	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
-	public void send(PacketTo<?> p) {
-		p.setType(p.getClass().getSimpleName());
-		p.setID(id);
-		try {
-			out.writeObject(p);
-			out.flush();
-		} catch (IOException e) {
-			dest.handleException("Something went wrong when sending a packet", e);
-		}
-	}
 }

@@ -73,3 +73,4 @@ one problem now is that i'm opening 2 threads per connection, and it's starting 
 even making them wait 50ms between sending packets makes the fps with clients go from 15 fps to only 22 (it was originally 30 without this thread), so it seems that just having the thread is a lot of the overhead  
 
 i learned about locks, which are the proper way to solve this problem  
+i learned about `synchronized`, which is the actual proper way to solve this problem  

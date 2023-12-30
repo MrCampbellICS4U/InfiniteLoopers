@@ -7,8 +7,6 @@ import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.BufferedInputStream;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 // legends speak of a primeval being: the PACKETLORD
 // this creatures, shrouded in mystery, have the power to open CONNECTIONS
@@ -48,13 +46,10 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		start();
 	}
 
-	private Lock lock = new ReentrantLock();
+	// this is synchronized so that if multiple threads try to send packets, the packets don't get mixed together
+	// which would cause the receiver to just spontaneously decide to die as it tries to read pied packets
 	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
-	public void send(PacketTo<?> p) {
-		// lock the socket so that no other thread tries to send a message at the same time and pies the messages
-		// since that will make the receiver die as it tries to read
-		// if another socket is currently sending a message, wait until the lock gets unlocked
-		lock.lock();
+	public synchronized void send(PacketTo<?> p) {
 		try {
 			p.setType(p.getClass().getSimpleName());
 			p.setID(id);
@@ -63,7 +58,6 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		} catch (IOException e) {
 			dest.handleException("Something went wrong when sending a packet", e);
 		}
-		lock.unlock();
 	}
 
 	public void close() {

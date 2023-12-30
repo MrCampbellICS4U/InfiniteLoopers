@@ -63,7 +63,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	private void startListening() {
 		new Thread(() -> {
 			while (true) {
-				if (!packetQueue.isEmpty()) {
+				while (!packetQueue.isEmpty()) {
 					actuallySend(packetQueue.remove());
 				}
 			}

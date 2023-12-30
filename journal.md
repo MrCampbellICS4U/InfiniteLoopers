@@ -68,4 +68,6 @@ the problem was that with multiple threads, one packet would try to be sent whil
 this would mix the packets, making the connection at the other side just die  
 my solution is to use a queue to handle sending packets  
 i learned about volatile from https://stackoverflow.com/a/30060021 after having a fun bug where adding a print statement would make it work  
+  
 one problem now is that i'm opening 2 threads per connection, and it's starting to lag (you can see it pull on the fps)  
+even making them wait 50ms between sending packets makes the fps with clients go from 15 fps to only 22 (it was originally 30 without this thread), so it seems that just having the thread is a lot of the overhead 

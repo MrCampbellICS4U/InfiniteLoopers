@@ -74,3 +74,7 @@ even making them wait 50ms between sending packets makes the fps with clients go
 
 i learned about locks, which are the proper way to solve this problem  
 i learned about `synchronized`, which is the actual proper way to solve this problem  
+
+## dec 30 2023
+realized that i never made the canvas have a size since i use a tiling wm... fixed that  
+moved the canvas to its own file, which apparently also fixed the jittery error, my hypothesis is that somehow, the `otherPlayers` weren't synced right and this fixed it  

@@ -1,14 +1,14 @@
 package shared;
 
 import java.net.Socket;
-import java.util.Queue;
 import java.io.IOException;
 import java.io.EOFException;
-import java.util.ArrayDeque;
 import java.net.SocketException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.BufferedInputStream;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 // legends speak of a primeval being: the PACKETLORD
 // this creatures, shrouded in mystery, have the power to open CONNECTIONS
@@ -45,43 +45,26 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			dest.handleException("IOException when opening PacketLord", e);
 		}
 
-		startListening();
 		start();
 	}
 
-
-	// a queue is needed to handle sending packets
-	// otherwise, if multiple threads try to send a packet at the same time,
-	// it will send the second in the middle of sending the first.
-	// on the receiving end, the packets will be pied and it will error
-
+	private Lock lock = new ReentrantLock();
 	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
-	private volatile Queue<PacketTo<?>> packetQueue = new ArrayDeque<>();
 	public void send(PacketTo<?> p) {
-		packetQueue.add(p);
-	}
-	private void startListening() {
-		new Thread(() -> {
-			while (true) {
-				while (!packetQueue.isEmpty()) {
-					actuallySend(packetQueue.remove());
-				}
-			}
-		}).start();
-	}
-	// DO NOT USE THIS FUNCTION! TO SEND PACKETS, USE public void send(PacketTo<?> p)
-	private void actuallySend(PacketTo<?> p) {
-		p.setType(p.getClass().getSimpleName());
-		p.setID(id);
+		// lock the socket so that no other thread tries to send a message at the same time and pies the messages
+		// since that will make the receiver die as it tries to read
+		// if another socket is currently sending a message, wait until the lock gets unlocked
+		lock.lock();
 		try {
+			p.setType(p.getClass().getSimpleName());
+			p.setID(id);
 			out.writeObject(p);
 			out.flush();
 		} catch (IOException e) {
 			dest.handleException("Something went wrong when sending a packet", e);
 		}
+		lock.unlock();
 	}
-
-
 
 	public void close() {
 		try {
@@ -92,8 +75,6 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			dest.handleException("IOException when closing PacketLord", e);
 		}
 	}
-
-
 
 	// start receiving packets!
 	public void run() {

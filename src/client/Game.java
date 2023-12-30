@@ -26,8 +26,11 @@ class Game implements ActionListener {
 		window.addKeyListener(new GameKeyListener(this));
 
 		canvas = new Canvas();
+		canvas.setPreferredSize(new Dimension(581, 628));
 		window.add(canvas);
 
+		window.pack();
+		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 
 		Timer tickTimer = new Timer(1000/60, this);

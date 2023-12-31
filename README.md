@@ -1,6 +1,6 @@
 # InfiniteLoopers
 Ethan, Stoyan and Brian's Team
-
+![image](https://github.com/MrCampbellICS4U/InfiniteLoopers/assets/101023105/7834bc98-da9a-45f0-9097-8cef6883c3f7)
 [Planning doc](https://docs.google.com/document/d/1hbj9Qk5E5bjvUshHamrvtHdDFZhmCvz4Bq9szGMPqUg/edit)
 
 ## Instructions
@@ -24,3 +24,4 @@ see [`shared/`](src/shared/) for examples
 ### sending packets
 to send a packet from the server to a client, you can use the `sendToClient` method, which takes the id of the client to send to and a packet to send.  
 to send a packet from a client to the server, use the `send` method of the `PacketLord` `pl`, which takes a packet to send.  
+

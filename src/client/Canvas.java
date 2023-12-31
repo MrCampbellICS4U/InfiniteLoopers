@@ -30,7 +30,7 @@ class Canvas extends JPanel {
 		g.drawString(fps + " fps", 20, 40);
 		g.drawString(ping + " ping", 20, 80);
 		g.drawString(tps + " tps", 20, 120);
-
+		g.drawString("Hi", x, playerWidth);
 		for (Point player : otherPlayers) drawPlayer(g, player.x, player.y);
 
 		drawPlayer(g, x, y);

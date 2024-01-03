@@ -83,4 +83,5 @@ moved the canvas to its own file, which apparently also fixed the jittery error,
 apparently swing keys are meant to be handled using [these things](https://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html)... maybe i should switch to them
 
 ## jan 3 2024
-added a `PlayerInfo` type to make sharing information about players easier
+added a `PlayerInfo` type to make sharing information about players easier  
+removed the badly-designed `client.Game`, putting everything in `client.Client`

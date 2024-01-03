@@ -32,7 +32,7 @@ public class Server implements LastWish, ActionListener {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id);
 				clients.put(id, client);
-				sendToClient(id, new StartPacket(client.getX(), client.getY()));
+				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
 		} catch (IOException e) {

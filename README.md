@@ -26,5 +26,5 @@ see [`shared/`](src/shared/) for examples
 
 ### sending packets
 to send a packet from the server to a client, you can use the `sendToClient` method, which takes the id of the client to send to and a packet to send.  
-to send a packet from a client to the server, use the `send` method of the `PacketLord` `pl`, which takes a packet to send.  
+to send a packet from a client to the server, you can use the `send` method, which takes a packe to send.  
 

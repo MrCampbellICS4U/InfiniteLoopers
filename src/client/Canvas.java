@@ -9,16 +9,19 @@ import shared.PlayerInfo;
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	private int fps, ping, tps, x, y;
+	private int fps, ping, tps;
+	private PlayerInfo me;
 	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<PlayerInfo>();
 
-	public void draw(int fps, int ping, int tps, int x, int y, ArrayList<PlayerInfo> otherPlayers) {
-		this.fps = fps; this.ping = ping; this.tps = tps; this.x = x; this.y = y; this.otherPlayers = otherPlayers;
+	public void draw(int fps, int ping, int tps, PlayerInfo me, ArrayList<PlayerInfo> otherPlayers) {
+		this.fps = fps; this.ping = ping; this.tps = tps; this.me = me; this.otherPlayers = otherPlayers;
 		repaint();
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
+		if (me == null) return; // we haven't got a packet from the server telling us our position yet
 
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -34,24 +37,23 @@ class Canvas extends JPanel {
 		g.drawString(fps + " fps", 20, 40);
 		g.drawString(ping + " ping", 20, 80);
 		g.drawString(tps + " tps", 20, 120);
-		for (PlayerInfo player : otherPlayers) drawPlayer(g, player.x, player.y);
+		for (PlayerInfo player : otherPlayers) drawPlayer(g, player);
 
-		drawPlayer(g, x, y);
+		drawPlayer(g, me);
 	}
 
 	final private int playerWidth = 50;
-	private void drawPlayer(Graphics g, int px, int py) {
-
+	private void drawPlayer(Graphics g, PlayerInfo p) {
 		int xCentre = W/2;
 		int yCentre = H/2;
 
-		g.fillOval(px - x + xCentre - playerWidth/2, py - y + yCentre - playerWidth/2, playerWidth, playerWidth);
+		g.fillOval(p.x - me.x + xCentre - playerWidth/2, p.y - me.y + yCentre - playerWidth/2, playerWidth, playerWidth);
 	}
 
 	final private int gridWidth = 117;
 	private void drawGrid(Graphics g) {
-		int xCentre = W/2 - x%gridWidth;
-		int yCentre = H/2 - y%gridWidth;
+		int xCentre = W/2 - me.x%gridWidth;
+		int yCentre = H/2 - me.y%gridWidth;
 
 		for (int xLine = xCentre % gridWidth; xLine < W; xLine += gridWidth) {
 			g.drawLine(xLine, 0, xLine, H);

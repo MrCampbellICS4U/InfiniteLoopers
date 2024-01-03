@@ -20,7 +20,9 @@ class Canvas extends JPanel {
 
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+		g.setColor(Color.green);
+		g.fillRect(0, 0, W, H);
+		g.setColor(Color.BLACK);
 		W = getWidth();
 		H = getHeight();
 
@@ -30,7 +32,6 @@ class Canvas extends JPanel {
 		g.drawString(fps + " fps", 20, 40);
 		g.drawString(ping + " ping", 20, 80);
 		g.drawString(tps + " tps", 20, 120);
-		g.drawString("Hi", x, playerWidth);
 		for (Point player : otherPlayers) drawPlayer(g, player.x, player.y);
 
 		drawPlayer(g, x, y);
@@ -38,15 +39,18 @@ class Canvas extends JPanel {
 
 	final private int playerWidth = 50;
 	private void drawPlayer(Graphics g, int px, int py) {
+
 		int xCentre = W/2;
 		int yCentre = H/2;
-		g.fillRect(px - x + xCentre - playerWidth/2, py - y + yCentre - playerWidth/2, playerWidth, playerWidth);
+
+		g.fillOval(px - x + xCentre - playerWidth/2, py - y + yCentre - playerWidth/2, playerWidth, playerWidth);
 	}
 
 	final private int gridWidth = 117;
 	private void drawGrid(Graphics g) {
 		int xCentre = W/2 - x%gridWidth;
 		int yCentre = H/2 - y%gridWidth;
+
 		for (int xLine = xCentre % gridWidth; xLine < W; xLine += gridWidth) {
 			g.drawLine(xLine, 0, xLine, H);
 		}

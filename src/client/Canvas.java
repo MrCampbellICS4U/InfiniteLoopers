@@ -8,7 +8,7 @@ class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
 	private int fps, ping, tps, x, y;
-	private ArrayList<Point> otherPlayers;
+	private ArrayList<Point> otherPlayers = new ArrayList<Point>();
 
 	public void draw(int fps, int ping, int tps, int x, int y, ArrayList<Point> otherPlayers) {
 		this.fps = fps; this.ping = ping; this.tps = tps; this.x = x; this.y = y; this.otherPlayers = otherPlayers;

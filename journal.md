@@ -78,3 +78,6 @@ i learned about `synchronized`, which is the actual proper way to solve this pro
 ## dec 30 2023
 realized that i never made the canvas have a size since i use a tiling wm... fixed that  
 moved the canvas to its own file, which apparently also fixed the jittery error, my hypothesis is that somehow, the `otherPlayers` weren't synced right and this fixed it  
+
+## dec 2 2023
+apparently swing keys are meant to be handled using [these things](https://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html)... maybe i should switch to them

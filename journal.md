@@ -84,4 +84,5 @@ apparently swing keys are meant to be handled using [these things](https://docs.
 
 ## jan 3 2024
 added a `PlayerInfo` type to make sharing information about players easier  
-removed the badly-designed `client.Game`, putting everything in `client.Client`
+removed the badly-designed `client.Game`, putting everything in `client.Client`  
+consolidated ping and tps into one packet  

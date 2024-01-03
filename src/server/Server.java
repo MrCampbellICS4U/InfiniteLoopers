@@ -47,6 +47,7 @@ public class Server implements LastWish, ActionListener {
 
 	private int tps = 0;
 	private int tick = 0;
+	public int getTPS() { return tps; }
 	void tick() {
 		tick++;
 		for (SClient c : clients.values()) c.update();
@@ -73,7 +74,6 @@ public class Server implements LastWish, ActionListener {
 	void secUpdate() {
 		tps = tick;
 		tick = 0;
-		broadcast(new TPSPacket(tps));
 	}
 
 	private int id = 0;
@@ -85,11 +85,6 @@ public class Server implements LastWish, ActionListener {
 	public void setClientReady(int id) { getClient(id).setReady(); }
 
 	public void handleInput(int id, Input i, InputState is) { getClient(id).handleInput(i, is); }
-
-	// broadcast to all clients
-	void broadcast(PacketTo<Client> p) {
-		for (SClient c : clients.values()) c.send(p);
-	}
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

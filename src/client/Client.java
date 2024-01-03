@@ -90,7 +90,7 @@ public class Client implements LastWish, ActionListener {
 		fps = frame;
 		frame = 0;
 
-		send(new PingPacket());
+		send(new GetServerInfoPacket());
 	}
 
 	// server acknowledged connection, we can start sending packets
@@ -103,8 +103,7 @@ public class Client implements LastWish, ActionListener {
 
 	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
 
-	public void setPing(int ms) { ping = ms; }
-	public void setTPS(int ms) { tps = ms; }
+	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
 	public void setPosition(PlayerInfo me) { this.me = me; }
 	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
 }

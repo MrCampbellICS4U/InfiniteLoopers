@@ -3,6 +3,7 @@ Ethan, Stoyan and Brian's Team
 ![image](https://github.com/MrCampbellICS4U/InfiniteLoopers/assets/101023105/7834bc98-da9a-45f0-9097-8cef6883c3f7)
 Mockup:
 ![image](https://github.com/MrCampbellICS4U/InfiniteLoopers/assets/154549832/ab00224d-01c5-4b70-a005-edeff0b7ad69)
+  
 [Planning doc](https://docs.google.com/document/d/1hbj9Qk5E5bjvUshHamrvtHdDFZhmCvz4Bq9szGMPqUg/edit)
 
 ## Instructions

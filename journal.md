@@ -86,3 +86,4 @@ apparently swing keys are meant to be handled using [these things](https://docs.
 added a `PlayerInfo` type to make sharing information about players easier  
 removed the badly-designed `client.Game`, putting everything in `client.Client`  
 consolidated ping and tps into one packet  
+made `client.Canvas` a lot nicer (it just asks the client for values like x, y, ping instead of storing them (the client's already storing them))

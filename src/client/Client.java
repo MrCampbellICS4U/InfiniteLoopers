@@ -24,7 +24,7 @@ public class Client implements LastWish, ActionListener {
 		window = new JFrame("very cool game!!");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		canvas = new Canvas();
+		canvas = new Canvas(this);
 		canvas.setPreferredSize(new Dimension(581, 628));
 		window.add(canvas);
 
@@ -78,11 +78,15 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private PlayerInfo me;
+	public PlayerInfo getMe() { return me; }
+
 	private int fps, frame, ping, tps;
+	public int getFPS() { return fps; }
+	public int getPing() { return ping; }
+	public int getTPS() { return tps; }
 	void tick() {
 		frame++;
-
-		canvas.draw(fps, ping, tps, me, otherPlayers);
+		canvas.repaint();
 	}
 
 	// gets called once a second
@@ -102,6 +106,7 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
+	public ArrayList<PlayerInfo> getOtherPlayers() { return otherPlayers; }
 
 	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
 	public void setPosition(PlayerInfo me) { this.me = me; }

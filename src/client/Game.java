@@ -67,6 +67,6 @@ class Game implements ActionListener {
 	private int tps = 0;
 	void setTPS(int tps) { this.tps = tps; }
 
-	private ArrayList<Point> otherPlayers = new ArrayList<>();
-	void setOtherPlayers(ArrayList<Point> players) { otherPlayers = players; }
+	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
+	void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
 }

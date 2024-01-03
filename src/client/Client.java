@@ -1,6 +1,5 @@
 package client;
 
-import java.awt.Point;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -38,8 +37,8 @@ public class Client implements LastWish {
 
 	public void handlePing(int ms) { game.setPing(ms); }
 	public void handleTPS(int ms) { game.setTPS(ms); }
-	public void handlePosition(int x, int y) { game.setPosition(x, y); }
-	public void handleOtherPlayers(ArrayList<Point> players) { game.setOtherPlayers(players); }
+	public void handlePosition(PlayerInfo player) { game.setPosition(player.x, player.y); }
+	public void handleOtherPlayers(ArrayList<PlayerInfo> players) { game.setOtherPlayers(players); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

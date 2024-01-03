@@ -4,13 +4,15 @@ import java.awt.*;
 import javax.swing.*;
 import java.util.ArrayList;
 
+import shared.PlayerInfo;
+
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
 	private int fps, ping, tps, x, y;
-	private ArrayList<Point> otherPlayers = new ArrayList<Point>();
+	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<PlayerInfo>();
 
-	public void draw(int fps, int ping, int tps, int x, int y, ArrayList<Point> otherPlayers) {
+	public void draw(int fps, int ping, int tps, int x, int y, ArrayList<PlayerInfo> otherPlayers) {
 		this.fps = fps; this.ping = ping; this.tps = tps; this.x = x; this.y = y; this.otherPlayers = otherPlayers;
 		repaint();
 	}
@@ -32,7 +34,7 @@ class Canvas extends JPanel {
 		g.drawString(fps + " fps", 20, 40);
 		g.drawString(ping + " ping", 20, 80);
 		g.drawString(tps + " tps", 20, 120);
-		for (Point player : otherPlayers) drawPlayer(g, player.x, player.y);
+		for (PlayerInfo player : otherPlayers) drawPlayer(g, player.x, player.y);
 
 		drawPlayer(g, x, y);
 	}

@@ -1,6 +1,5 @@
 package server;
 
-import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.Timer;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class Server implements LastWish, ActionListener {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id);
 				clients.put(id, client);
-				sendToClient(id, new StartPacket(client.getX(), client.getY()));
+				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
 		} catch (IOException e) {
@@ -48,6 +47,7 @@ public class Server implements LastWish, ActionListener {
 
 	private int tps = 0;
 	private int tick = 0;
+	public int getTPS() { return tps; }
 	void tick() {
 		tick++;
 		for (SClient c : clients.values()) c.update();
@@ -57,10 +57,10 @@ public class Server implements LastWish, ActionListener {
 		ArrayList<SClient> clientsList = new ArrayList<>(clients.values());
 		for (int i = 0; i < clientsList.size(); i++) {
 			SClient c1 = clientsList.get(i);
-			Point p1 = new Point(c1.getX(), c1.getY());
+			PlayerInfo p1 = new PlayerInfo(c1.getX(), c1.getY());
 			for (int j = i+1; j < clientsList.size(); j++) {
 				SClient c2 = clientsList.get(j);
-				Point p2 = new Point(c2.getX(), c2.getY());
+				PlayerInfo p2 = new PlayerInfo(c2.getX(), c2.getY());
 
 				c1.addOtherPlayer(p2);
 				c2.addOtherPlayer(p1);
@@ -74,7 +74,6 @@ public class Server implements LastWish, ActionListener {
 	void secUpdate() {
 		tps = tick;
 		tick = 0;
-		broadcast(new TPSPacket(tps));
 	}
 
 	private int id = 0;
@@ -86,11 +85,6 @@ public class Server implements LastWish, ActionListener {
 	public void setClientReady(int id) { getClient(id).setReady(); }
 
 	public void handleInput(int id, Input i, InputState is) { getClient(id).handleInput(i, is); }
-
-	// broadcast to all clients
-	void broadcast(PacketTo<Client> p) {
-		for (SClient c : clients.values()) c.send(p);
-	}
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

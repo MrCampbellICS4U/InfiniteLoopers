@@ -1,20 +1,57 @@
 package client;
 
-import java.awt.Point;
+import java.awt.*;
+import javax.swing.*;
 import java.net.Socket;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.UnknownHostException;
 
 import shared.*;
+import server.Server;
 
-public class Client implements LastWish {
+public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
-		new Client("127.0.0.1", 2000);
+		new Client();
 	}
 
+	JFrame window;
+	Canvas canvas;
+	Client() {
+		window = new JFrame("very cool game!!");
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		canvas = new Canvas(this);
+		canvas.setPreferredSize(new Dimension(581, 628));
+		window.add(canvas);
+
+		window.pack();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+
+		startGame("127.0.0.1", 2000);
+	}
+
+
+	public void handleException(String message, Exception e) {
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		String stackTrace = sw.toString();
+
+		JOptionPane.showMessageDialog(window, stackTrace, message, JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
+	}
+	public void handleDisconnection(int id, Exception e) {
+		handleException("Could not connect to server", e);
+	}
+
+
 	private PacketLord<Client> pl;
-	Client(String ip, int port) {
+	public void send(PacketTo<Server> p) { pl.send(p); }
+	private void startGame(String ip, int port) {
 		try {
 			Socket socket = new Socket(ip, port);
 			pl = new PacketLord<Client>(socket, this);
@@ -23,32 +60,55 @@ public class Client implements LastWish {
 		} catch (IOException e) {
 			handleException("Could not connect to server", e);
 		}
+
+		window.addKeyListener(new GameKeyListener(this));
+
+		Timer tickTimer = new Timer(1000/60, this);
+		tickTimer.setActionCommand("tick");
+		tickTimer.start();
+
+		Timer secTimer = new Timer(1000, this);
+		secTimer.setActionCommand("secUpdate");
+		secTimer.start();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("tick")) tick();
+		if (e.getActionCommand().equals("secUpdate")) secUpdate();
+	}
+
+	private PlayerInfo me;
+	public PlayerInfo getMe() { return me; }
+
+	private int fps, frame, ping, tps;
+	public int getFPS() { return fps; }
+	public int getPing() { return ping; }
+	public int getTPS() { return tps; }
+	void tick() {
+		frame++;
+		canvas.repaint();
+	}
+
+	// gets called once a second
+	void secUpdate() {
+		fps = frame;
+		frame = 0;
+
+		send(new GetServerInfoPacket());
 	}
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
-	Game game;
-	public void start(int id, int x, int y) {
+	public void start(int id) {
 		pl.setID(id);
-		pl.send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
+		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
-
-		game = new Game(id, pl, x, y);
 	}
 
-	public void handlePing(int ms) { game.setPing(ms); }
-	public void handleTPS(int ms) { game.setTPS(ms); }
-	public void handlePosition(int x, int y) { game.setPosition(x, y); }
-	public void handleOtherPlayers(ArrayList<Point> players) { game.setOtherPlayers(players); }
+	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
+	public ArrayList<PlayerInfo> getOtherPlayers() { return otherPlayers; }
 
-	public void handleException(String message, Exception e) {
-		System.out.println(message);
-		e.printStackTrace();
-		System.exit(1);
-	}
-	public void handleDisconnection(int id, Exception e) {
-		System.out.println("Server closed");
-		e.printStackTrace();
-		System.exit(1);
-	}
+	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
+	public void setPosition(PlayerInfo me) { this.me = me; }
+	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
 }

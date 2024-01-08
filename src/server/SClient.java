@@ -1,6 +1,5 @@
 package server;
 
-import java.awt.Point;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -57,7 +56,7 @@ class SClient extends PacketLord<Server> {
 	}
 
 	// all the other players this one can see
-	private ArrayList<Point> otherPlayers;
+	private ArrayList<PlayerInfo> otherPlayers;
 	public void clearOtherPlayers() { otherPlayers = new ArrayList<>(); }
-	public void addOtherPlayer(Point player) { otherPlayers.add(player); }
+	public void addOtherPlayer(PlayerInfo player) { otherPlayers.add(player); }
 }

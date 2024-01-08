@@ -20,7 +20,8 @@ class Canvas extends JPanel {
 
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setColor(Color.green);
+		Color  darkGreen  = new Color(0, 102, 0);
+		g.setColor(darkGreen);
 		g.fillRect(0, 0, W, H);
 		g.setColor(Color.BLACK);
 		W = getWidth();
@@ -45,7 +46,7 @@ class Canvas extends JPanel {
 
 		g.fillOval(px - x + xCentre - playerWidth/2, py - y + yCentre - playerWidth/2, playerWidth, playerWidth);
 	}
-
+	
 	final private int gridWidth = 117;
 	private void drawGrid(Graphics g) {
 		int xCentre = W/2 - x%gridWidth;

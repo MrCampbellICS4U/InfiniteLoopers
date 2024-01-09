@@ -1,6 +1,8 @@
 package client;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+
 import javax.swing.*;
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ class Canvas extends JPanel {
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Color  darkGreen  = new Color(0, 102, 0);
+		
 		g.setColor(darkGreen);
 		g.fillRect(0, 0, W, H);
 		g.setColor(Color.BLACK);
@@ -61,5 +64,8 @@ class Canvas extends JPanel {
 		for (int yLine = yCentre % gridWidth; yLine < H; yLine += gridWidth) {
 			g.drawLine(0, yLine, W, yLine);
 		}
+	}
+
+	public void add(BufferedImage mainMenu) {
 	}
 }

@@ -34,7 +34,6 @@ public class Client implements LastWish, ActionListener {
 		canvas.setPreferredSize(new Dimension(W, H));
 
 		window.add(canvas);
-		menu.add(mainMenu);
 		menu.pack();
 		menu.setLocationRelativeTo(null);
 

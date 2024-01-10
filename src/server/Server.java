@@ -57,13 +57,10 @@ public class Server implements LastWish, ActionListener {
 		ArrayList<SClient> clientsList = new ArrayList<>(clients.values());
 		for (int i = 0; i < clientsList.size(); i++) {
 			SClient c1 = clientsList.get(i);
-			PlayerInfo p1 = new PlayerInfo(c1.getX(), c1.getY());
 			for (int j = i+1; j < clientsList.size(); j++) {
 				SClient c2 = clientsList.get(j);
-				PlayerInfo p2 = new PlayerInfo(c2.getX(), c2.getY());
-
-				c1.addOtherPlayer(p2);
-				c2.addOtherPlayer(p1);
+				c1.addOtherPlayer(c2.getInfo());
+				c2.addOtherPlayer(c1.getInfo());
 			}
 		}
 
@@ -79,12 +76,13 @@ public class Server implements LastWish, ActionListener {
 	private int id = 0;
 	private int nextID() { return id++; }
 
-	public SClient getClient(int id) { return clients.get(id); }
+	public SClient getClient(int id) { SClient c =  clients.get(id); if (c == null) System.out.println("Someone messed up; could not find client with id " + id); return c; }
 	public void sendToClient(int id, PacketTo<Client> p) { getClient(id).send(p); }
 
 	public void setClientReady(int id) { getClient(id).setReady(); }
 
 	public void handleInput(int id, Input i, InputState is) { getClient(id).handleInput(i, is); }
+	public void setPlayerRotation(int id, double angle) { getClient(id).setAngle(angle); }
 
 	public void handleException(String message, Exception e) {
 		System.out.println(message);

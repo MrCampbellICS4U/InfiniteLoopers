@@ -8,6 +8,17 @@ import shared.*;
 // clients from the server's perspective
 class SClient extends PacketLord<Server> {
 	private double xx, yy;
+
+	public int getX() { return (int)xx; }
+	public int getY() { return (int)yy; }
+
+	private double angle;
+
+	public double setAngle(double angle) { return this.angle = angle; }
+	public double getAngle() { return angle; }
+	
+	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle); }
+
 	SClient(Socket socket, Server state, int id) {
 		super(socket, state);
 		setID(id);
@@ -18,9 +29,6 @@ class SClient extends PacketLord<Server> {
 	// it would throw a `UTFDataFormatException` if i immediately started sending messages after opening the socket
 	private boolean ready = false;
 	public void setReady() { ready = true; }
-
-	public int getX() { return (int)xx; }
-	public int getY() { return (int)yy; }
 
 	private boolean up, down, left, right;
 	public void handleInput(Input i, InputState is) {
@@ -51,7 +59,7 @@ class SClient extends PacketLord<Server> {
 	public void sendPackets() {
 		if (!ready) return;
 
-		send(new PositionPacket(getX(), getY()));
+		send(new PositionPacket(getX(), getY(), getAngle()));
 		send(new OtherPlayersPacket(otherPlayers));
 	}
 

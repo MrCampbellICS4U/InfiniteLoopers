@@ -62,6 +62,8 @@ public class Client implements LastWish, ActionListener {
 		}
 
 		window.addKeyListener(new GameKeyListener(this));
+		window.addMouseListener(new GameMouseListener(this));
+		window.addMouseMotionListener(new GameMouseListener(this));
 
 		Timer tickTimer = new Timer(1000/60, this);
 		tickTimer.setActionCommand("tick");
@@ -111,4 +113,11 @@ public class Client implements LastWish, ActionListener {
 	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
 	public void setPosition(PlayerInfo me) { this.me = me; }
 	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
+	
+	void handleMouseMovement(int mouseX, int mouseY) {
+		int relMouseX = mouseX - window.getWidth()/2;
+		int relMouseY = mouseY - window.getHeight()/2;
+		double angle = Math.atan2(relMouseY, relMouseX);
+		send(new ClientPlayerRotationPacket(angle));
+	}
 }

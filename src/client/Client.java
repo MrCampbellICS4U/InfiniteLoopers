@@ -5,10 +5,10 @@ import javax.swing.*;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.UnknownHostException;
-import java.awt.image.*;
-import javax.imageio.*;
-import java.io.*;
 
 import shared.*;
 import server.Server;
@@ -18,50 +18,21 @@ public class Client implements LastWish, ActionListener {
 		new Client();
 	}
 
-	JFrame window, menu;
+	JFrame window;
 	Canvas canvas;
-	DrawingPanel mainMenu;
-	BufferedImage menuImage;
-	int W = 600;
-	int H = 600;
 	Client() {
 		window = new JFrame("very cool game!!");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		canvas = new Canvas(this);
-		mainMenu = new DrawingPanel();
-
-		canvas.setPreferredSize(new Dimension(W, H));
-
+		canvas.setPreferredSize(new Dimension(581, 628));
 		window.add(canvas);
-		menu.add(mainMenu);
-		menu.pack();
-		menu.setLocationRelativeTo(null);
 
 		window.pack();
 		window.setLocationRelativeTo(null);
-
-		menu.setVisible(true);
+		window.setVisible(true);
 
 		startGame("127.0.0.1", 2000);
-	}
-
-	private class DrawingPanel extends JPanel {
-
-		DrawingPanel() {
-			this.setPreferredSize(new Dimension(W, H));
-		}
-
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D) g;
-			// turn on antialiasing
-			menuImage = Client.loadImage("src/images/mainMenu.png");
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			//Draw game name
-			g2.drawImage(menuImage, 0, 0, W, H, null);
-
-		}	
 	}
 
 
@@ -76,7 +47,6 @@ public class Client implements LastWish, ActionListener {
 	public void handleDisconnection(int id, Exception e) {
 		handleException("Could not connect to server", e);
 	}
-
 
 
 	private PacketLord<Client> pl;
@@ -141,17 +111,4 @@ public class Client implements LastWish, ActionListener {
 	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
 	public void setPosition(PlayerInfo me) { this.me = me; }
 	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
-
-		//Image loader function
-	static BufferedImage loadImage(String filename) {
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new File(filename));
-		} catch (IOException e) {
-			System.out.println(e.toString());
-			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return img;
-	}
 }

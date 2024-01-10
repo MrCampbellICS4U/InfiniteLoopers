@@ -1,8 +1,6 @@
 package shared;
 
-import java.io.Serializable;
-
-public abstract class PacketTo<Dest> implements Serializable {
+public abstract class PacketTo<Dest> implements java.io.Serializable {
 	// what this packet should do when it's received
 	abstract void handle(Dest dest);
 

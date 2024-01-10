@@ -1,3 +1,6 @@
+Old version of the code when I made a slightly different packet system.  
+I realized I didn't want it, but I want to keep the code for in case I need that system again.
+
 # InfiniteLoopers
 Ethan, Stoyan and Brian's Team
 

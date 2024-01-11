@@ -22,7 +22,7 @@ public class Client implements LastWish, ActionListener {
 	JFrame window, mainMenu, settingsMenu;
 	Canvas canvas;
 	DrawingPanel main, settingsPanel;
-	BufferedImage menuPNG;
+	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings;
 	int W = 1300;
 	int H = 800;
@@ -44,9 +44,9 @@ public class Client implements LastWish, ActionListener {
 		settingsMenu = new JFrame("Sarvivarz");
 		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
-
 		menuPNG = Client.loadImage("./src/images/image.png");
+		settingsPNG = Client.loadImage("./src/images/settingsImage.png");
+
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setResizable(false);
 		main = new DrawingPanel();

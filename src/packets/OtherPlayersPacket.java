@@ -1,8 +1,9 @@
-package shared;
+package packets;
 
 import java.util.ArrayList;
 
 import client.Client;
+import shared.PlayerInfo;
 
 public class OtherPlayersPacket extends PacketTo<Client> {
 	private ArrayList<PlayerInfo> players;

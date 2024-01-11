@@ -1,9 +1,12 @@
-package shared;
+package packets;
 
 import java.net.Socket;
 import java.io.IOException;
 import java.io.EOFException;
 import java.net.SocketException;
+
+import shared.LastWish;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.BufferedInputStream;
@@ -20,6 +23,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	private Dest dest;
 
 	private int id;
+	public int getID() { return id; }
 	public void setID(int id) { this.id = id; }
 
 	public PacketLord(Socket socket, Dest dest) {
@@ -75,7 +79,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		try {
 			while (true) {
 				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
-				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("shared." + p.getType()).cast(p);
+				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("packets." + p.getType()).cast(p);
 				castP.handle(dest);
 			}
 		} catch (EOFException e) {

@@ -1,3 +1,7 @@
 package shared;
 
-public enum Input { UP, DOWN, LEFT, RIGHT }
+// input types
+public enum Input {
+	UP, DOWN, LEFT, RIGHT,
+	ATTACK, RELOAD, USE, DROP
+}

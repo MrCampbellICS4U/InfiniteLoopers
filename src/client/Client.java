@@ -2,6 +2,7 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
+
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.net.UnknownHostException;
 import javax.imageio.*;
 import java.awt.image.*;
 import shared.*;
+import packets.*;
 import server.Server;
 
 public class Client implements LastWish, ActionListener {
@@ -27,9 +29,11 @@ public class Client implements LastWish, ActionListener {
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
 		canvas.setPreferredSize(new Dimension(W, H));
+
 		window.add(canvas);
 
 		window.pack();
@@ -208,5 +212,11 @@ public class Client implements LastWish, ActionListener {
 					JOptionPane.ERROR_MESSAGE);
 		}
 		return img;
+	
+	boolean mapOpen = false;
+	// todo implement
+	public void toggleMap() {
+		mapOpen = !mapOpen;
+		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 }

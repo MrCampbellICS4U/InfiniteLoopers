@@ -83,7 +83,6 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.setVisible(true);
 
 
- 		startGame("76.66.240.46", 2345);
 	}
 
 
@@ -152,6 +151,7 @@ public class Client implements LastWish, ActionListener {
 			if (action.equals("play")) {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
+				startGame("76.66.240.46", 2345);
 			}
 		}
 	}

@@ -79,7 +79,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		try {
 			while (true) {
 				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
-				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("shared." + p.getType()).cast(p);
+				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("packets." + p.getType()).cast(p);
 				castP.handle(dest);
 			}
 		} catch (EOFException e) {

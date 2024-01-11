@@ -17,12 +17,12 @@ Mockup:
 if you're on the command line, `make server` and `make client` will compile and start the server and the client, respectively
 
 ### creating new packet types
-to create a new packet type, make a new java class in [`shared/`](src/shared/) called [Type]Packet.java  
+to create a new packet type, make a new java class in [`packets/`](src/packets/) called [Type]Packet.java  
 if the packet is going to the client, import `client.Client` and have it extend `PacketTo<Client>`  
 if the packet is going to the server, import `server.Server` and have it extend `PacketTo<Server>`  
 add all the data you want as fields, and an optional constructor to set that data  
 the `handle` method is what gets called when this packet is received. if your packet is going to the server, it should take a `Server` as its parameter; if it's going to the client, it should take a `Client` as its parameter.  
-see [`shared/`](src/shared/) for examples  
+see [`packets/`](src/packets/) for examples  
 
 ### sending packets
 to send a packet from the server to a client, you can use the `sendToClient` method, which takes the id of the client to send to and a packet to send.  

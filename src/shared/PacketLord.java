@@ -31,7 +31,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 
 			// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 			// it appears that ObjectInputStreams are very social creatures
-			// who will throw sissy fits (block the thread) until they have their ObjectOutputStream
+			// who will throw hissy fits (block the thread) until they have their ObjectOutputStream
 			// so if both ObjectInputStreams are opened first, both the client and server will block
 			// and then neither can get around to opening an ObjectOutputStream to unblock the other
 

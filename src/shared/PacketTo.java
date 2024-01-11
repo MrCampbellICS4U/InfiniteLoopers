@@ -15,5 +15,7 @@ public abstract class PacketTo<Dest> implements Serializable {
 	// server id of the client that this packet is coming from/going to
 	private int id;
 	public void setID(int id) { this.id = id; }
-	public int getID() { return id; }
+
+	// returns the id of the client sending/receiving this packet
+	public int getClientID() { return id; }
 }

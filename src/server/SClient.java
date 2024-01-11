@@ -59,7 +59,7 @@ class SClient extends PacketLord<Server> {
 	public void sendPackets() {
 		if (!ready) return;
 
-		send(new PositionPacket(getX(), getY(), getAngle()));
+		send(new MePacket(getX(), getY(), getAngle()));
 		send(new OtherPlayersPacket(otherPlayers));
 	}
 

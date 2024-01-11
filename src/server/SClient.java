@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import shared.*;
+import packets.*;
 
 // clients from the server's perspective
 class SClient extends PacketLord<Server> {

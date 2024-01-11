@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 import shared.Input;
 import shared.InputState;
-import shared.InputPacket;
+import packets.InputPacket;
 
 class GameKeyListener extends KeyAdapter {
 	Client c;

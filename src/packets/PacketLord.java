@@ -1,9 +1,12 @@
-package shared;
+package packets;
 
 import java.net.Socket;
 import java.io.IOException;
 import java.io.EOFException;
 import java.net.SocketException;
+
+import shared.LastWish;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.BufferedInputStream;

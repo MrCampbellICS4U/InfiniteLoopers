@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import shared.*;
+import packets.*;
 import client.Client;
 
 public class Server implements LastWish, ActionListener {

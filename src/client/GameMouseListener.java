@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
 import shared.Input;
-import shared.InputPacket;
+import packets.InputPacket;
 
 class GameMouseListener extends MouseAdapter {
 	Client c;

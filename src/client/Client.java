@@ -2,6 +2,7 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
+
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.io.StringWriter;
 import java.net.UnknownHostException;
 
 import shared.*;
+import packets.*;
 import server.Server;
 
 public class Client implements LastWish, ActionListener {

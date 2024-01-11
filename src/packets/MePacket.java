@@ -1,6 +1,7 @@
-package shared;
+package packets;
 
 import client.Client;
+import shared.PlayerInfo;
 
 // this packet holds information about the client it's being sent to
 public class MePacket extends PacketTo<Client> {

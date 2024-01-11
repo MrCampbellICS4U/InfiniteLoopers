@@ -56,7 +56,7 @@ class Canvas extends JPanel {
 		g.drawLine(playerRelX, playerRelY, playerRelX + (int)(Math.cos(p.angle)*length), playerRelY + (int)(Math.sin(p.angle)*length));
 	}
 	
-	final private int gridWidth = 117;
+	final private int gridWidth = 100;
 	private void drawGrid(Graphics g) {
 		PlayerInfo me = c.getMe();
 		int xCentre = W/2 - me.x%gridWidth;

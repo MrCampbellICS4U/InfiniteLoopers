@@ -28,7 +28,7 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
-		canvas.setPreferredSize(new Dimension(581, 628));
+		canvas.setPreferredSize(new Dimension(1200, 800));
 		window.add(canvas);
 
 		window.pack();

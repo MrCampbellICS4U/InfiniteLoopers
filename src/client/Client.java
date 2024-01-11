@@ -37,6 +37,10 @@ public class Client implements LastWish, ActionListener {
 		window.setResizable(false);
 		//window.setVisible(true);
 
+		settingsMenu = new JFrame("Sarvivarz");
+		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
 
 		menuPNG = Client.loadImage("./src/images/image.png");
 		mainMenu = new JFrame("Sarvivarz");
@@ -79,7 +83,7 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.setVisible(true);
 
 
-		startGame("127.0.0.1", 2000);
+ 		startGame("76.66.240.46", 2345);
 	}
 
 

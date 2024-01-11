@@ -152,7 +152,7 @@ public class Client implements LastWish, ActionListener {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
         		//startGame("76.66.240.46", 2345);
-				startGame("127.0.0.1", 2345);
+				startGame("127.0.0.1", 2000);
 			}
 		}
 	}

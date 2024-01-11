@@ -38,7 +38,32 @@ class SClient extends PacketLord<Server> {
 			case DOWN  -> down  = isDown;
 			case LEFT  -> left  = isDown;
 			case RIGHT -> right = isDown;
+			
+			case ATTACK -> attack();
+			case RELOAD -> reload();
+			case USE    -> useItem();
+			case DROP   -> dropItem();
 		}
+	}
+	
+	// todo implement
+	private void attack() {
+		System.out.printf("Client %d unleashed a devastating attack!\n", getID());
+	}
+	
+	// todo implement
+	private void reload() {
+		System.out.printf("Client %d attempts to reload\n", getID());
+	}
+	
+	// todo implement
+	private void useItem() {
+		System.out.printf("Client %d tries to use an item\n", getID());
+	}
+	
+	// todo implement
+	private void dropItem() {
+		System.out.printf("Client %d drops something on the ground\n", getID());
 	}
 
 	private final int speed = 5;

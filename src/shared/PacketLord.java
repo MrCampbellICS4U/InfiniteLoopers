@@ -20,6 +20,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	private Dest dest;
 
 	private int id;
+	public int getID() { return id; }
 	public void setID(int id) { this.id = id; }
 
 	public PacketLord(Socket socket, Dest dest) {

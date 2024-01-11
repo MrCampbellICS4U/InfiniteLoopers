@@ -16,6 +16,13 @@ class GameKeyListener extends KeyAdapter {
 			case KeyEvent.VK_S -> c.send(new InputPacket(Input.DOWN,  InputState.DOWN));
 			case KeyEvent.VK_A -> c.send(new InputPacket(Input.LEFT,  InputState.DOWN));
 			case KeyEvent.VK_D -> c.send(new InputPacket(Input.RIGHT, InputState.DOWN));
+
+			case KeyEvent.VK_SPACE -> c.send(new InputPacket(Input.ATTACK));
+			case KeyEvent.VK_R     -> c.send(new InputPacket(Input.RELOAD));
+			case KeyEvent.VK_E     -> c.send(new InputPacket(Input.USE));
+			case KeyEvent.VK_Q     -> c.send(new InputPacket(Input.DROP));
+			
+			case KeyEvent.VK_M, KeyEvent.VK_TAB -> c.toggleMap();
 		}
 	}
 

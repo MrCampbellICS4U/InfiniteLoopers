@@ -23,6 +23,7 @@ public class Client implements LastWish, ActionListener {
 	Client() {
 		window = new JFrame("very cool game!!");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
 		canvas.setPreferredSize(new Dimension(581, 628));
@@ -119,5 +120,12 @@ public class Client implements LastWish, ActionListener {
 		int relMouseY = mouseY - window.getHeight()/2;
 		double angle = Math.atan2(relMouseY, relMouseX);
 		send(new ClientPlayerRotationPacket(angle));
+	}
+	
+	boolean mapOpen = false;
+	// todo implement
+	public void toggleMap() {
+		mapOpen = !mapOpen;
+		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 }

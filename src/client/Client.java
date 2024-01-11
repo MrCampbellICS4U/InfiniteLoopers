@@ -6,11 +6,10 @@ import javax.swing.*;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.UnknownHostException;
-
+import javax.imageio.*;
+import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
@@ -20,22 +19,74 @@ public class Client implements LastWish, ActionListener {
 		new Client();
 	}
 
-	JFrame window;
+	JFrame window, mainMenu, settingsMenu;
 	Canvas canvas;
+	DrawingPanel main, settingsPanel;
+	BufferedImage menuPNG;
+	JButton play, settings;
+	int W = 1300;
+	int H = 800;
 	Client() {
-		window = new JFrame("very cool game!!");
+		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
-		canvas.setPreferredSize(new Dimension(1200, 800));
+		canvas.setPreferredSize(new Dimension(W, H));
+
 		window.add(canvas);
 
 		window.pack();
 		window.setLocationRelativeTo(null);
-		window.setVisible(true);
+		window.setResizable(false);
+		//window.setVisible(true);
 
-		startGame("127.0.0.1", 2000);
+		settingsMenu = new JFrame("Sarvivarz");
+		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+
+		menuPNG = Client.loadImage("./src/images/image.png");
+		mainMenu = new JFrame("Sarvivarz");
+		mainMenu.setResizable(false);
+		main = new DrawingPanel();
+		main.setPreferredSize(new Dimension(W, H));
+		main.setLayout(null);
+
+		play = new JButton();
+		settings = new JButton();
+		JButton temporary = new JButton();
+		play.setActionCommand("play");
+		play.addActionListener(this);
+
+		settings.setActionCommand("settings");
+		settings.addActionListener(this);
+		double buttonWidth = W*0.2;
+		double buttonHeight = H*0.15;
+		double playLocationWidth = W*0.58;
+		double settingsLocationWidth = W*0.2;
+		double settingsWidth = W*0.12;
+		double buttonLocationHeight = H*0.8;
+		play.setOpaque(false);
+		play.setContentAreaFilled(false);
+		play.setBorderPainted(false);
+		play.setBounds((int)playLocationWidth, (int)buttonLocationHeight, (int)buttonWidth, (int)buttonHeight);
+
+		settings.setOpaque(false);
+		settings.setBorderPainted(false);
+		settings.setContentAreaFilled(false);
+
+		settings.setBounds((int)settingsLocationWidth, (int)buttonLocationHeight, (int)settingsWidth, (int)buttonHeight);
+
+		main.add(play);
+		main.add(settings);
+		main.add(temporary);
+		mainMenu.add(main);
+		mainMenu.pack();
+		mainMenu.setLocationRelativeTo(null);
+		mainMenu.setVisible(true);
+
+
 	}
 
 
@@ -77,9 +128,37 @@ public class Client implements LastWish, ActionListener {
 		secTimer.start();
 	}
 
+		//Drawing panel for the home page
+	private class DrawingPanel extends JPanel {
+
+		DrawingPanel() {
+			this.setPreferredSize(new Dimension(W, H));
+		}
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			// turn on antialiasing
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			//Draw game menu
+			g2.drawImage(menuPNG, 0, 0, this.getWidth(), this.getHeight(), null);
+			W = this.getWidth();
+			H = this.getHeight();
+		}
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("tick")) tick();
 		if (e.getActionCommand().equals("secUpdate")) secUpdate();
+		if (mainMenu.isVisible()) {
+			String action = e.getActionCommand();
+			if (action.equals("play")) {
+				mainMenu.setVisible(false);
+				window.setVisible(true);
+        		//startGame("76.66.240.46", 2345);
+				startGame("127.0.0.1", 2345);
+			}
+		}
 	}
 
 	private PlayerInfo me;
@@ -123,6 +202,16 @@ public class Client implements LastWish, ActionListener {
 		double angle = Math.atan2(relMouseY, relMouseX);
 		send(new ClientPlayerRotationPacket(angle));
 	}
+	static BufferedImage loadImage(String filename) {
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File(filename));
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		return img;
 	
 	boolean mapOpen = false;
 	// todo implement

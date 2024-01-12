@@ -19,13 +19,17 @@ public class Client implements LastWish, ActionListener {
 		new Client();
 	}
 
-	JFrame window, mainMenu, settingsMenu;
-	Canvas canvas;
-	DrawingPanel main, settingsPanel;
+	static JFrame window, mainMenu, settingsMenu;
+	static Canvas canvas;
+	static DrawingPanel main;
+	static DrawingPanel2 settingsPanel;
 	BufferedImage menuPNG, settingsPNG;
-	JButton play, settings;
+	JButton play, settings, back;
+	RoundJTextField ipAddress, portNum;
 	int W = 1300;
 	int H = 800;
+	static String ip = "127.0.0.1";
+	static Integer port = 2000;
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,13 +44,48 @@ public class Client implements LastWish, ActionListener {
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 		//window.setVisible(true);
-
-		settingsMenu = new JFrame("Sarvivarz");
-		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		menuPNG = Client.loadImage("./src/images/image.png");
 		settingsPNG = Client.loadImage("./src/images/settingsImage.png");
 
+		//SETTINGS MENU START
+		settingsMenu = new JFrame("Sarvivarz");
+		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		settingsPanel = new DrawingPanel2();
+		settingsPanel.setPreferredSize(new Dimension(W, H));
+		settingsPanel.setLayout(null);
+
+		Color textFieldColor = new Color(208, 171, 182);
+		Font font1 = new Font("SansSerif", Font.BOLD, 40);
+
+		ipAddress = new RoundJTextField(15);
+		ipAddress.setBounds(130, 600, 350, 60);
+		ipAddress.setFont(font1);
+		ipAddress.setBackground(textFieldColor);
+
+		portNum = new RoundJTextField(15);
+		portNum.setBounds(905, 600, 125, 60);
+		portNum.setFont(font1);
+		portNum.setBackground(textFieldColor);
+
+		back = new JButton();
+		back.setActionCommand("leave");
+		back.addActionListener(this);
+		back.setOpaque(false);
+		back.setContentAreaFilled(false);
+		back.setBorderPainted(false);
+		back.setBounds(530, 675, 225, 100);
+
+		settingsPanel.add(back);
+		settingsPanel.add(ipAddress);
+		settingsPanel.add(portNum);
+		settingsMenu.add(settingsPanel);
+		settingsMenu.pack();
+		settingsMenu.setResizable(false);
+		settingsMenu.setLocationRelativeTo(null);
+
+		//SETTINGS MENU END
+
+		//MAIN MENU CODE START
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setResizable(false);
 		main = new DrawingPanel();
@@ -84,8 +123,9 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.add(main);
 		mainMenu.pack();
 		mainMenu.setLocationRelativeTo(null);
+		mainMenu.setResizable(false);
 		mainMenu.setVisible(true);
-
+		//MAIN MENU CODE END
 
 	}
 
@@ -147,16 +187,63 @@ public class Client implements LastWish, ActionListener {
 		}
 	}
 
+	private class DrawingPanel2 extends JPanel {
+
+		DrawingPanel2() {
+			this.setPreferredSize(new Dimension(W, H));
+		}
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			// turn on antialiasing
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			//Draw game menu
+			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
+			W = this.getWidth();
+			H = this.getHeight();
+		}
+	}
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("tick")) tick();
 		if (e.getActionCommand().equals("secUpdate")) secUpdate();
+		if (settingsMenu.isVisible()){
+			String actionCom = e.getActionCommand();
+			String ipInput = ipAddress.getText();
+			if (ipInput.equals("")){
+				ip = "127.0.0.1";
+			}else{
+				ip = ipInput;
+			}
+			if ((portNum.getText()).equals("")){
+				port = 2000;
+			}else{
+				port = Integer.parseInt(portNum.getText());
+			}
+
+			if (actionCom.equals("leave")) {
+				System.out.println("working");
+				System.out.println(ip);
+				System.out.println(port);
+				mainMenu.setVisible(true);
+				mainMenu.setLocationRelativeTo(null);
+				settingsMenu.setVisible(false);
+
+			}
+		}
 		if (mainMenu.isVisible()) {
 			String action = e.getActionCommand();
 			if (action.equals("play")) {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
         		//startGame("76.66.240.46", 2345);
-				startGame("127.0.0.1", 2000);
+				startGame(ip, port);
+			}
+			else if (action.equals("settings")) {
+				mainMenu.setVisible(false);
+				settingsMenu.setVisible(true);
+				settingsMenu.setLocationRelativeTo(null);
+
+
 			}
 		}
 	}
@@ -212,7 +299,7 @@ public class Client implements LastWish, ActionListener {
 					JOptionPane.ERROR_MESSAGE);
 		}
 		return img;
-	
+	}
 	boolean mapOpen = false;
 	// todo implement
 	public void toggleMap() {

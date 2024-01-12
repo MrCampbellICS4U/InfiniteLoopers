@@ -21,7 +21,7 @@ class SClient extends PacketLord<Server> {
 	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health); }
 	
 	private final int MAXHEALTH = 3;
-	private int health = 3; // 3 hearts
+	private int health = MAXHEALTH; // 3 hearts
 
 	SClient(Socket socket, Server state, int id) {
 		super(socket, state);

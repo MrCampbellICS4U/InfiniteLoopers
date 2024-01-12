@@ -2,7 +2,7 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
-import java.util.ArrayList;
+import java.util.*;
 
 import shared.PlayerInfo;
 
@@ -13,7 +13,9 @@ class Canvas extends JPanel {
 
 	public Canvas(Client c) {
 		this.c = c;
+		c.getMe();
 	}
+	Random rand = new Random();
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -41,6 +43,9 @@ class Canvas extends JPanel {
 	}
 
 	final private int playerWidth = 50;
+	int red = rand.nextInt(255) + 1;
+	int green = rand.nextInt(255) + 1;
+	int blue = rand.nextInt(255) + 1;
 	private void drawPlayer(Graphics g, PlayerInfo p) {
 		int xCentre = W/2;
 		int yCentre = H/2;
@@ -48,7 +53,14 @@ class Canvas extends JPanel {
 		PlayerInfo me = c.getMe();
 		int playerRelX = p.x - me.x + xCentre;
 		int playerRelY = p.y - me.y + yCentre;
-		g.setColor(Color.BLACK);
+		if (me.equals(p)){
+
+			Color playerColor = new Color(red, green, blue);
+			g.setColor(playerColor);
+
+		}else{
+			g.setColor(Color.RED);
+		}
 		g.fillOval(playerRelX - playerWidth/2, playerRelY - playerWidth/2, playerWidth, playerWidth);
 		
 		int length = 100;

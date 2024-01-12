@@ -221,7 +221,6 @@ public class Client implements LastWish, ActionListener {
 			}
 
 			if (actionCom.equals("leave")) {
-				System.out.println("working");
 				System.out.println(ip);
 				System.out.println(port);
 				mainMenu.setVisible(true);

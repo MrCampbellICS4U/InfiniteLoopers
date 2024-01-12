@@ -30,7 +30,7 @@ public class Client implements LastWish, ActionListener {
 	static int H = 800;
 	static String ip = "127.0.0.1";
 	static Integer port = 2000;
-	
+
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,8 +45,8 @@ public class Client implements LastWish, ActionListener {
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 		//window.setVisible(true);
-		menuPNG = Client.loadImage("./src/images/image.png");
-		settingsPNG = Client.loadImage("./src/images/settingsImage.png");
+		menuPNG = Client.loadImage("res/Menus/Main/image.png");
+		settingsPNG = Client.loadImage("res/Menus/Settings/settingsImage.png");
 		setupSettingsMenu();
 		setupMainMenu();
 	}
@@ -210,6 +210,7 @@ public class Client implements LastWish, ActionListener {
 		double angle = Math.atan2(relMouseY, relMouseX);
 		send(new ClientPlayerRotationPacket(angle));
 	}
+
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {

@@ -30,6 +30,7 @@ public class Client implements LastWish, ActionListener {
 	static int H = 800;
 	static String ip = "127.0.0.1";
 	static Integer port = 2000;
+	
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

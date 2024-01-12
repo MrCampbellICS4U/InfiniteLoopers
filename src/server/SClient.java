@@ -18,11 +18,12 @@ class SClient extends PacketLord<Server> {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 	
-	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health); }
+	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health, armor); }
 	
 	private final int MAXHEALTH = 3;
 	private int health = MAXHEALTH; // 3 hearts
-
+	private final int MAXARMOR = 3;
+	private int armor = 1;
 	SClient(Socket socket, Server state, int id) {
 		super(socket, state);
 		setID(id);
@@ -53,6 +54,8 @@ class SClient extends PacketLord<Server> {
 	// todo implement
 	private void attack() {
 		System.out.printf("Client %d unleashed a devastating attack!\n", getID());
+		//health--;
+		//armor++;
 	}
 	
 	// todo implement

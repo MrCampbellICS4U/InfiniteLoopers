@@ -26,8 +26,8 @@ public class Client implements LastWish, ActionListener {
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
-	int W = 1300;
-	int H = 800;
+	static int W = 1300;
+	static int H = 800;
 	static String ip = "127.0.0.1";
 	static Integer port = 2000;
 	
@@ -47,87 +47,8 @@ public class Client implements LastWish, ActionListener {
 		//window.setVisible(true);
 		menuPNG = Client.loadImage("./src/images/image.png");
 		settingsPNG = Client.loadImage("./src/images/settingsImage.png");
-
-		//SETTINGS MENU START
-		settingsMenu = new JFrame("Sarvivarz");
-		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		settingsPanel = new DrawingPanel2();
-		settingsPanel.setPreferredSize(new Dimension(W, H));
-		settingsPanel.setLayout(null);
-
-		Color textFieldColor = new Color(208, 171, 182);
-		Font font1 = new Font("SansSerif", Font.BOLD, 40);
-
-		ipAddress = new RoundJTextField(15);
-		ipAddress.setBounds(130, 600, 350, 60);
-		ipAddress.setFont(font1);
-		ipAddress.setBackground(textFieldColor);
-
-		portNum = new RoundJTextField(15);
-		portNum.setBounds(905, 600, 125, 60);
-		portNum.setFont(font1);
-		portNum.setBackground(textFieldColor);
-
-		back = new JButton();
-		back.setActionCommand("leave");
-		back.addActionListener(this);
-		back.setOpaque(false);
-		back.setContentAreaFilled(false);
-		back.setBorderPainted(false);
-		back.setBounds(530, 675, 225, 100);
-
-		settingsPanel.add(back);
-		settingsPanel.add(ipAddress);
-		settingsPanel.add(portNum);
-		settingsMenu.add(settingsPanel);
-		settingsMenu.pack();
-		settingsMenu.setResizable(false);
-		settingsMenu.setLocationRelativeTo(null);
-
-		//SETTINGS MENU END
-
-		//MAIN MENU CODE START
-		mainMenu = new JFrame("Sarvivarz");
-		mainMenu.setResizable(false);
-		main = new DrawingPanel();
-		main.setPreferredSize(new Dimension(W, H));
-		main.setLayout(null);
-
-		play = new JButton();
-		settings = new JButton();
-		JButton temporary = new JButton();
-		play.setActionCommand("play");
-		play.addActionListener(this);
-
-		settings.setActionCommand("settings");
-		settings.addActionListener(this);
-		double buttonWidth = W*0.2;
-		double buttonHeight = H*0.15;
-		double playLocationWidth = W*0.58;
-		double settingsLocationWidth = W*0.2;
-		double settingsWidth = W*0.12;
-		double buttonLocationHeight = H*0.8;
-		play.setOpaque(false);
-		play.setContentAreaFilled(false);
-		play.setBorderPainted(false);
-		play.setBounds((int)playLocationWidth, (int)buttonLocationHeight, (int)buttonWidth, (int)buttonHeight);
-
-		settings.setOpaque(false);
-		settings.setBorderPainted(false);
-		settings.setContentAreaFilled(false);
-
-		settings.setBounds((int)settingsLocationWidth, (int)buttonLocationHeight, (int)settingsWidth, (int)buttonHeight);
-
-		main.add(play);
-		main.add(settings);
-		main.add(temporary);
-		mainMenu.add(main);
-		mainMenu.pack();
-		mainMenu.setLocationRelativeTo(null);
-		mainMenu.setResizable(false);
-		mainMenu.setVisible(true);
-		//MAIN MENU CODE END
-
+		setupSettingsMenu();
+		setupMainMenu();
 	}
 
 
@@ -280,9 +201,9 @@ public class Client implements LastWish, ActionListener {
 	public ArrayList<PlayerInfo> getOtherPlayers() { return otherPlayers; }
 
 	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
-	public void setPosition(PlayerInfo me) { this.me = me; }
+	public void setMe(PlayerInfo me) { this.me = me; }
 	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
-	
+
 	void handleMouseMovement(int mouseX, int mouseY) {
 		int relMouseX = mouseX - window.getWidth()/2;
 		int relMouseY = mouseY - window.getHeight()/2;
@@ -300,10 +221,89 @@ public class Client implements LastWish, ActionListener {
 		}
 		return img;
 	}
+
 	boolean mapOpen = false;
 	// todo implement
 	public void toggleMap() {
 		mapOpen = !mapOpen;
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
+	}
+
+	void setupMainMenu(){
+		mainMenu = new JFrame("Sarvivarz");
+		mainMenu.setResizable(false);
+		main = new DrawingPanel();
+		main.setPreferredSize(new Dimension(W, H));
+		main.setLayout(null);
+
+		play = new JButton();
+		settings = new JButton();
+		JButton temporary = new JButton();
+		play.setActionCommand("play");
+		play.addActionListener(this);
+
+		settings.setActionCommand("settings");
+		settings.addActionListener(this);
+		double buttonWidth = W*0.2;
+		double buttonHeight = H*0.15;
+		double playLocationWidth = W*0.58;
+		double settingsLocationWidth = W*0.2;
+		double settingsWidth = W*0.12;
+		double buttonLocationHeight = H*0.8;
+		play.setOpaque(false);
+		play.setContentAreaFilled(false);
+		play.setBorderPainted(false);
+		play.setBounds((int)playLocationWidth, (int)buttonLocationHeight, (int)buttonWidth, (int)buttonHeight);
+
+		settings.setOpaque(false);
+		settings.setBorderPainted(false);
+		settings.setContentAreaFilled(false);
+
+		settings.setBounds((int)settingsLocationWidth, (int)buttonLocationHeight, (int)settingsWidth, (int)buttonHeight);
+
+		main.add(play);
+		main.add(settings);
+		main.add(temporary);
+		mainMenu.add(main);
+		mainMenu.pack();
+		mainMenu.setLocationRelativeTo(null);
+		mainMenu.setResizable(false);
+		mainMenu.setVisible(true);
+	}
+	void setupSettingsMenu(){
+		settingsMenu = new JFrame("Sarvivarz");
+		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		settingsPanel = new DrawingPanel2();
+		settingsPanel.setPreferredSize(new Dimension(W, H));
+		settingsPanel.setLayout(null);
+
+		Color textFieldColor = new Color(208, 171, 182);
+		Font font1 = new Font("SansSerif", Font.BOLD, 40);
+
+		ipAddress = new RoundJTextField(15);
+		ipAddress.setBounds(130, 600, 350, 60);
+		ipAddress.setFont(font1);
+		ipAddress.setBackground(textFieldColor);
+
+		portNum = new RoundJTextField(15);
+		portNum.setBounds(905, 600, 125, 60);
+		portNum.setFont(font1);
+		portNum.setBackground(textFieldColor);
+
+		back = new JButton();
+		back.setActionCommand("leave");
+		back.addActionListener(this);
+		back.setOpaque(false);
+		back.setContentAreaFilled(false);
+		back.setBorderPainted(false);
+		back.setBounds(530, 675, 225, 100);
+
+		settingsPanel.add(back);
+		settingsPanel.add(ipAddress);
+		settingsPanel.add(portNum);
+		settingsMenu.add(settingsPanel);
+		settingsMenu.pack();
+		settingsMenu.setResizable(false);
+		settingsMenu.setLocationRelativeTo(null);
 	}
 }

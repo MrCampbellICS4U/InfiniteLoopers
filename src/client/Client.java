@@ -279,9 +279,9 @@ public class Client implements LastWish, ActionListener {
 	public ArrayList<PlayerInfo> getOtherPlayers() { return otherPlayers; }
 
 	public void setServerInfo(int ping, int tps) { this.ping = ping; this.tps = tps; }
-	public void setPosition(PlayerInfo me) { this.me = me; }
+	public void setMe(PlayerInfo me) { this.me = me; }
 	public void setOtherPlayers(ArrayList<PlayerInfo> players) { otherPlayers = players; }
-	
+
 	void handleMouseMovement(int mouseX, int mouseY) {
 		int relMouseX = mouseX - window.getWidth()/2;
 		int relMouseY = mouseY - window.getHeight()/2;
@@ -299,6 +299,7 @@ public class Client implements LastWish, ActionListener {
 		}
 		return img;
 	}
+
 	boolean mapOpen = false;
 	// todo implement
 	public void toggleMap() {

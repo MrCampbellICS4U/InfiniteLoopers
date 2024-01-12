@@ -7,5 +7,5 @@ import shared.PlayerInfo;
 public class MePacket extends PacketTo<Client> {
 	private PlayerInfo player;
 	public MePacket(int x, int y, double angle) { this.player = new PlayerInfo(x, y, angle); }
-	void handle(Client c) { c.setPosition(player); }
+	void handle(Client c) { c.setMe(player); }
 }

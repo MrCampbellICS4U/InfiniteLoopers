@@ -68,7 +68,9 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		try {
 			in.close();
 			out.close();
-			socket.close();
+
+			// we need to check if it's already closed because of java's multiple ways of signalling that the socket has closed
+			if (!socket.isClosed()) socket.close();
 		} catch (IOException e) {
 			dest.handleException("IOException when closing PacketLord", e);
 		}

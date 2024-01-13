@@ -17,7 +17,4 @@ public abstract class Entity {
 		yy = y;
 	}
 	public void setY(int y) { setY((float)y); }
-
-	// does this entity collide with another?
-	public abstract boolean collides(Entity e);
 }

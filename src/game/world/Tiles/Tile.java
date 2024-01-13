@@ -53,9 +53,6 @@ public class Tile implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof Tile) {
             Tile tile = (Tile) obj;
-            System.out.println(tile.getX() == this.getX() && tile.getY() == this.getY() && tile.getZ() == this.getZ()
-                    && tile.getOrientation() == this.getOrientation() && tile.getType().equals(this.getType())
-                    && tile.getState().equals(this.getState()));
             return tile.getX() == this.getX() && tile.getY() == this.getY() && tile.getZ() == this.getZ()
                     && tile.getOrientation() == this.getOrientation() && tile.getType().equals(this.getType())
                     && tile.getState().equals(this.getState());

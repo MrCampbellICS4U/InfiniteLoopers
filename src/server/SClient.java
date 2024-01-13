@@ -88,6 +88,7 @@ class SClient extends PacketLord<Server> {
 						if (newVisibleTiles[x][y][z] == null || oldVisibleTiles[x][y][z] == null)
 							continue;
 						if (!newVisibleTiles[x][y][z].equals(oldVisibleTiles[x][y][z])) {
+							System.out.println("Tile at " + x + ", " + y + ", " + z + " needs updating");
 							needsUpdate = true;
 							tilesToSend[x][y][z] = newVisibleTiles[x][y][z];
 						}
@@ -96,19 +97,19 @@ class SClient extends PacketLord<Server> {
 			}
 			if (needsUpdate) {
 				// pring out the outgoing tiles in a list style
-				System.out.println("Tiles to send:");
-				for (int x = 0; x < tilesToSend.length; x++) {
-					for (int y = 0; y < tilesToSend[0].length; y++) {
-						for (int z = 0; z < tilesToSend[0][0].length; z++) {
-							if (tilesToSend[x][y][z] == null)
-								System.out.print("null ");
-							else
-								System.out.print(tilesToSend[x][y][z].getType() + " ");
-						}
-						System.out.println();
-					}
-					System.out.println();
-				}
+				// System.out.println("Tiles to send:");
+				// for (int x = 0; x < tilesToSend.length; x++) {
+				// for (int y = 0; y < tilesToSend[0].length; y++) {
+				// for (int z = 0; z < tilesToSend[0][0].length; z++) {
+				// if (tilesToSend[x][y][z] == null)
+				// System.out.print("null ");
+				// else
+				// System.out.print(tilesToSend[x][y][z].getType() + " ");
+				// }
+				// System.out.println();
+				// }
+				// System.out.println();
+				// }
 				setVisibleTiles(newVisibleTiles);
 				send(new PartialFOVUpdate(tilesToSend));
 			}

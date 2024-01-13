@@ -232,6 +232,7 @@ public class Client implements LastWish, ActionListener {
 
 	void setupMainMenu(){
 		mainMenu = new JFrame("Sarvivarz");
+		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainMenu.setResizable(false);
 		main = new DrawingPanel();
 		main.setPreferredSize(new Dimension(W, H));

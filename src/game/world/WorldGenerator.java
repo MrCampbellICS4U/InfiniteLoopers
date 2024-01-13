@@ -15,12 +15,12 @@ public class WorldGenerator {
                                           // walls, and ceiling)
     private long seed;
 
-    WorldGenerator(int width, int height, long seed) {
+    public WorldGenerator(int width, int height, long seed) {
         this.width = width;
         this.height = height;
         this.seed = seed;
         mapTiles = new Tile[width][height][depth];
-    }
+    } // TODO MAKE ALTERNATE CONSTRUCTOR WITH NO SEED, it generates a random seed
 
     public Tile[][][] getMap() {
         return mapTiles;
@@ -78,6 +78,15 @@ public class WorldGenerator {
                     // TODO: add more tile types
                     if (z == 0) {
                         mapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
+                    } else if (z == 1) {
+                        // spawn a crate
+                        if (rand.nextInt(100) < 5) {
+                            mapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
+                        } else {
+                            mapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "air", "default");
+                        }
+                    } else if (z == 2) {
+                        mapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "air", "default");
                     }
                 }
             }

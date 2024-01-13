@@ -3,16 +3,16 @@ package packets;
 import client.Client;
 import game.world.Tiles.Tile;
 
-public class SendFullClientFOV extends PacketTo<Client> {
+public class PartialFOVUpdate extends PacketTo<Client> {
     Tile[][][] tiles;
 
-    public SendFullClientFOV(Tile[][][] tiles) {
+    public PartialFOVUpdate(Tile[][][] tiles) {
         this.tiles = tiles;
     }
 
     @Override
     void handle(Client c) {
-        c.setVisibleTiles(tiles);
+        c.handlePartialFOVUpdate(tiles);
     }
 
 }

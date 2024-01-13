@@ -10,16 +10,20 @@ public class Tile implements java.io.Serializable {
                                                                                  // "closed" => image file location,
                                                                                  // etc...
 
-    Tile(int x, int y, int z, int orientation, String type, String state) {
+    public Tile(int x, int y, int z, int orientation, String type, String state) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.type = type;
         this.state = state;
-        this.statesMap = new HashMap<String, String>() {
+        this.statesMap = generateStatesMap();
+    }
+
+    public HashMap<String, String> generateStatesMap() {
+        return this.statesMap = new HashMap<String, String>() {
             {
                 for (String state : new File(
-                        "src/game/world/Tiles/" + type.substring(0, 1).toUpperCase() + type.substring(1)).list()) {
+                        "res/game/world/Tiles/" + type.substring(0, 1).toUpperCase() + type.substring(1)).list()) {
                     put(state.substring(0, state.lastIndexOf('.')), "src/game/world/Tiles/"
                             + type.substring(0, 1).toUpperCase() + type.substring(1) + "/" + state);
                 }
@@ -32,13 +36,31 @@ public class Tile implements java.io.Serializable {
         Tile tile = null;
         try {
             Class<?> tileClass = Class
-                    .forName("game.world.Tiles." + type.substring(0, 1).toUpperCase() + type.substring(1) + "Tile");
-            tile = (Tile) tileClass.getConstructor(int.class, int.class, int.class, int.class, String.class,
-                    String.class, HashMap.class).newInstance(x, y, z, orientation, type, state);
+                    .forName("game.world.Tiles." + type.substring(0, 1).toUpperCase() +
+                            type.substring(1) + "Tile");
+            tile = (Tile) tileClass.getConstructor(int.class, int.class, int.class,
+                    int.class, String.class,
+                    String.class).newInstance(x, y, z, orientation, type, state);
         } catch (Exception e) {
             System.out.println("Error: " + e);
+            e.printStackTrace();
+
         }
         return tile;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Tile) {
+            Tile tile = (Tile) obj;
+            System.out.println(tile.getX() == this.getX() && tile.getY() == this.getY() && tile.getZ() == this.getZ()
+                    && tile.getOrientation() == this.getOrientation() && tile.getType().equals(this.getType())
+                    && tile.getState().equals(this.getState()));
+            return tile.getX() == this.getX() && tile.getY() == this.getY() && tile.getZ() == this.getZ()
+                    && tile.getOrientation() == this.getOrientation() && tile.getType().equals(this.getType())
+                    && tile.getState().equals(this.getState());
+        }
+        return false;
     }
 
     public int getX() {
@@ -65,6 +87,10 @@ public class Tile implements java.io.Serializable {
         return state;
     }
 
+    public HashMap<String, String> getStatesMap() {
+        return statesMap;
+    }
+
     public int setX(int x) {
         return this.x = x;
     }
@@ -89,6 +115,14 @@ public class Tile implements java.io.Serializable {
         return this.state = state;
     }
 
+    public HashMap<String, String> setStatesMap(HashMap<String, String> statesMap) {
+        return this.statesMap = statesMap;
+    }
+
+    public void addState(String state, String imageFileLocation) {
+        this.statesMap.put(state, imageFileLocation);
+    }
+
     public String toString() {
         return "Tile: " + x + ", " + y + ", " + z + ", " + orientation + ", " + type + ", " + state;
     }
@@ -110,5 +144,4 @@ public class Tile implements java.io.Serializable {
         type = (String) in.readObject();
         state = (String) in.readObject();
     }
-
 }

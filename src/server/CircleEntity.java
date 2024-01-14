@@ -1,5 +1,5 @@
 package server;
 
-public class CircleEntity extends Entity {
-
-}
+//public class CircleEntity extends Entity {
+//
+//}

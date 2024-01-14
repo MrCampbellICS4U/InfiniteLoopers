@@ -55,7 +55,6 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
 	public synchronized void send(PacketTo<?> p) {
 		try {
-			p.setType(p.getClass().getSimpleName());
 			p.setID(id);
 			out.writeObject(p);
 			out.flush();
@@ -81,8 +80,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		try {
 			while (true) {
 				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
-				PacketTo<Dest> castP = (PacketTo<Dest>)Class.forName("packets." + p.getType()).cast(p);
-				castP.handle(dest);
+				p.handle(dest);
 			}
 		} catch (EOFException e) {
  			// this what's supposed to be thrown on disconnection

@@ -12,7 +12,7 @@ public class PartialFOVUpdate extends PacketTo<Client> {
 
     @Override
     void handle(Client c) {
-        c.handlePartialFOVUpdate(tiles);
+        // c.handlePartialFOVUpdate(tiles);
     }
 
 }

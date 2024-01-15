@@ -29,9 +29,7 @@ public class Client implements LastWish, ActionListener {
 	int W = 1300;
 	int H = 800;
 
-	private Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
-			+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
-					+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
+	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -107,20 +105,22 @@ public class Client implements LastWish, ActionListener {
 		handleException("Could not connect to server", e);
 	}
 
-	public void handlePartialFOVUpdate(Tile[][][] tiles) {
-		// take in the tiles and depending on the tiles that are not NullTile tpye
-		// replace the original tiles with the new ones
-
-		for (int x = 0; x < tiles.length; x++) {
-			for (int y = 0; y < tiles[0].length; y++) {
-				for (int z = 0; z < tiles[0][0].length; z++) {
-					if (tiles[x][y][z].getType() != "null") {
-						visibleTiles[x][y][z] = tiles[x][y][z];
-					}
-				}
-			}
-		}
-	}
+	/*
+	 * public void handlePartialFOVUpdate(Tile[][][] tiles) {
+	 * // take in the tiles and depending on the tiles that are not NullTile tpye
+	 * // replace the original tiles with the new ones
+	 * 
+	 * for (int x = 0; x < tiles.length; x++) {
+	 * for (int y = 0; y < tiles[0].length; y++) {
+	 * for (int z = 0; z < tiles[0][0].length; z++) {
+	 * if (tiles[x][y][z].getType() != "null") {
+	 * visibleTiles[x][y][z] = tiles[x][y][z];
+	 * }
+	 * }
+	 * }
+	 * }
+	 * }
+	 */
 
 	private PacketLord<Client> pl;
 
@@ -272,11 +272,58 @@ public class Client implements LastWish, ActionListener {
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
-	public Tile[][][] setVisibleTiles(Tile[][][] terrain) {
-		return this.visibleTiles = terrain;
+	/*
+	 * public Tile[][][] setVisibleTiles(Tile[][][] terrain) {
+	 * return this.visibleTiles = terrain;
+	 * }
+	 */
+
+	public ArrayList<Tile> getVisibleTiles() {
+		return visibleTiles;
 	}
 
-	public Tile[][][] getVisibleTiles() {
-		return this.visibleTiles;
+	public void updateTile(Tile newTile) {
+		for (int i = 0; i < visibleTiles.size(); i++) {
+			Tile t = visibleTiles.get(i);
+			if (t.getX() == newTile.getX() && t.getY() == newTile.getY() && t.getZ() == newTile.getZ()) {
+				// this tile is a replacement; it is in the same position as an old tile
+				visibleTiles.set(i, newTile);
+				return;
+			}
+		}
+
+		// we're not replacing, but adding
+		visibleTiles.add(newTile);
+	}
+
+	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
+		// removes tiles from the tiles arraylist that are out of the buffer zone
+
+		PlayerInfo me = this.getMe();
+
+		ArrayList<Tile> newTiles = new ArrayList<>();
+
+		for (Tile tile : tiles) {
+			if (tile == null)
+				continue;
+			int xCanvasCentre = W / 2;
+			int yCanvasCentre = H / 2;
+			int tileRelX = tile.getX() - me.xGlobal + xCanvasCentre;
+			int tileRelY = tile.getY() - me.yGlobal + yCanvasCentre;
+
+			int imageRelX = tileRelX - GlobalConstants.TILE_WIDTH / 2;
+			int imageRelY = tileRelY - GlobalConstants.TILE_HEIGHT / 2;
+
+			// if the tile is within outside of GlobalConstants.TILE_X_BUFFER and
+			// GlobalConstants.TILE_Y_BUFFER above and below the screen
+			if (imageRelX > -GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH
+					&& imageRelX < W + GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH &&
+					imageRelY > -GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT
+					&& imageRelY < H + GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT) {
+				newTiles.add(tile);
+			}
+		}
+
+		return newTiles;
 	}
 }

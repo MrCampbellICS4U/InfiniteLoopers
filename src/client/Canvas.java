@@ -47,6 +47,8 @@ class Canvas extends JPanel {
 		g.drawString(client.getFPS() + " fps", 20, 40);
 		g.drawString(client.getPing() + " ping", 20, 80);
 		g.drawString(client.getTPS() + " tps", 20, 120);
+		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
+		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
 		for (PlayerInfo player : client.getOtherPlayers())
 			drawPlayer(g, player);
 
@@ -105,7 +107,7 @@ class Canvas extends JPanel {
 	}
 
 	private void drawTerrain(Graphics g) {
-		Tile[][][] tiles = client.getVisibleTiles();
+		// Tile[][][] tiles = client.getVisibleTiles();
 		// print the tiles like a 3d array
 		// System.out.println("Tiles:");
 		// for (int i = 0; i < tiles.length; i++) {
@@ -124,30 +126,29 @@ class Canvas extends JPanel {
 
 		PlayerInfo me = client.getMe();
 
-		for (int x = 0; x < tiles.length; x++) {
-			for (int y = 0; y < tiles[0].length; y++) {
-				for (int z = 0; z < tiles[0][0].length; z++) {
-					if (tiles[x][y][z] == null || tiles[x][y][z].getType().equals("air"))
-						continue;
+		ArrayList<Tile> tiles = client.getVisibleTiles();
+		for (Tile currentTile : tiles) {
+			if (currentTile == null || currentTile.getType().equals("air"))
+				continue;
+			// Tile currentTile = tiles[x][y][z];
 
-					Tile currentTile = tiles[x][y][z];
+			// int offsetX = me.xGlobal % gridWidth;
+			// int offsetY = me.yGlobal % gridWidth;
 
-					// int offsetX = me.xGlobal % gridWidth;
-					// int offsetY = me.yGlobal % gridWidth;
+			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
-					int groundRelX = tiles[x][y][z].getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
-							+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
-					int groundRelY = tiles[x][y][z].getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
-							+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+			BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+					+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
 
-					BufferedImage TileImage = TileImages
-							.get(currentTile.getType().substring(0, 1).toUpperCase()
-									+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
+			int imageRelX = groundRelX - imageWidth / 2;
+			int imageRelY = groundRelY - imageHeight / 2;
 
-					g.drawImage(TileImage, groundRelX, groundRelY, gridWidth, gridWidth, null);
-
-				}
-			}
+			g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
 		}
 
 		drawGrid(g);

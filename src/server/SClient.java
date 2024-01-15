@@ -69,52 +69,58 @@ class SClient extends PacketLord<Server> {
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
-		Tile[][][] oldVisibleTiles = getVisibleTiles();
-		Tile[][][] newVisibleTiles = calculateVisibleTiles(map);
-		Tile[][][] tilesToSend = new Tile[newVisibleTiles.length][newVisibleTiles[0].length][newVisibleTiles[0][0].length];
+		Tile[][][] oldVisibleTiles = getVisibleTiles() == null ? calculateVisibleTiles(map) : getVisibleTiles();
+		Tile[][][] newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
+		ArrayList<Tile> tilesToSend = new ArrayList<>();
 
 		// if the player has no tiles at all
-		if (oldVisibleTiles == null) {
-			setVisibleTiles(newVisibleTiles);
-			send(new SendFullClientFOV(newVisibleTiles));
-			return;
-		} else {
-			// if the player has tiles, check if they need updating and if they do only send
-			// over the ones that need updating
-			boolean needsUpdate = false;
-			for (int x = 0; x < newVisibleTiles.length; x++) {
-				for (int y = 0; y < newVisibleTiles[0].length; y++) {
-					for (int z = 0; z < newVisibleTiles[0][0].length; z++) {
-						if (newVisibleTiles[x][y][z] == null || oldVisibleTiles[x][y][z] == null)
-							continue;
-						if (!newVisibleTiles[x][y][z].equals(oldVisibleTiles[x][y][z])) {
-							System.out.println("Tile at " + x + ", " + y + ", " + z + " needs updating");
-							needsUpdate = true;
-							tilesToSend[x][y][z] = newVisibleTiles[x][y][z];
-						}
-					}
-				}
-			}
-			if (needsUpdate) {
-				// pring out the outgoing tiles in a list style
-				// System.out.println("Tiles to send:");
-				// for (int x = 0; x < tilesToSend.length; x++) {
-				// for (int y = 0; y < tilesToSend[0].length; y++) {
-				// for (int z = 0; z < tilesToSend[0][0].length; z++) {
-				// if (tilesToSend[x][y][z] == null)
-				// System.out.print("null ");
-				// else
-				// System.out.print(tilesToSend[x][y][z].getType() + " ");
-				// }
-				// System.out.println();
-				// }
-				// System.out.println();
-				// }
-				setVisibleTiles(newVisibleTiles);
-				send(new PartialFOVUpdate(tilesToSend));
-			}
+		// if (oldVisibleTiles == null) {
+		/*
+		 * setVisibleTiles(newVisibleTiles);
+		 * send(new SendFullClientFOV(newVisibleTiles));
+		 * return;
+		 */
+		// go through every tile and if in the new tiles, and if it is not in the old
+		// tiles, add it to the list of tiles
+		// to send, also remove
+		return;
+		// }
 
-		}
+		/*
+		 * boolean needsUpdate = false;
+		 * for (int x = 0; x < newVisibleTiles.length; x++) {
+		 * for (int y = 0; y < newVisibleTiles[0].length; y++) {
+		 * for (int z = 0; z < newVisibleTiles[0][0].length; z++) {
+		 * if (newVisibleTiles[x][y][z] == null || oldVisibleTiles[x][y][z] == null)
+		 * continue;
+		 * if (!newVisibleTiles[x][y][z].equals(oldVisibleTiles[x][y][z])) {
+		 * // System.out.println("Tile at " + x + ", " + y + ", " + z +
+		 * " needs updating");
+		 * needsUpdate = true;
+		 * tilesToSend[x][y][z] = newVisibleTiles[x][y][z];
+		 * }
+		 * }
+		 * }
+		 * }
+		 * if (needsUpdate) {
+		 * // pring out the outgoing tiles in a list style
+		 * // System.out.println("Tiles to send:");
+		 * // for (int x = 0; x < tilesToSend.length; x++) {
+		 * // for (int y = 0; y < tilesToSend[0].length; y++) {
+		 * // for (int z = 0; z < tilesToSend[0][0].length; z++) {
+		 * // if (tilesToSend[x][y][z] == null)
+		 * // System.out.print("null ");
+		 * // else
+		 * // System.out.print(tilesToSend[x][y][z].getType() + " ");
+		 * // }
+		 * // System.out.println();
+		 * // }
+		 * // System.out.println();
+		 * // }
+		 * setVisibleTiles(newVisibleTiles);
+		 * send(new PartialFOVUpdate(tilesToSend));
+		 * }
+		 */
 	}
 
 	private double angle;

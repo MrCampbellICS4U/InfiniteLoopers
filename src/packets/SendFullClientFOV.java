@@ -12,7 +12,7 @@ public class SendFullClientFOV extends PacketTo<Client> {
 
     @Override
     void handle(Client c) {
-        c.setVisibleTiles(tiles);
+        // c.setVisibleTiles(tiles);
     }
 
 }

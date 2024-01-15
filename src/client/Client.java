@@ -283,16 +283,16 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void updateTile(Tile newTile) {
+		// find the coords of the tile in the visibleTiles arraylist and replace it
+		// if the tile is not in the arraylist, add it
 		for (int i = 0; i < visibleTiles.size(); i++) {
-			Tile t = visibleTiles.get(i);
-			if (t.getX() == newTile.getX() && t.getY() == newTile.getY() && t.getZ() == newTile.getZ()) {
-				// this tile is a replacement; it is in the same position as an old tile
+			Tile currentTile = visibleTiles.get(i);
+			if (currentTile.getX() == newTile.getX() && currentTile.getY() == newTile.getY()
+					&& currentTile.getZ() == newTile.getZ()) {
 				visibleTiles.set(i, newTile);
 				return;
 			}
 		}
-
-		// we're not replacing, but adding
 		visibleTiles.add(newTile);
 	}
 

@@ -69,9 +69,9 @@ class SClient extends PacketLord<Server> {
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
-		Tile[][][] oldVisibleTiles = getVisibleTiles() == null ? calculateVisibleTiles(map) : getVisibleTiles();
-		Tile[][][] newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
-		ArrayList<Tile> tilesToSend = new ArrayList<>();
+		ArrayList<Tile> oldVisibleTiles = ConvertToArrayList
+				.convert(getVisibleTiles() == null ? calculateVisibleTiles(map) : getVisibleTiles());
+		ArrayList<Tile> newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
 
 		// if the player has no tiles at all
 		// if (oldVisibleTiles == null) {
@@ -82,7 +82,27 @@ class SClient extends PacketLord<Server> {
 		 */
 		// go through every tile and if in the new tiles, and if it is not in the old
 		// tiles, add it to the list of tiles
-		// to send, also remove
+		// to send, also remove it from the new tiles list and the old to not loop
+		// through the same tiles again
+		for (int i = 0; i < newVisibleTiles.size(); i++) {
+			Tile newTile = newVisibleTiles.get(i);
+			for (int j = 0; j < oldVisibleTiles.size(); j++) {
+				Tile oldTile = oldVisibleTiles.get(j);
+				if (newTile.equals(oldTile)) {
+					newVisibleTiles.remove(i);
+					oldVisibleTiles.remove(j);
+					i--;
+					break;
+				} else if (j == oldVisibleTiles.size() - 1) {
+					send(new TileUpdate(newTile));
+					newVisibleTiles.remove(i);
+					i--;
+					break;
+				}
+			}
+		}
+
+		// if there are no tiles to send, don't send anything
 		return;
 		// }
 

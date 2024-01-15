@@ -200,7 +200,8 @@ class SClient extends PacketLord<Server> {
 			yy = GlobalConstants.WORLD_HEIGHT;
 
 		if (Math.abs(xx - lastxx) >= GlobalConstants.TILE_WIDTH
-				|| Math.abs(yy - lastyy) >= GlobalConstants.TILE_HEIGHT) {
+				|| Math.abs(yy - lastyy) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
+																			// away from the last update
 			lastxx = xx;
 			lastyy = yy;
 			handleVisibleTileUpdates(map);

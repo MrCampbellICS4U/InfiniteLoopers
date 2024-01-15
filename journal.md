@@ -87,3 +87,6 @@ added a `PlayerInfo` type to make sharing information about players easier
 removed the badly-designed `client.Game`, putting everything in `client.Client`  
 consolidated ping and tps into one packet  
 made `client.Canvas` a lot nicer (it just asks the client for values like x, y, ping instead of storing them (the client's already storing them))
+
+## jan 14 2024
+realized i don't need the fancy reflection... facepalm

@@ -2,6 +2,8 @@ package server;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import game.world.Tiles.Tile;
 import game.world.Tiles.AirTile;
@@ -84,18 +86,19 @@ class SClient extends PacketLord<Server> {
 			send(new SendFullClientFOV(visibleTiles));
 			return;
 		}
-		ArrayList<Tile> oldVisibleTiles = ConvertToArrayList.convert(getVisibleTiles());
-		ArrayList<Tile> newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
+		Set<Tile> oldVisibleTiles = new HashSet<>(ConvertToArrayList.convert(getVisibleTiles()));
+		Set<Tile> newVisibleTiles = new HashSet<>(
+				ConvertToArrayList.convert(setVisibleTiles(calculateVisibleTiles(map))));
 
-		System.out.println("Old visible tiles:");
-		for (Tile tile : oldVisibleTiles) {
-			System.out.print(tile.getType() + " " + tile.getState() + ", ");
-		}
+		// System.out.println("Old visible tiles:");
+		// for (Tile tile : oldVisibleTiles) {
+		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
+		// }
 
-		System.out.println("New visible tiles:");
-		for (Tile tile : newVisibleTiles) {
-			System.out.print(tile.getType() + " " + tile.getState() + ", ");
-		}
+		// System.out.println("New visible tiles:");
+		// for (Tile tile : newVisibleTiles) {
+		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
+		// }
 
 		// if the player has no tiles at all
 		// if (oldVisibleTiles == null) {
@@ -108,35 +111,19 @@ class SClient extends PacketLord<Server> {
 		// tiles, add it to the list of tiles
 		// to send, also remove it from the new tiles list and the old to not loop
 		// through the same tiles again
-		for (int i = 0; i < newVisibleTiles.size(); i++) {
-			Tile newTile = newVisibleTiles.get(i);
-			for (int j = 0; j < oldVisibleTiles.size(); j++) {
-				Tile oldTile = oldVisibleTiles.get(j);
-				if (newTile.equals(oldTile)) { // if the tiles are the same, remove them from
-					// the list
-					newVisibleTiles.remove(i);
-					oldVisibleTiles.remove(j);
-					i--;
-					break;
-				} else if (j == oldVisibleTiles.size() - 1) { // if the tile is not in the
-					// old tiles, add it to the
-					// list to send
-					send(new TileUpdate(oldTile));
-					newVisibleTiles.remove(i);
-					i--;
-					break;
-				} else if (newTile.getX() == oldTile.getX() && newTile.getY() == oldTile.getY()
-						&& newTile.getZ() == oldTile.getZ()) { // if the tiles are not the same but
-					// have the same
-					// coords, update the tile
-					send(new TileUpdate(oldTile));
-					newVisibleTiles.remove(i);
-					oldVisibleTiles.remove(j);
-					i--;
-					break;
-				}
-			}
+		newVisibleTiles.removeAll(oldVisibleTiles);
+
+		Set<Tile> tilesToSend = new HashSet<>(newVisibleTiles);
+
+		if (tilesToSend.size() > 0) {
+			send(new PartialFOVUpdate(new ArrayList<>(tilesToSend)));
+			return;
 		}
+
+		// System.out.println("Tiles to send:");
+		// for (Tile tile : tilesToSend) {
+		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
+		// }
 
 		// if there are no tiles to send, don't send anything
 		return;

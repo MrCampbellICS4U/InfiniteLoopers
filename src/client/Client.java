@@ -208,6 +208,9 @@ public class Client implements LastWish, ActionListener {
 
 	void tick() {
 		frame++;
+		System.out.println("Num Tiles before: " + getVisibleTiles().size());
+		// setVisibleTiles(purgeInvisibleTiles(getVisibleTiles()));
+		System.out.println("Num Tiles after: " + getVisibleTiles().size());
 		canvas.repaint();
 	}
 
@@ -272,6 +275,10 @@ public class Client implements LastWish, ActionListener {
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
+	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
+		return this.visibleTiles = terrain;
+	}
+
 	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
 		return this.visibleTiles = ConvertToArrayList.convert(terrain);
 	}
@@ -295,10 +302,18 @@ public class Client implements LastWish, ActionListener {
 		visibleTiles.add(newTile);
 	}
 
+	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
+		for (Tile tile : tiles) {
+			updateTile(tile);
+		}
+	}
+
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
 		PlayerInfo me = this.getMe();
+		if (me == null) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
+			return tiles;
 
 		ArrayList<Tile> newTiles = new ArrayList<>();
 

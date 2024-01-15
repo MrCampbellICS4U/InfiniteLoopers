@@ -2,6 +2,7 @@ package server;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import game.world.Tiles.Tile;
 import shared.*;
@@ -148,11 +149,13 @@ class SClient extends PacketLord<Server> {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 	
-	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health, armor); }
-	
+	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health, armor, hotBar); }
+
+	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
+	private final int MAXHOTBAR = 3;
 	private int armor = 0;
 
 	SClient(Socket socket, Server state, int id) {

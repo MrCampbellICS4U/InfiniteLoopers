@@ -16,7 +16,7 @@ public class Chunk {
 		for (int i = 0; i < entities.size(); i++) {
 			for (int j = i+1; j < entities.size(); j++) {
 				checks++;
-				if (collides(entities.get(i), entities.get(j))) System.out.println("Collision");
+				if (collides(entities.get(i), entities.get(j))) System.out.println("Collision at time " + System.currentTimeMillis());
 			}
 		}
 		changed = false;

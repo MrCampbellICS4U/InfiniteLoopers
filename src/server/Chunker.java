@@ -27,7 +27,6 @@ public class Chunker {
 	public void addEntity(Entity e) {
 		for (int x = toChunkX(e.getX1()); x <= toChunkX(e.getX2()); x++) {
 			for (int y = toChunkX(e.getY1()); y <= toChunkY(e.getY2()); y++) {
-				System.out.println("Adding to " + x + " " + y);
 				chunks[x][y].add(e);
 				chunks[x][y].changed = true;
 			}
@@ -38,7 +37,6 @@ public class Chunker {
 		for (int x = x1; x <= x2; x++) {
 			for (int y = y1; y <= y2; y++) {
 				// don't count this as a change, since, if anything, it would just end a collision
-				System.out.println("Removing from " + x + " " + y);
 				chunks[x][y].remove(e);
 			}
 		}
@@ -48,11 +46,25 @@ public class Chunker {
 	}
 
 	public void updateEntity(Entity e, double oldX, double oldY) {
-		// since the entities will never change dimensions, we don't need to check the left/bottom points (x2/y2)
+		if (oldX == e.getX() && oldY == e.getY()) return; // entity didn't move
+
 		int oldX1Chunk = toChunkX(oldX - e.getWidth()/2);
+		int oldX2Chunk = toChunkX(oldX + e.getWidth()/2);
 		int oldY1Chunk = toChunkY(oldY - e.getHeight()/2);
-		if (oldX1Chunk == toChunkX(e.getX1()) && oldY1Chunk == toChunkY(e.getY1())) return;
-		removeEntity(e, oldX1Chunk, toChunkX(oldX + e.getWidth()/2), oldY1Chunk, toChunkY(oldY + e.getHeight()/2));
+		int oldY2Chunk = toChunkY(oldY + e.getHeight()/2);
+
+		// not changing chunks
+		if (oldX1Chunk == toChunkX(e.getX1()) && oldX2Chunk == toChunkY(e.getX2())
+			&& oldY1Chunk == toChunkY(e.getY1()) && oldY2Chunk == toChunkY(e.getY2())) {
+			for (int x = oldX1Chunk; x <= oldX2Chunk; x++) {
+				for (int y = oldY1Chunk; y <= oldY2Chunk; y++) {
+					chunks[x][y].changed = true;
+				}
+			}
+			return;
+		}
+
+		removeEntity(e, oldX1Chunk, oldX2Chunk, oldY1Chunk, oldY2Chunk);
 		addEntity(e);
 	}
 

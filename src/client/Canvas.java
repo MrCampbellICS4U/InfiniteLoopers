@@ -43,6 +43,7 @@ class Canvas extends JPanel {
 
 		drawTerrain(g);
 
+		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
 		g.drawString(client.getPing() + " ping", 20, 80);
@@ -93,14 +94,19 @@ class Canvas extends JPanel {
 	private HashMap<String, BufferedImage> loadImages() {
 		HashMap<String, BufferedImage> images = new HashMap<>();
 		for (String type : new File("res/game/world/Tiles").list()) {
-			for (String state : new File("res/game/world/Tiles/" + type).list()) {
-				String imageURL = "res/game/world/Tiles/" + type + "/" + state;
-				try {
-					images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
-				} catch (IOException e) {
-					System.out.println("Error loading image: " + imageURL);
-					e.printStackTrace();
+			try {
+				for (String state : new File("res/game/world/Tiles/" + type).list()) {
+					String imageURL = "res/game/world/Tiles/" + type + "/" + state;
+					try {
+						images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
+					} catch (IOException e) {
+						System.out.println("Error loading image: " + imageURL);
+						e.printStackTrace();
+					}
 				}
+			} catch (NullPointerException e) {
+				System.out.println("Error loading images for type: " + type);
+				e.printStackTrace();
 			}
 		}
 		return images;
@@ -143,6 +149,7 @@ class Canvas extends JPanel {
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
 		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
+		g.setColor(new Color(0, 0, 0, 50));
 		for (int xLine = xCentre % gridWidth; xLine < W; xLine += gridWidth) {
 			g.drawLine(xLine, 0, xLine, H);
 		}

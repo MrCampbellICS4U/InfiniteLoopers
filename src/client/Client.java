@@ -128,7 +128,7 @@ public class Client implements LastWish, ActionListener {
 		window.addMouseListener(new GameMouseListener(this));
 		window.addMouseMotionListener(new GameMouseListener(this));
 
-		Timer tickTimer = new Timer(1000 / 60, this);
+		Timer tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 

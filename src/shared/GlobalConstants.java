@@ -16,6 +16,12 @@ public class GlobalConstants {
     public static final int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public static final int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels
 
+    public static final int PLAYER_WIDTH = 50;
+    public static final int PLAYER_HEIGHT = 50;
+
+    public static final int TPS = 120; // ticks per second
+    public static final int FPS = 120; // frames per second
+
     public static final int SERVER_PORT = 2000;
     public static final String SERVER_IP = "127.0.0.1";
 

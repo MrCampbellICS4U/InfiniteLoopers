@@ -23,7 +23,7 @@ public class Server implements LastWish, ActionListener {
 	private Tile[][][] map;
 
 	Server() {
-		Timer tickTimer = new Timer(1000 / 60, this);
+		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -33,20 +33,6 @@ public class Server implements LastWish, ActionListener {
 
 		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 3)
 				.generateWorld();
-		// // print the map for debug
-		// for (int i = 0; i < map.length; i++) {
-		// System.out.println("Layer " + i);
-		// for (int j = 0; j < map[0].length; j++) {
-		// for (int k = 0; k < map[0][0].length; k++) {
-		// if (map[i][j][k] == null)
-		// System.out.print("null ");
-		// else
-		// System.out.print(map[i][j][k].getType() + " ");
-		// }
-		// System.out.println();
-		// }
-		// System.out.println();
-		// }
 
 		System.out.println("Running server on port " + port);
 		try (ServerSocket serverSocket = new ServerSocket(port)) {

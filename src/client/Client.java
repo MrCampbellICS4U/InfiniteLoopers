@@ -175,7 +175,7 @@ public class Client implements LastWish, ActionListener {
 
 				}
 			}catch(Exception exc){
-				JOptionPane.showMessageDialog(null, "Please enter a valid integer ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
+				JOptionPane.showMessageDialog(null, "Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
 					JOptionPane.ERROR_MESSAGE);
 			}
 

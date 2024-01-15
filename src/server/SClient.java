@@ -86,13 +86,15 @@ class SClient extends Circle {
 
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
-	
-	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor); }
-	
+
+	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
+
+	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
-	private int armor = 1;
+	private final int MAXHOTBAR = 3;
+	private int armor = 0;
 
 	PacketLord<Server> pl;
 	private final int id;

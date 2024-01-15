@@ -26,13 +26,14 @@ public class Client implements LastWish, ActionListener {
 	Canvas canvas;
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
+	MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
-	static int W = 1300;
-	static int H = 800;
-	static String ip = "127.0.0.1";
-	static int port = 2000;
+	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
+	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
+	static String ip = GlobalConstants.SERVER_IP;
+	static int port = GlobalConstants.SERVER_PORT;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
@@ -43,10 +44,12 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
+		map = new MapDrawing();
+
 		canvas.setPreferredSize(new Dimension(W, H));
-
+		//window.add(map);
 		window.add(canvas);
-
+		map.setVisible(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
@@ -142,25 +145,31 @@ public class Client implements LastWish, ActionListener {
 		if (settingsMenu.isVisible()){
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
-			if (ipInput.equals("")){
-				ip = "127.0.0.1";
-			}else{
-				ip = ipInput;
-			}
-			if ((portNum.getText()).equals("")){
-				port = 2000;
-			}else{
-				port = Integer.parseInt(portNum.getText());
+			try{
+				if (ipInput.equals("")){
+					ip = "127.0.0.1";
+				}else{
+					ip = ipInput;
+				}
+				if ((portNum.getText()).equals("")){
+					port = 2000;
+				}else{
+					port = Integer.parseInt(portNum.getText());
+				}
+
+				if (actionCom.equals("leave")) {
+					System.out.println(ip);
+					System.out.println(port);
+					mainMenu.setVisible(true);
+					mainMenu.setLocationRelativeTo(null);
+					settingsMenu.setVisible(false);
+
+				}
+			}catch(Exception exc){
+				JOptionPane.showMessageDialog(null, "Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
+					JOptionPane.ERROR_MESSAGE);
 			}
 
-			if (actionCom.equals("leave")) {
-				System.out.println(ip);
-				System.out.println(port);
-				mainMenu.setVisible(true);
-				mainMenu.setLocationRelativeTo(null);
-				settingsMenu.setVisible(false);
-
-			}
 		}
 		if (mainMenu.isVisible()) {
 			String action = e.getActionCommand();
@@ -255,7 +264,13 @@ public class Client implements LastWish, ActionListener {
 
 	// todo implement
 	public void toggleMap() {
-		mapOpen = !mapOpen;
+		if (!mapOpen){
+			map.setVisible(true);
+			mapOpen = !mapOpen;
+		}
+		else if(mapOpen){
+			mapOpen = !mapOpen;
+		}
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
@@ -419,4 +434,5 @@ public class Client implements LastWish, ActionListener {
 
 		return tiles;
 	}
+
 }

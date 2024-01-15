@@ -8,7 +8,7 @@ import packets.InputPacket;
 
 class GameKeyListener extends KeyAdapter {
 	Client c;
-	GameKeyListener(Client c) { this.c = c; }
+	GameKeyListener(Client client) { this.c = client; }
 
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {

@@ -48,9 +48,6 @@ class SClient extends PacketLord<Server> {
 		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
 				- GlobalConstants.TILE_Y_BUFFER;
 
-		// System.out.println("topLeftX: " + topLeftX);
-		// System.out.println("topLeftY: " + topLeftY);
-
 		// loop through the visible tiles and set them to the corresponding tiles in the
 		// map
 		for (int x1 = 0; x1 < visibleTiles.length; x1++) {
@@ -67,15 +64,6 @@ class SClient extends PacketLord<Server> {
 				}
 			}
 		}
-
-		// for (int x1 = 0; x1 < visibleTiles.length; x1++)
-		// for (int y1 = 0; y1 < visibleTiles[0].length; y1++)
-		// for (int z = 0; z < visibleTiles[0][0].length; z++)
-		// if (visibleTiles[x1][y1][z] != null)
-		// System.out.println(visibleTiles[x1][y1][z].getType() + " " +
-		// visibleTiles[x1][y1][z].getState());
-		// else
-		// System.out.println("null");
 		return visibleTiles;
 	}
 

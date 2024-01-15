@@ -108,23 +108,6 @@ public class Client implements LastWish, ActionListener {
 		handleException("Could not connect to server", e);
 	}
 
-	/*
-	 * public void handlePartialFOVUpdate(Tile[][][] tiles) {
-	 * // take in the tiles and depending on the tiles that are not NullTile tpye
-	 * // replace the original tiles with the new ones
-	 * 
-	 * for (int x = 0; x < tiles.length; x++) {
-	 * for (int y = 0; y < tiles[0].length; y++) {
-	 * for (int z = 0; z < tiles[0][0].length; z++) {
-	 * if (tiles[x][y][z].getType() != "null") {
-	 * visibleTiles[x][y][z] = tiles[x][y][z];
-	 * }
-	 * }
-	 * }
-	 * }
-	 * }
-	 */
-
 	private PacketLord<Client> pl;
 
 	public void send(PacketTo<Server> p) {
@@ -335,10 +318,6 @@ public class Client implements LastWish, ActionListener {
 		for (Tile currentTile : tiles) {
 			if (currentTile == null || currentTile.getType().equals("air"))
 				continue;
-			// Tile currentTile = tiles[x][y][z];
-
-			// int offsetX = me.xGlobal % gridWidth;
-			// int offsetY = me.yGlobal % gridWidth;
 
 			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
 					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;

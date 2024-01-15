@@ -154,25 +154,31 @@ public class Client implements LastWish, ActionListener {
 		if (settingsMenu.isVisible()){
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
-			if (ipInput.equals("")){
-				ip = "127.0.0.1";
-			}else{
-				ip = ipInput;
-			}
-			if ((portNum.getText()).equals("")){
-				port = 2000;
-			}else{
-				port = Integer.parseInt(portNum.getText());
+			try{
+				if (ipInput.equals("")){
+					ip = "127.0.0.1";
+				}else{
+					ip = ipInput;
+				}
+				if ((portNum.getText()).equals("")){
+					port = 2000;
+				}else{
+					port = Integer.parseInt(portNum.getText());
+				}
+
+				if (actionCom.equals("leave")) {
+					System.out.println(ip);
+					System.out.println(port);
+					mainMenu.setVisible(true);
+					mainMenu.setLocationRelativeTo(null);
+					settingsMenu.setVisible(false);
+
+				}
+			}catch(Exception exc){
+				JOptionPane.showMessageDialog(null, "Please enter a valid integer ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
+					JOptionPane.ERROR_MESSAGE);
 			}
 
-			if (actionCom.equals("leave")) {
-				System.out.println(ip);
-				System.out.println(port);
-				mainMenu.setVisible(true);
-				mainMenu.setLocationRelativeTo(null);
-				settingsMenu.setVisible(false);
-
-			}
 		}
 		if (mainMenu.isVisible()) {
 			String action = e.getActionCommand();

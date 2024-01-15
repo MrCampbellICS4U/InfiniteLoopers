@@ -153,7 +153,7 @@ class SClient extends PacketLord<Server> {
 	private final int MAXHEALTH = 3;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
-	private int armor = 1;
+	private int armor = 0;
 
 	SClient(Socket socket, Server state, int id) {
 		super(socket, state);

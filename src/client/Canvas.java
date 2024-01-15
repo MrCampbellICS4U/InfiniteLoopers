@@ -107,22 +107,6 @@ class Canvas extends JPanel {
 	}
 
 	private void drawTerrain(Graphics g) {
-		// Tile[][][] tiles = client.getVisibleTiles();
-		// print the tiles like a 3d array
-		// System.out.println("Tiles:");
-		// for (int i = 0; i < tiles.length; i++) {
-		// System.out.println("Layer " + i);
-		// for (int j = 0; j < tiles[0].length; j++) {
-		// for (int k = 0; k < tiles[0][0].length; k++) {
-		// if (tiles[i][j][k] == null)
-		// System.out.print("null ");
-		// else
-		// System.out.print(tiles[i][j][k].getType() + " ");
-		// }
-		// System.out.println();
-		// }
-		// System.out.println();
-		// }
 
 		PlayerInfo me = client.getMe();
 

@@ -13,6 +13,7 @@ import packets.*;
 // clients from the server's perspective
 class SClient extends PacketLord<Server> {
 	private double xx = 5000, yy = 5000;
+	private double lastxx, lastyy;
 	private Tile[][][] visibleTiles;
 
 	public int getX() {
@@ -81,7 +82,7 @@ class SClient extends PacketLord<Server> {
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
-		if (visibleTiles == null) {
+		if (visibleTiles == null) { // this happens on the first update
 			setVisibleTiles(calculateVisibleTiles(map));
 			send(new SendFullClientFOV(visibleTiles));
 			return;
@@ -90,27 +91,6 @@ class SClient extends PacketLord<Server> {
 		Set<Tile> newVisibleTiles = new HashSet<>(
 				ConvertToArrayList.convert(setVisibleTiles(calculateVisibleTiles(map))));
 
-		// System.out.println("Old visible tiles:");
-		// for (Tile tile : oldVisibleTiles) {
-		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
-		// }
-
-		// System.out.println("New visible tiles:");
-		// for (Tile tile : newVisibleTiles) {
-		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
-		// }
-
-		// if the player has no tiles at all
-		// if (oldVisibleTiles == null) {
-		/*
-		 * setVisibleTiles(newVisibleTiles);
-		 * send(new SendFullClientFOV(newVisibleTiles));
-		 * return;
-		 */
-		// go through every tile and if in the new tiles, and if it is not in the old
-		// tiles, add it to the list of tiles
-		// to send, also remove it from the new tiles list and the old to not loop
-		// through the same tiles again
 		newVisibleTiles.removeAll(oldVisibleTiles);
 
 		Set<Tile> tilesToSend = new HashSet<>(newVisibleTiles);
@@ -119,51 +99,8 @@ class SClient extends PacketLord<Server> {
 			send(new PartialFOVUpdate(new ArrayList<>(tilesToSend)));
 			return;
 		}
-
-		// System.out.println("Tiles to send:");
-		// for (Tile tile : tilesToSend) {
-		// System.out.print(tile.getType() + " " + tile.getState() + ", ");
-		// }
-
-		// if there are no tiles to send, don't send anything
 		return;
-		// }
 
-		/*
-		 * boolean needsUpdate = false;
-		 * for (int x = 0; x < newVisibleTiles.length; x++) {
-		 * for (int y = 0; y < newVisibleTiles[0].length; y++) {
-		 * for (int z = 0; z < newVisibleTiles[0][0].length; z++) {
-		 * if (newVisibleTiles[x][y][z] == null || oldVisibleTiles[x][y][z] == null)
-		 * continue;
-		 * if (!newVisibleTiles[x][y][z].equals(oldVisibleTiles[x][y][z])) {
-		 * // System.out.println("Tile at " + x + ", " + y + ", " + z +
-		 * " needs updating");
-		 * needsUpdate = true;
-		 * tilesToSend[x][y][z] = newVisibleTiles[x][y][z];
-		 * }
-		 * }
-		 * }
-		 * }
-		 * if (needsUpdate) {
-		 * // pring out the outgoing tiles in a list style
-		 * // System.out.println("Tiles to send:");
-		 * // for (int x = 0; x < tilesToSend.length; x++) {
-		 * // for (int y = 0; y < tilesToSend[0].length; y++) {
-		 * // for (int z = 0; z < tilesToSend[0][0].length; z++) {
-		 * // if (tilesToSend[x][y][z] == null)
-		 * // System.out.print("null ");
-		 * // else
-		 * // System.out.print(tilesToSend[x][y][z].getType() + " ");
-		 * // }
-		 * // System.out.println();
-		 * // }
-		 * // System.out.println();
-		 * // }
-		 * setVisibleTiles(newVisibleTiles);
-		 * send(new PartialFOVUpdate(tilesToSend));
-		 * }
-		 */
 	}
 
 	private double angle;
@@ -235,7 +172,7 @@ class SClient extends PacketLord<Server> {
 
 	private final int speed = 5;
 
-	public void updatePlayer() {
+	public void updatePlayer(Tile[][][] map) {
 		double dx = 0, dy = 0;
 		if (up)
 			dy -= speed;
@@ -261,6 +198,13 @@ class SClient extends PacketLord<Server> {
 			xx = GlobalConstants.WORLD_WIDTH;
 		if (yy > GlobalConstants.WORLD_HEIGHT)
 			yy = GlobalConstants.WORLD_HEIGHT;
+
+		if (Math.abs(xx - lastxx) >= GlobalConstants.TILE_WIDTH
+				|| Math.abs(yy - lastyy) >= GlobalConstants.TILE_HEIGHT) {
+			lastxx = xx;
+			lastyy = yy;
+			handleVisibleTileUpdates(map);
+		}
 
 	}
 

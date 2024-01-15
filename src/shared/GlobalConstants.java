@@ -4,8 +4,8 @@ public class GlobalConstants {
     public static final int TILE_WIDTH = 100;
     public static final int TILE_HEIGHT = 100;
 
-    public static final int TILE_X_BUFFER = 1;
-    public static final int TILE_Y_BUFFER = 1;
+    public static final int TILE_X_BUFFER = 2;
+    public static final int TILE_Y_BUFFER = 2;
 
     public static final int DRAWING_AREA_WIDTH = 1300;
     public static final int DRAWING_AREA_HEIGHT = 800;

@@ -272,17 +272,16 @@ public class Client implements LastWish, ActionListener {
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
-	/*
-	 * public Tile[][][] setVisibleTiles(Tile[][][] terrain) {
-	 * return this.visibleTiles = terrain;
-	 * }
-	 */
+	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
+		return this.visibleTiles = ConvertToArrayList.convert(terrain);
+	}
 
 	public ArrayList<Tile> getVisibleTiles() {
 		return visibleTiles;
 	}
 
 	public void updateTile(Tile newTile) {
+		System.out.println("Recieved: " + newTile);
 		// find the coords of the tile in the visibleTiles arraylist and replace it
 		// if the tile is not in the arraylist, add it
 		for (int i = 0; i < visibleTiles.size(); i++) {

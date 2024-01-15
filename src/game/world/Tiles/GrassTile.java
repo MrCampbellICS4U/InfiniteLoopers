@@ -7,4 +7,8 @@ public class GrassTile extends Tile {
         super(x, y, z, orientation, type, state);
     }
 
+    public GrassTile(int x, int y, int z, int orientation, String state) {
+        super(x, y, z, orientation, "grass", state);
+    }
+
 }

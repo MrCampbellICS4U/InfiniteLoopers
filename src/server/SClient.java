@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import game.world.Tiles.Tile;
+import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
 
@@ -49,10 +50,20 @@ class SClient extends PacketLord<Server> {
 
 		// loop through the visible tiles and set them to the corresponding tiles in the
 		// map
-		for (int x1 = 0; x1 < visibleTiles.length; x1++)
-			for (int y1 = 0; y1 < visibleTiles[0].length; y1++)
-				for (int z = 0; z < visibleTiles[0][0].length; z++)
-					visibleTiles[x1][y1][z] = map[topLeftX + x1][topLeftY + y1][z];
+		for (int x1 = 0; x1 < visibleTiles.length; x1++) {
+			for (int y1 = 0; y1 < visibleTiles[0].length; y1++) {
+				for (int z = 0; z < visibleTiles[0][0].length; z++) {
+					int xIndex = topLeftX + x1;
+					int yIndex = topLeftY + y1;
+					if (xIndex < 0 || GlobalConstants.WORLD_TILE_WIDTH <= xIndex || yIndex < 0
+							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
+						// tile is out of bounds of the world, send an air tile
+						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
+					}
+					visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+				}
+			}
+		}
 
 		// for (int x1 = 0; x1 < visibleTiles.length; x1++)
 		// for (int y1 = 0; y1 < visibleTiles[0].length; y1++)
@@ -62,16 +73,29 @@ class SClient extends PacketLord<Server> {
 		// visibleTiles[x1][y1][z].getState());
 		// else
 		// System.out.println("null");
-
 		return visibleTiles;
 	}
 
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
-		ArrayList<Tile> oldVisibleTiles = ConvertToArrayList
-				.convert(getVisibleTiles() == null ? calculateVisibleTiles(map) : getVisibleTiles());
+		if (visibleTiles == null) {
+			setVisibleTiles(calculateVisibleTiles(map));
+			send(new SendFullClientFOV(visibleTiles));
+			return;
+		}
+		ArrayList<Tile> oldVisibleTiles = ConvertToArrayList.convert(getVisibleTiles());
 		ArrayList<Tile> newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
+
+		System.out.println("Old visible tiles:");
+		for (Tile tile : oldVisibleTiles) {
+			System.out.print(tile.getType() + " " + tile.getState() + ", ");
+		}
+
+		System.out.println("New visible tiles:");
+		for (Tile tile : newVisibleTiles) {
+			System.out.print(tile.getType() + " " + tile.getState() + ", ");
+		}
 
 		// if the player has no tiles at all
 		// if (oldVisibleTiles == null) {
@@ -88,14 +112,26 @@ class SClient extends PacketLord<Server> {
 			Tile newTile = newVisibleTiles.get(i);
 			for (int j = 0; j < oldVisibleTiles.size(); j++) {
 				Tile oldTile = oldVisibleTiles.get(j);
-				if (newTile.equals(oldTile)) {
+				if (newTile.equals(oldTile)) { // if the tiles are the same, remove them from
+					// the list
 					newVisibleTiles.remove(i);
 					oldVisibleTiles.remove(j);
 					i--;
 					break;
-				} else if (j == oldVisibleTiles.size() - 1) {
-					send(new TileUpdate(newTile));
+				} else if (j == oldVisibleTiles.size() - 1) { // if the tile is not in the
+					// old tiles, add it to the
+					// list to send
+					send(new TileUpdate(oldTile));
 					newVisibleTiles.remove(i);
+					i--;
+					break;
+				} else if (newTile.getX() == oldTile.getX() && newTile.getY() == oldTile.getY()
+						&& newTile.getZ() == oldTile.getZ()) { // if the tiles are not the same but
+					// have the same
+					// coords, update the tile
+					send(new TileUpdate(oldTile));
+					newVisibleTiles.remove(i);
+					oldVisibleTiles.remove(j);
 					i--;
 					break;
 				}

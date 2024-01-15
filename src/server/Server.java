@@ -31,7 +31,8 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(100, 100, 3).generateWorld();
+		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 3)
+				.generateWorld();
 		// // print the map for debug
 		// for (int i = 0; i < map.length; i++) {
 		// System.out.println("Layer " + i);

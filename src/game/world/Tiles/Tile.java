@@ -60,6 +60,11 @@ public class Tile implements java.io.Serializable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return type + "_" + state + " at " + x + ", " + y + ", " + z;
+    }
+
     public int getX() {
         return x;
     }
@@ -118,10 +123,6 @@ public class Tile implements java.io.Serializable {
 
     public void addState(String state, String imageFileLocation) {
         this.statesMap.put(state, imageFileLocation);
-    }
-
-    public String toString() {
-        return "Tile: " + x + ", " + y + ", " + z + ", " + orientation + ", " + type + ", " + state;
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {

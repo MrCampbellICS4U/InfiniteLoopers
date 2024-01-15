@@ -2,18 +2,15 @@
 
 SHELL := /bin/bash
 
-shared:
-	cd src ; javac shared/*.java
+client:
+	cd src ; javac client/*.java
+	java -cp src client.Client
 
-client: shared
-	cd src ; javac client/*.java && java client.Client
+server:
+	cd src ; javac server/*.java
+	java -cp src server.Server
 
-server: shared
-	cd src ; javac server/*.java && java server.Server
-
-.PHONY: client server shared
+.PHONY: client server
 
 clean:
-	rm -f src/server/*.class
-	rm -f src/shared/*.class
-	rm -f src/client/*.class
+	find . -name "*.class" -type f -delete

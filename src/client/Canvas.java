@@ -1,25 +1,30 @@
 package client;
 
 import java.awt.*;
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
-import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.Buffer;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import shared.GlobalConstants;
 import shared.PlayerInfo;
+import game.world.Tiles.Tile;
 
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	private Client c;
 	BufferedImage healthImage, armorImage;
+	private Client client;
+	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
+	private HashMap<String, BufferedImage> TileImages = loadImages();
 
 	public Canvas(Client c) {
-		this.c = c;
-		c.getMe();
+		client = c;
 		healthImage = Client.loadImage("res/game/UI/heart.png");
 		armorImage = Client.loadImage("res/game/UI/armor.png");
 	}
@@ -28,64 +33,150 @@ class Canvas extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		if (c.getMe() == null) return; // we haven't got a packet from the server telling us our position yet
+		if (client.getMe() == null)
+			return; // we haven't got a packet from the server telling us our position yet
 
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		Color darkGreen  = new Color(0, 102, 0);
+		Color darkGreen = new Color(0, 102, 0);
 		g.setColor(darkGreen);
 		g.fillRect(0, 0, W, H);
 		g.setColor(Color.BLACK);
 		W = getWidth();
 		H = getHeight();
 
-		drawGrid(g);
+		drawTerrain(g);
 
 		g.setFont(f);
-		g.drawString(c.getFPS() + " fps", 20, 40);
-		g.drawString(c.getPing() + " ping", 20, 80);
-		g.drawString(c.getTPS() + " tps", 20, 120);
-		for (PlayerInfo player : c.getOtherPlayers()) drawPlayer(g, player);
+		g.drawString(client.getFPS() + " fps", 20, 40);
+		g.drawString(client.getPing() + " ping", 20, 80);
+		g.drawString(client.getTPS() + " tps", 20, 120);
+		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
+		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
+		for (PlayerInfo player : client.getOtherPlayers())
+			drawPlayer(g, player);
 
-		drawPlayer(g, c.getMe());
-		drawUI(g, c.getMe());
+		drawPlayer(g, client.getMe());
+		drawUI(g, client.getMe());
 	}
 
 	final private int playerWidth = 50;
 	int red = rand.nextInt(255) + 1;
 	int green = rand.nextInt(255) + 1;
 	int blue = rand.nextInt(255) + 1;
-	private void drawPlayer(Graphics g, PlayerInfo p) {
-		int xCentre = W/2;
-		int yCentre = H/2;
+	private void drawPlayer(Graphics g, PlayerInfo player) {
+		int xCanvasCentre = W/2;
+		int yCanvasCentre = H/2;
 
-		PlayerInfo me = c.getMe();
-		int playerRelX = p.x - me.x + xCentre;
-		int playerRelY = p.y - me.y + yCentre;
-		if (me.equals(p)){
-
+		PlayerInfo me = client.getMe();
+		int playerRelX = player.xGlobal - me.xGlobal + xCanvasCentre;
+		int playerRelY = player.yGlobal - me.yGlobal + yCanvasCentre;
+		if (me.equals(player)){
+			// drawing me
 			Color playerColor = new Color(red, green, blue);
 			g.setColor(playerColor);
-
-		}else{
+		} else {
+			// drawing an opponent
 			g.setColor(Color.RED);
 		}
 		g.fillOval(playerRelX - playerWidth/2, playerRelY - playerWidth/2, playerWidth, playerWidth);
-		
+
 		int length = 100;
 		g.setColor(Color.RED);
-		g.drawLine(playerRelX, playerRelY, playerRelX + (int)(Math.cos(p.angle)*length), playerRelY + (int)(Math.sin(p.angle)*length));
+		g.drawLine(playerRelX, playerRelY, playerRelX + (int) (Math.cos(player.angle) * length),
+				playerRelY + (int) (Math.sin(player.angle) * length));
 	}
+
 	private void drawUI(Graphics g, PlayerInfo p) {
 		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
 	}
-	
+
 	final private int gridWidth = 100;
-	private void drawGrid(Graphics g) {
-		PlayerInfo me = c.getMe();
-		int xCentre = W/2 - me.x%gridWidth;
-		int yCentre = H/2 - me.y%gridWidth;
+
+	// load image from tile
+	private BufferedImage loadImage(Tile tile) {
+		String imageURL = tile.getStatesMap().get(tile.getState());
+		// load the image
+		try {
+			return ImageIO.read(new File(imageURL));
+		} catch (IOException e) {
+			System.out.println("Error loading image: " + imageURL);
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	// method to load all images into a hashmap
+	private HashMap<String, BufferedImage> loadImages() {
+		HashMap<String, BufferedImage> images = new HashMap<>();
+		for (String type : new File("res/game/world/Tiles").list()) {
+			for (String state : new File("res/game/world/Tiles/" + type).list()) {
+				String imageURL = "res/game/world/Tiles/" + type + "/" + state;
+				try {
+					images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
+				} catch (IOException e) {
+					System.out.println("Error loading image: " + imageURL);
+					e.printStackTrace();
+				}
+			}
+		}
+		return images;
+	}
+
+	private void drawTerrain(Graphics g) {
+		// Tile[][][] tiles = client.getVisibleTiles();
+		// print the tiles like a 3d array
+		// System.out.println("Tiles:");
+		// for (int i = 0; i < tiles.length; i++) {
+		// System.out.println("Layer " + i);
+		// for (int j = 0; j < tiles[0].length; j++) {
+		// for (int k = 0; k < tiles[0][0].length; k++) {
+		// if (tiles[i][j][k] == null)
+		// System.out.print("null ");
+		// else
+		// System.out.print(tiles[i][j][k].getType() + " ");
+		// }
+		// System.out.println();
+		// }
+		// System.out.println();
+		// }
+
+		PlayerInfo me = client.getMe();
+
+		ArrayList<Tile> tiles = client.getVisibleTiles();
+		for (Tile currentTile : tiles) {
+			if (currentTile == null || currentTile.getType().equals("air"))
+				continue;
+			// Tile currentTile = tiles[x][y][z];
+
+			// int offsetX = me.xGlobal % gridWidth;
+			// int offsetY = me.yGlobal % gridWidth;
+
+			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+
+			BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+					+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
+			int imageRelX = groundRelX - imageWidth / 2;
+			int imageRelY = groundRelY - imageHeight / 2;
+
+			g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+		}
+
+		drawGrid(g);
+	}
+
+	private void drawGrid(Graphics g) { // deprecated (soon)
+		PlayerInfo me = client.getMe();
+		int xCentre = W / 2 - me.xGlobal % gridWidth;
+		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
 		for (int xLine = xCentre % gridWidth; xLine < W; xLine += gridWidth) {
 			g.drawLine(xLine, 0, xLine, H);

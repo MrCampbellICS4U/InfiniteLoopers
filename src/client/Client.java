@@ -86,7 +86,9 @@ public class Client implements LastWish, ActionListener {
 
 	private PacketLord<Client> pl;
 
+	boolean ready = false; // gets set to true when we get our id
 	public void send(PacketTo<Server> p) {
+		if (!ready) return; // not ready to send yet
 		pl.send(p);
 	}
 
@@ -225,6 +227,7 @@ public class Client implements LastWish, ActionListener {
 	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
+		ready = true;
 		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 	}

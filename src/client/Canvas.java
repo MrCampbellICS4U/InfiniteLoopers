@@ -57,6 +57,7 @@ class Canvas extends JPanel {
 			drawPlayer(g, player);
 
 		drawPlayer(g, client.getMe());
+		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 	}
 
@@ -200,7 +201,6 @@ class Canvas extends JPanel {
 		}
 
 		drawGrid(g);
-		drawBorder(g);
 	}
 
 	private void drawGrid(Graphics g) { // deprecated (soon)
@@ -230,6 +230,7 @@ class Canvas extends JPanel {
 		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.xGlobal + xCanvasCentre;
 
 		g2.setStroke(new BasicStroke(20));
+		g2.setColor(Color.BLACK);
 		g.drawLine(borderX1, borderY1, borderX2, borderY1);
 		g.drawLine(borderX1, borderY2, borderX2, borderY2);
 		g.drawLine(borderX1, borderY1, borderX1, borderY2);

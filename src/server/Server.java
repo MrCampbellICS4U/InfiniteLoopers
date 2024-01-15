@@ -113,10 +113,7 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public SClient getClient(int id) {
-		SClient c = clients.get(id);
-		if (c == null)
-			System.out.println("Someone messed up; could not find client with id " + id);
-		return c;
+		return clients.get(id);
 	}
 
 	public void sendToClient(int id, PacketTo<Client> p) {

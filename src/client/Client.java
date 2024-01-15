@@ -8,6 +8,8 @@ import game.world.Tiles.Tile;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.*;
 import java.net.UnknownHostException;
 import javax.imageio.*;
@@ -30,6 +32,7 @@ public class Client implements LastWish, ActionListener {
 	int H = 800;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
+	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -209,7 +212,7 @@ public class Client implements LastWish, ActionListener {
 	void tick() {
 		frame++;
 		System.out.println("Num Tiles before: " + getVisibleTiles().size());
-		// setVisibleTiles(purgeInvisibleTiles(getVisibleTiles()));
+		setVisibleTiles((getNextVisibleTiles()));
 		System.out.println("Num Tiles after: " + getVisibleTiles().size());
 		canvas.repaint();
 	}
@@ -276,30 +279,42 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
-		return this.visibleTiles = terrain;
+		return this.visibleTiles = (ArrayList<Tile>) terrain.clone();
 	}
 
 	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
-		return this.visibleTiles = ConvertToArrayList.convert(terrain);
+		return this.visibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
+	}
+
+	public ArrayList<Tile> setNextVisibleTiles(ArrayList<Tile> terrain) {
+		return this.nextVisibleTiles = (ArrayList<Tile>) terrain.clone();
+	}
+
+	public ArrayList<Tile> setNextVisibleTiles(Tile[][][] terrain) {
+		return this.nextVisibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
 	}
 
 	public ArrayList<Tile> getVisibleTiles() {
-		return visibleTiles;
+		return this.visibleTiles;
+	}
+
+	public ArrayList<Tile> getNextVisibleTiles() {
+		return this.nextVisibleTiles;
 	}
 
 	public void updateTile(Tile newTile) {
 		System.out.println("Recieved: " + newTile);
 		// find the coords of the tile in the visibleTiles arraylist and replace it
 		// if the tile is not in the arraylist, add it
-		for (int i = 0; i < visibleTiles.size(); i++) {
-			Tile currentTile = visibleTiles.get(i);
+		for (int i = 0; i < nextVisibleTiles.size(); i++) {
+			Tile currentTile = nextVisibleTiles.get(i);
 			if (currentTile.getX() == newTile.getX() && currentTile.getY() == newTile.getY()
 					&& currentTile.getZ() == newTile.getZ()) {
-				visibleTiles.set(i, newTile);
+				nextVisibleTiles.set(i, newTile);
 				return;
 			}
 		}
-		visibleTiles.add(newTile);
+		nextVisibleTiles.add(newTile);
 	}
 
 	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
@@ -312,32 +327,41 @@ public class Client implements LastWish, ActionListener {
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
 		PlayerInfo me = this.getMe();
-		if (me == null) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
+		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
 			return tiles;
 
-		ArrayList<Tile> newTiles = new ArrayList<>();
+		Set<Tile> tilesToPurge = new HashSet<>();
 
-		for (Tile tile : tiles) {
-			if (tile == null)
+		for (Tile currentTile : tiles) {
+			if (currentTile == null || currentTile.getType().equals("air"))
 				continue;
-			int xCanvasCentre = W / 2;
-			int yCanvasCentre = H / 2;
-			int tileRelX = tile.getX() - me.xGlobal + xCanvasCentre;
-			int tileRelY = tile.getY() - me.yGlobal + yCanvasCentre;
+			// Tile currentTile = tiles[x][y][z];
 
-			int imageRelX = tileRelX - GlobalConstants.TILE_WIDTH / 2;
-			int imageRelY = tileRelY - GlobalConstants.TILE_HEIGHT / 2;
+			// int offsetX = me.xGlobal % gridWidth;
+			// int offsetY = me.yGlobal % gridWidth;
 
-			// if the tile is within outside of GlobalConstants.TILE_X_BUFFER and
-			// GlobalConstants.TILE_Y_BUFFER above and below the screen
-			if (imageRelX > -GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH
-					&& imageRelX < W + GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH &&
-					imageRelY > -GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT
-					&& imageRelY < H + GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT) {
-				newTiles.add(tile);
+			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+
+			// if the tile is outside the screen and beyond the tile buffer size remove it
+			// from the visible tiles arry
+			if (groundRelX < -GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER
+					|| groundRelX > GlobalConstants.DRAWING_AREA_WIDTH
+							+ GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER + GlobalConstants.TILE_WIDTH
+					|| groundRelY < -GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
+					|| groundRelY > GlobalConstants.DRAWING_AREA_HEIGHT
+							+ GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
+							+ GlobalConstants.TILE_HEIGHT) {
+				tilesToPurge.add(currentTile);
 			}
 		}
 
-		return newTiles;
+		for (Tile byebyeTile : tilesToPurge) {
+			tiles.remove(byebyeTile);
+		}
+
+		return tiles;
 	}
 }

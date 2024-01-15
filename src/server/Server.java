@@ -81,7 +81,7 @@ public class Server implements LastWish, ActionListener {
 		for (SClient c : clients.values()) {
 			c.updatePlayer();
 			// send the client their visible tiles
-			c.handleVisibleTileUpdates(map);
+			// c.handleVisibleTileUpdates(map);
 		}
 
 		// send all players to all other players

@@ -200,6 +200,7 @@ class Canvas extends JPanel {
 		}
 
 		drawGrid(g);
+		drawBorder(g);
 	}
 
 	private void drawGrid(Graphics g) { // deprecated (soon)
@@ -214,6 +215,28 @@ class Canvas extends JPanel {
 			g.drawLine(0, yLine, W, yLine);
 		}
 	}
+
+	private void drawBorder(Graphics g) {
+		PlayerInfo me = client.getMe();
+
+		int xCanvasCentre = W/2;
+		int yCanvasCentre = H/2;
+
+		Graphics2D g2 = (Graphics2D)g;
+
+		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
+		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH*GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
+		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
+		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.xGlobal + xCanvasCentre;
+
+		g2.setStroke(new BasicStroke(20));
+		g.drawLine(borderX1, borderY1, borderX2, borderY1);
+		g.drawLine(borderX1, borderY2, borderX2, borderY2);
+		g.drawLine(borderX1, borderY1, borderX1, borderY2);
+		g.drawLine(borderX2, borderY1, borderX2, borderY2);
+		g2.setStroke(new BasicStroke(1));
+	}
+
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {

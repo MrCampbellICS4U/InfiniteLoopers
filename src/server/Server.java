@@ -22,8 +22,9 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 
+	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT, GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
 	Server() {
-		Timer tickTimer = new Timer(1000 / 60, this);
+		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -31,27 +32,14 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(100, 100, 3).generateWorld();
-		// // print the map for debug
-		// for (int i = 0; i < map.length; i++) {
-		// System.out.println("Layer " + i);
-		// for (int j = 0; j < map[0].length; j++) {
-		// for (int k = 0; k < map[0][0].length; k++) {
-		// if (map[i][j][k] == null)
-		// System.out.print("null ");
-		// else
-		// System.out.print(map[i][j][k].getType() + " ");
-		// }
-		// System.out.println();
-		// }
-		// System.out.println();
-		// }
+		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 3)
+				.generateWorld();
 
 		System.out.println("Running server on port " + port);
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				SClient client = new SClient(serverSocket.accept(), this, id);
+				SClient client = new SClient(serverSocket.accept(), this, id, chunker);
 				clients.put(id, client);
 				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
@@ -75,13 +63,17 @@ public class Server implements LastWish, ActionListener {
 		return tps;
 	}
 
+	private int collisionChecks = 0;
+	private float collisionChecksPerFrame = 0;
+	public float getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
+
 	void tick() {
 		tick++;
 		for (SClient c : clients.values()) {
-			c.updatePlayer();
-			// send the client their visible tiles
-			//c.handleVisibleTileUpdates(map);
+			c.updatePlayer(map);
 		}
+
+		collisionChecks += chunker.checkCollisions();
 
 		// send all players to all other players
 		for (SClient c : clients.values())
@@ -104,6 +96,9 @@ public class Server implements LastWish, ActionListener {
 	void secUpdate() {
 		tps = tick;
 		tick = 0;
+
+		collisionChecksPerFrame = collisionChecks / (float)tps;
+		collisionChecks = 0;
 	}
 
 	private int id = 0;
@@ -113,10 +108,7 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public SClient getClient(int id) {
-		SClient c = clients.get(id);
-		if (c == null)
-			System.out.println("Someone messed up; could not find client with id " + id);
-		return c;
+		return clients.get(id);
 	}
 
 	public void sendToClient(int id, PacketTo<Client> p) {
@@ -142,7 +134,7 @@ public class Server implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		System.out.printf("Client with id %d disconnected\n", id);
-		getClient(id).close();
+		getClient(id).remove();
 		clients.remove(id);
 	}
 }

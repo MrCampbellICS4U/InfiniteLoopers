@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.*;
 import java.net.UnknownHostException;
 import javax.imageio.*;
@@ -24,15 +26,17 @@ public class Client implements LastWish, ActionListener {
 	Canvas canvas;
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
+	MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
-	static int W = 1300;
-	static int H = 800;
-	static String ip = "127.0.0.1";
-	static int port = 2000;
+	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
+	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
+	static String ip = GlobalConstants.SERVER_IP;
+	static int port = GlobalConstants.SERVER_PORT;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
+	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -40,16 +44,18 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
+		map = new MapDrawing();
+
 		canvas.setPreferredSize(new Dimension(W, H));
-
+		//window.add(map);
 		window.add(canvas);
-
+		map.setVisible(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 
-		menuPNG = Client.loadImage("res/Menus/Main/image.png");
-		settingsPNG = Client.loadImage("res/Menus/Settings/settingsImage.png");
+		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
+		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
 		setupSettingsMenu();
 		setupMainMenu();
 	}
@@ -67,26 +73,11 @@ public class Client implements LastWish, ActionListener {
 		handleException("Could not connect to server", e);
 	}
 
-	/*
-	 * public void handlePartialFOVUpdate(Tile[][][] tiles) {
-	 * // take in the tiles and depending on the tiles that are not NullTile tpye
-	 * // replace the original tiles with the new ones
-	 * 
-	 * for (int x = 0; x < tiles.length; x++) {
-	 * for (int y = 0; y < tiles[0].length; y++) {
-	 * for (int z = 0; z < tiles[0][0].length; z++) {
-	 * if (tiles[x][y][z].getType() != "null") {
-	 * visibleTiles[x][y][z] = tiles[x][y][z];
-	 * }
-	 * }
-	 * }
-	 * }
-	 * }
-	 */
-
 	private PacketLord<Client> pl;
 
+	boolean ready = false; // gets set to true when we get our id
 	public void send(PacketTo<Server> p) {
+		if (!ready) return; // not ready to send yet
 		pl.send(p);
 	}
 
@@ -104,7 +95,7 @@ public class Client implements LastWish, ActionListener {
 		window.addMouseListener(new GameMouseListener(this));
 		window.addMouseMotionListener(new GameMouseListener(this));
 
-		Timer tickTimer = new Timer(1000 / 60, this);
+		Timer tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -202,6 +193,7 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private int fps, frame, ping, tps;
+	private float collisionChecksPerFrame;
 
 	public int getFPS() {
 		return fps;
@@ -215,8 +207,13 @@ public class Client implements LastWish, ActionListener {
 		return tps;
 	}
 
+	public float getCollisionChecksPerFrame() {
+		return collisionChecksPerFrame;
+	}
+
 	void tick() {
 		frame++;
+		setVisibleTiles(getNextVisibleTiles());
 		canvas.repaint();
 	}
 
@@ -231,6 +228,7 @@ public class Client implements LastWish, ActionListener {
 	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
+		ready = true;
 		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 	}
@@ -241,9 +239,10 @@ public class Client implements LastWish, ActionListener {
 		return otherPlayers;
 	}
 
-	public void setServerInfo(int ping, int tps) {
+	public void setServerInfo(int ping, int tps, float collisionChecksPerFrame) {
 		this.ping = ping;
 		this.tps = tps;
+		this.collisionChecksPerFrame = collisionChecksPerFrame;
 	}
 
 	public void setMe(PlayerInfo me) {
@@ -261,23 +260,17 @@ public class Client implements LastWish, ActionListener {
 		send(new ClientPlayerRotationPacket(angle));
 	}
 
-	static BufferedImage loadImage(String filename) {
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new File(filename));
-		} catch (IOException e) {
-			System.out.println(e.toString());
-			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return img;
-	}
-
 	boolean mapOpen = false;
 
 	// todo implement
 	public void toggleMap() {
-		mapOpen = !mapOpen;
+		if (!mapOpen){
+			map.setVisible(true);
+			mapOpen = !mapOpen;
+		}
+		else if(mapOpen){
+			mapOpen = !mapOpen;
+		}
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
@@ -359,58 +352,87 @@ public class Client implements LastWish, ActionListener {
 		settingsMenu.setResizable(false);
 		settingsMenu.setLocationRelativeTo(null);
 	}
-	/*
-	 * public Tile[][][] setVisibleTiles(Tile[][][] terrain) {
-	 * return this.visibleTiles = terrain;
-	 * }
-	 */
+
+	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
+		return this.visibleTiles = (ArrayList<Tile>) terrain.clone();
+	}
+
+	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
+		return this.visibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
+	}
+
+	public ArrayList<Tile> setNextVisibleTiles(ArrayList<Tile> terrain) {
+		return this.nextVisibleTiles = (ArrayList<Tile>) terrain.clone();
+	}
+
+	public ArrayList<Tile> setNextVisibleTiles(Tile[][][] terrain) {
+		return this.nextVisibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
+	}
 
 	public ArrayList<Tile> getVisibleTiles() {
-		return visibleTiles;
+		return this.visibleTiles;
+	}
+
+	public ArrayList<Tile> getNextVisibleTiles() {
+		return this.nextVisibleTiles;
 	}
 
 	public void updateTile(Tile newTile) {
 		// find the coords of the tile in the visibleTiles arraylist and replace it
 		// if the tile is not in the arraylist, add it
-		for (int i = 0; i < visibleTiles.size(); i++) {
-			Tile currentTile = visibleTiles.get(i);
+		for (int i = 0; i < nextVisibleTiles.size(); i++) {
+			Tile currentTile = nextVisibleTiles.get(i);
 			if (currentTile.getX() == newTile.getX() && currentTile.getY() == newTile.getY()
 					&& currentTile.getZ() == newTile.getZ()) {
-				visibleTiles.set(i, newTile);
+				nextVisibleTiles.set(i, newTile);
 				return;
 			}
 		}
-		visibleTiles.add(newTile);
+		nextVisibleTiles.add(newTile);
+	}
+
+	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
+		for (Tile tile : tiles) {
+			updateTile(tile);
+		}
 	}
 
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
 		PlayerInfo me = this.getMe();
+		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
+			return tiles;
 
-		ArrayList<Tile> newTiles = new ArrayList<>();
+		Set<Tile> tilesToPurge = new HashSet<>();
 
-		for (Tile tile : tiles) {
-			if (tile == null)
+		for (Tile currentTile : tiles) {
+			if (currentTile == null || currentTile.getType().equals("air"))
 				continue;
-			int xCanvasCentre = W / 2;
-			int yCanvasCentre = H / 2;
-			int tileRelX = tile.getX() - me.xGlobal + xCanvasCentre;
-			int tileRelY = tile.getY() - me.yGlobal + yCanvasCentre;
 
-			int imageRelX = tileRelX - GlobalConstants.TILE_WIDTH / 2;
-			int imageRelY = tileRelY - GlobalConstants.TILE_HEIGHT / 2;
+			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
-			// if the tile is within outside of GlobalConstants.TILE_X_BUFFER and
-			// GlobalConstants.TILE_Y_BUFFER above and below the screen
-			if (imageRelX > -GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH
-					&& imageRelX < W + GlobalConstants.TILE_X_BUFFER * GlobalConstants.TILE_WIDTH &&
-					imageRelY > -GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT
-					&& imageRelY < H + GlobalConstants.TILE_Y_BUFFER * GlobalConstants.TILE_HEIGHT) {
-				newTiles.add(tile);
+			// if the tile is outside the screen and beyond the tile buffer size remove it
+			// from the visible tiles arry
+			if (groundRelX < -GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER
+					|| groundRelX > GlobalConstants.DRAWING_AREA_WIDTH
+							+ GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER + GlobalConstants.TILE_WIDTH
+					|| groundRelY < -GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
+					|| groundRelY > GlobalConstants.DRAWING_AREA_HEIGHT
+							+ GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
+							+ GlobalConstants.TILE_HEIGHT) {
+				tilesToPurge.add(currentTile);
 			}
 		}
 
-		return newTiles;
+		for (Tile byebyeTile : tilesToPurge) {
+			tiles.remove(byebyeTile);
+		}
+
+		return tiles;
 	}
+
 }

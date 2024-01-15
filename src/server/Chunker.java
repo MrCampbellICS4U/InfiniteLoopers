@@ -1,6 +1,5 @@
 package server;
 
-
 // the thing that manages and detects collisions
 public class Chunker {
 	private Chunk[][] chunks;
@@ -56,11 +55,14 @@ public class Chunker {
 		addEntity(e);
 	}
 
-	public void checkCollisions() {
+	// returns the number of collision checks
+	public int checkCollisions() {
+		int checks = 0;
 		for (Chunk[] slice : chunks) {
 			for (Chunk c : slice) {
-				c.checkCollisions();
+				checks += c.checkCollisions();
 			}
 		}
+		return checks;
 	}
 }

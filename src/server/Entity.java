@@ -35,6 +35,13 @@ public abstract class Entity {
 		this.width = width;
 		this.height = height;
 		this.chunker = c;
-		c.addEntity(this);
+		chunker.addEntity(this);
 	}
+
+	private boolean remove = false;
+	public void remove() {
+		chunker.removeEntity(this);
+		remove = true;
+	}
+	public boolean shouldRemove() { return remove; }
 }

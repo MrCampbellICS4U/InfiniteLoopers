@@ -7,15 +7,21 @@ public class Chunk {
 	boolean changed;
 	public void add(Entity e) { entities.add(e); }
 	public void remove(Entity e) { entities.remove(e); }
-	public void checkCollisions() {
-		if (!changed) return;
+
+	// returns the number of checks
+	public int checkCollisions() {
+		int checks = 0;
+		if (!changed) return checks;
 
 		for (int i = 0; i < entities.size(); i++) {
 			for (int j = i+1; j < entities.size(); j++) {
+				checks++;
 				if (collides(entities.get(i), entities.get(j))) System.out.println("Collision");
 			}
 		}
 		changed = false;
+
+		return checks;
 	}
 	// do the 1d lines (a1, a2) and (b1, b2) collide?
 	private boolean lineCollision(float a1, float a2, float b1, float b2) {

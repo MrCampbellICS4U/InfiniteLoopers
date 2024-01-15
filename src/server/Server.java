@@ -22,6 +22,7 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 
+	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT, GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
 	Server() {
 		Timer tickTimer = new Timer(1000 / 60, this);
 		tickTimer.setActionCommand("tick");
@@ -75,6 +76,10 @@ public class Server implements LastWish, ActionListener {
 		return tps;
 	}
 
+	private int collisionChecks = 0;
+	private float collisionChecksPerFrame = 0;
+	public float getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
+
 	void tick() {
 		tick++;
 		for (SClient c : clients.values()) {
@@ -82,6 +87,8 @@ public class Server implements LastWish, ActionListener {
 			// send the client their visible tiles
 			//c.handleVisibleTileUpdates(map);
 		}
+
+		collisionChecks += chunker.checkCollisions();
 
 		// send all players to all other players
 		for (SClient c : clients.values())
@@ -104,6 +111,9 @@ public class Server implements LastWish, ActionListener {
 	void secUpdate() {
 		tps = tick;
 		tick = 0;
+
+		collisionChecksPerFrame = collisionChecks / (float)tps;
+		collisionChecks = 0;
 	}
 
 	private int id = 0;

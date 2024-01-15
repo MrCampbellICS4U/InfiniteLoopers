@@ -16,6 +16,9 @@ public class GlobalConstants {
     public static final int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public static final int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels
 
+	public static final int CHUNK_WIDTH = TILE_WIDTH*4;
+	public static final int CHUNK_HEIGHT = TILE_HEIGHT*4;
+
     public static final int SERVER_PORT = 2000;
     public static final String SERVER_IP = "127.0.0.1";
 

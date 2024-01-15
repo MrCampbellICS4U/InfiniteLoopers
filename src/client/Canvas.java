@@ -53,6 +53,8 @@ class Canvas extends JPanel {
 		g.drawString(client.getTPS() + " tps", 20, 120);
 		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
+		g.drawString("collision checks/frame: " + client.getCollisionChecksPerFrame(), 20, 240);
+
 		for (PlayerInfo player : client.getOtherPlayers())
 			drawPlayer(g, player);
 

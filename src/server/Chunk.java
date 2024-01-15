@@ -18,7 +18,7 @@ public class Chunk {
 		changed = false;
 	}
 	// do the 1d lines (a1, a2) and (b1, b2) collide?
-	private boolean lineCollision(int a1, int a2, int b1, int b2) {
+	private boolean lineCollision(float a1, float a2, float b1, float b2) {
 		return (a1 <= b1 && b1 <= a2) || (b1 <= a1 && a1 <= b2);
 	}
 	private boolean collides(Entity e1, Entity e2) {

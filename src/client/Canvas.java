@@ -77,37 +77,8 @@ class Canvas extends JPanel {
 		g.drawLine(playerRelX, playerRelY, playerRelX + (int)(Math.cos(p.angle)*length), playerRelY + (int)(Math.sin(p.angle)*length));
 	}
 	private void drawUI(Graphics g, PlayerInfo p) {
-		switch (p.health){
-			case 1:
-				g.drawImage(healthImage, -30, 700, 200, 100, null);
-				break;
-
-			case 2:
-				g.drawImage(healthImage, -30, 700, 200, 100, null);
-				g.drawImage(healthImage, 45, 700, 200, 100, null);
-				break;
-			case 3:
-				g.drawImage(healthImage, -30, 700, 200, 100, null);
-				g.drawImage(healthImage, 45, 700, 200, 100, null);
-				g.drawImage(healthImage, 120, 700, 200, 100, null);
-				break;
-		}
-		switch (p.armor){
-			case 1:
-				g.drawImage(armorImage, 37, 650, 60, 55, null);
-				break;
-
-			case 2:
-				g.drawImage(armorImage, 37, 650, 60, 55, null);
-				g.drawImage(armorImage, 115, 650, 60, 55, null);
-				break;
-			case 3:
-				g.drawImage(armorImage, 37, 650, 60, 55, null);
-				g.drawImage(armorImage, 115, 650, 60, 55, null);
-				g.drawImage(armorImage, 187, 650, 60, 55, null);
-				break;
-		}
-
+		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
+		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
 	}
 	
 	final private int gridWidth = 100;

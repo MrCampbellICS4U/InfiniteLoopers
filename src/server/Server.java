@@ -149,7 +149,7 @@ public class Server implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		System.out.printf("Client with id %d disconnected\n", id);
-		getClient(id).close();
+		getClient(id).remove();
 		clients.remove(id);
 	}
 }

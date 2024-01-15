@@ -150,7 +150,7 @@ class SClient extends Circle {
 	PacketLord<Server> pl;
 	private final int id;
 	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void close() { pl.close(); }
+	public void remove() { pl.close(); super.remove(); }
 	SClient(Socket socket, Server state, int id, Chunker c) {
 		super(5000, 5000, 25, c);
 

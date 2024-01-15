@@ -24,13 +24,13 @@ public class Chunk {
 		return checks;
 	}
 	// do the 1d lines (a1, a2) and (b1, b2) collide?
-	private boolean lineCollision(float a1, float a2, float b1, float b2) {
+	private boolean lineCollision(double a1, double a2, double b1, double b2) {
 		return (a1 <= b1 && b1 <= a2) || (b1 <= a1 && a1 <= b2);
 	}
 	private boolean collides(Entity e1, Entity e2) {
-		boolean xCollision = lineCollision(e1.getX1(), e1.getX2(), e1.getX1(), e2.getX2());
+		boolean xCollision = lineCollision(e1.getX1(), e1.getX2(), e2.getX1(), e2.getX2());
 		if (!xCollision) return false;
-		boolean yCollision = lineCollision(e1.getY1(), e1.getY2(), e1.getY1(), e2.getY2());
+		boolean yCollision = lineCollision(e1.getY1(), e1.getY2(), e2.getY1(), e2.getY2());
 		return yCollision;
 	}
 }

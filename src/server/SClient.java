@@ -6,19 +6,11 @@ import java.util.ArrayList;
 import game.world.Tiles.Tile;
 import shared.*;
 import packets.*;
+import client.Client;
 
 // clients from the server's perspective
-class SClient extends PacketLord<Server> {
-	private double xx = 5000, yy = 5000;
+class SClient extends Circle {
 	private Tile[][][] visibleTiles;
-
-	public int getX() {
-		return (int) xx;
-	}
-
-	public int getY() {
-		return (int) yy;
-	}
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -32,8 +24,8 @@ class SClient extends PacketLord<Server> {
 		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
 				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
 						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
-		int x = getX();
-		int y = getY();
+		int x = (int)getX();
+		int y = (int)getY();
 
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
@@ -148,16 +140,23 @@ class SClient extends PacketLord<Server> {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 	
-	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health, armor); }
+	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor); }
 	
 	private final int MAXHEALTH = 3;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
 	private int armor = 1;
 
-	SClient(Socket socket, Server state, int id) {
-		super(socket, state);
-		setID(id);
+	PacketLord<Server> pl;
+	private final int id;
+	public void send(PacketTo<Client> p) { pl.send(p); }
+	public void close() { pl.close(); }
+	SClient(Socket socket, Server state, int id, Chunker c) {
+		super(5000, 5000, 25, c);
+
+		this.id = id;
+		pl = new PacketLord<Server>(socket, state);
+		pl.setID(id);
 	}
 
 	// is the client ready to receive messages?
@@ -190,24 +189,24 @@ class SClient extends PacketLord<Server> {
 
 	// todo implement
 	private void attack() {
-		System.out.printf("Client %d unleashed a devastating attack!\n", getID());
+		System.out.printf("Client %d unleashed a devastating attack!\n", id);
 		//health--;
 		//armor++;
 	}
 
 	// todo implement
 	private void reload() {
-		System.out.printf("Client %d attempts to reload\n", getID());
+		System.out.printf("Client %d attempts to reload\n", id);
 	}
 
 	// todo implement
 	private void useItem() {
-		System.out.printf("Client %d tries to use an item\n", getID());
+		System.out.printf("Client %d tries to use an item\n", id);
 	}
 
 	// todo implement
 	private void dropItem() {
-		System.out.printf("Client %d drops something on the ground\n", getID());
+		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
 	private final int speed = 5;
@@ -227,18 +226,13 @@ class SClient extends PacketLord<Server> {
 			dy /= Math.sqrt(2);
 		}
 
-		xx += dx;
-		yy += dy;
-
-		if (xx < 0)
-			xx = 0;
-		if (yy < 0)
-			yy = 0;
-		if (xx > GlobalConstants.WORLD_WIDTH)
-			xx = GlobalConstants.WORLD_WIDTH;
-		if (yy > GlobalConstants.WORLD_HEIGHT)
-			yy = GlobalConstants.WORLD_HEIGHT;
-
+		double newX = getX() + dx;
+		double newY = getY() + dy;
+		
+		newX = Math.max(0, Math.min(newX, GlobalConstants.WORLD_WIDTH));
+		newY = Math.max(0, Math.min(newY, GlobalConstants.WORLD_HEIGHT));
+		
+		setPosition(newX, newY);
 	}
 
 	public void sendPackets() {

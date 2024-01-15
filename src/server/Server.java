@@ -52,7 +52,7 @@ public class Server implements LastWish, ActionListener {
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				SClient client = new SClient(serverSocket.accept(), this, id);
+				SClient client = new SClient(serverSocket.accept(), this, id, chunker);
 				clients.put(id, client);
 				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);

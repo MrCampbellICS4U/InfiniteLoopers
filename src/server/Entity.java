@@ -2,34 +2,32 @@ package server;
 
 // an entity that can collide
 public abstract class Entity {
-	private float x, y; // the centre of the entity
+	private double x, y; // the centre of the entity
 	private Chunker chunker;
 
-	public float getX() { return x; }
-	public float getY() { return y; }
+	public double getX() { return x; }
+	public double getY() { return y; }
 
-	public float getX1() { return x - width/2; } // right x
-	public float getX2() { return x + width/2; } // left x
-	public float getY1() { return y - height/2; } // top y
-	public float getY2() { return y + height/2; } // bottom y
+	public double getX1() { return x - width/2; } // right x
+	public double getX2() { return x + width/2; } // left x
+	public double getY1() { return y - height/2; } // top y
+	public double getY2() { return y + height/2; } // bottom y
 
-	public void setX(float newX) {
-		float oldX = x;
+	public void setPosition(double newX, double newY) {
+		double oldX = x;
+		double oldY = y;
+		
 		x = newX;
-		chunker.updateEntity(this, oldX, y);
-	}
-
-	public void setY(float newY) {
-		float oldY = y;
 		y = newY;
-		chunker.updateEntity(this, x, oldY);
+		
+		chunker.updateEntity(this, oldX, oldY);
 	}
 
-	private final float width, height; // width and height of the smallest rectangle that fully contains the entity
-	public float getWidth() { return width; }
-	public float getHeight() { return height; }
+	private final double width, height; // width and height of the smallest rectangle that fully contains the entity
+	public double getWidth() { return width; }
+	public double getHeight() { return height; }
 
-	public Entity(float x, float y, float width, float height, Chunker c) {
+	public Entity(double x, double y, double width, double height, Chunker c) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

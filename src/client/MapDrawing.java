@@ -23,7 +23,8 @@ public class MapDrawing extends JFrame{
     MapDrawing() {
 		
         DrawingPanel panel = new DrawingPanel();
-		panel.setBackground(Color.GREEN);
+		Color darkGreen = new Color(0, 102, 0);
+		panel.setBackground(darkGreen);
         this.add(panel);
 		this.setUndecorated(true);
         this.pack();		
@@ -44,8 +45,6 @@ public class MapDrawing extends JFrame{
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2.setColor(Color.GREEN);
-			g2.fillOval(200, 100, 400, 400);
 			// Draw game menu
 		}
 	}

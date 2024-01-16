@@ -199,7 +199,7 @@ public class Client implements LastWish, ActionListener {
 	public int getPing() {
 		return ping;
 	}
-
+	//asdf;lakjfas;fldkjf
 	public int getTPS() {
 		return tps;
 	}

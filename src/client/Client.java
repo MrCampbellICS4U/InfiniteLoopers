@@ -26,7 +26,7 @@ public class Client implements LastWish, ActionListener {
 	Canvas canvas;
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
-	//MapDrawing map;
+	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
@@ -44,12 +44,9 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
-		//map = new MapDrawing();
-
+		map = new MapDrawing();
 		canvas.setPreferredSize(new Dimension(W, H));
-		//window.add(map);
 		window.add(canvas);
-		//map.setVisible(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
@@ -202,7 +199,7 @@ public class Client implements LastWish, ActionListener {
 	public int getPing() {
 		return ping;
 	}
-
+	//asdf;lakjfas;fldkjf
 	public int getTPS() {
 		return tps;
 	}
@@ -260,15 +257,31 @@ public class Client implements LastWish, ActionListener {
 		send(new ClientPlayerRotationPacket(angle));
 	}
 
-	boolean mapOpen = false;
+
+	static BufferedImage loadImage(String filename) {
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File(filename));
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+		return img;
+	}
+
+	public static boolean mapOpen = false;
 
 	// todo implement
-	public void toggleMap() {
+	public static void toggleMap() {
 		if (!mapOpen){
-			//map.setVisible(true);
+			map.setVisible(true);
+			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
 		}
 		else if(mapOpen){
+			map.setVisible(false);
+			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
 		}
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");

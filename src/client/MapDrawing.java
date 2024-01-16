@@ -17,22 +17,24 @@ import game.world.Tiles.Tile;
 
 public class MapDrawing extends JFrame{
     DrawingPanel panel;
-    int mapSizeW = 800;
-    int mapSizeH= 800;
+    int mapSizeW = 700;
+    int mapSizeH= 700;
     Client c;
     MapDrawing() {
+		
         DrawingPanel panel = new DrawingPanel();
+		Color darkGreen = new Color(0, 102, 0);
+		panel.setBackground(darkGreen);
         this.add(panel);
+		this.setUndecorated(true);
         this.pack();		
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setFocusTraversalKeysEnabled(false);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-        this.addKeyListener(new GameKeyListener(c));
-        if (GlobalVariable.mapOpen){
-            this.setVisible(false);
-        }
-    }
+		this.addKeyListener(new GameKeyListener(c));
+	}
+
 	private class DrawingPanel extends JPanel {
 		DrawingPanel() {
 		    this.setPreferredSize(new Dimension(mapSizeW, mapSizeH));
@@ -45,5 +47,8 @@ public class MapDrawing extends JFrame{
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			// Draw game menu
 		}
+	}
+	void toggleMap(){
+		this.setVisible(false);
 	}
 }

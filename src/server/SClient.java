@@ -52,7 +52,7 @@ class SClient extends Circle {
 						// tile is out of bounds of the world, send an air tile
 						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
 					}
-					visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+					else visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
 				}
 			}
 		}

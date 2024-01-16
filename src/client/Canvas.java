@@ -24,8 +24,8 @@ class Canvas extends JPanel {
 
 	public Canvas(Client c) {
 		client = c;
-		healthImage = Client.loadImage("res/game/UI/heart.png");
-		armorImage = Client.loadImage("res/game/UI/armor.png");
+		healthImage = Canvas.loadImage("res/game/UI/heart.png");
+		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 	}
 	Random rand = new Random();
 
@@ -46,16 +46,20 @@ class Canvas extends JPanel {
 
 		drawTerrain(g);
 
+		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
 		g.drawString(client.getPing() + " ping", 20, 80);
 		g.drawString(client.getTPS() + " tps", 20, 120);
 		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
+		g.drawString("collision checks/frame: " + client.getCollisionChecksPerFrame(), 20, 240);
+
 		for (PlayerInfo player : client.getOtherPlayers())
 			drawPlayer(g, player);
 
 		drawPlayer(g, client.getMe());
+		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 	}
 
@@ -100,54 +104,29 @@ class Canvas extends JPanel {
 
 	final private int gridWidth = 100;
 
-	// load image from tile
-	private BufferedImage loadImage(Tile tile) {
-		String imageURL = tile.getStatesMap().get(tile.getState());
-		// load the image
-		try {
-			return ImageIO.read(new File(imageURL));
-		} catch (IOException e) {
-			System.out.println("Error loading image: " + imageURL);
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	// method to load all images into a hashmap
 	private HashMap<String, BufferedImage> loadImages() {
 		HashMap<String, BufferedImage> images = new HashMap<>();
 		for (String type : new File("res/game/world/Tiles").list()) {
-			for (String state : new File("res/game/world/Tiles/" + type).list()) {
-				String imageURL = "res/game/world/Tiles/" + type + "/" + state;
-				try {
-					images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
-				} catch (IOException e) {
-					System.out.println("Error loading image: " + imageURL);
-					e.printStackTrace();
+			try {
+				for (String state : new File("res/game/world/Tiles/" + type).list()) {
+					String imageURL = "res/game/world/Tiles/" + type + "/" + state;
+					try {
+						images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
+					} catch (IOException e) {
+						System.out.println("Error loading image: " + imageURL);
+						e.printStackTrace();
+					}
 				}
+			} catch (NullPointerException e) {
+				System.out.println("Error loading images for type: " + type);
+				e.printStackTrace();
 			}
 		}
 		return images;
 	}
 
 	private void drawTerrain(Graphics g) {
-		// Tile[][][] tiles = client.getVisibleTiles();
-		// print the tiles like a 3d array
-		// System.out.println("Tiles:");
-		// for (int i = 0; i < tiles.length; i++) {
-		// System.out.println("Layer " + i);
-		// for (int j = 0; j < tiles[0].length; j++) {
-		// for (int k = 0; k < tiles[0][0].length; k++) {
-		// if (tiles[i][j][k] == null)
-		// System.out.print("null ");
-		// else
-		// System.out.print(tiles[i][j][k].getType() + " ");
-		// }
-		// System.out.println();
-		// }
-		// System.out.println();
-		// }
 
 		PlayerInfo me = client.getMe();
 
@@ -184,6 +163,7 @@ class Canvas extends JPanel {
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
 		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
+		g.setColor(new Color(0, 0, 0, 50));
 		for (int xLine = xCentre % gridWidth; xLine < W; xLine += gridWidth) {
 			g.drawLine(xLine, 0, xLine, H);
 		}
@@ -191,6 +171,29 @@ class Canvas extends JPanel {
 			g.drawLine(0, yLine, W, yLine);
 		}
 	}
+
+	private void drawBorder(Graphics g) {
+		PlayerInfo me = client.getMe();
+
+		int xCanvasCentre = W/2;
+		int yCanvasCentre = H/2;
+
+		Graphics2D g2 = (Graphics2D)g;
+
+		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
+		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH*GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
+		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
+		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.xGlobal + xCanvasCentre;
+
+		g2.setStroke(new BasicStroke(20));
+		g2.setColor(Color.BLACK);
+		g.drawLine(borderX1, borderY1, borderX2, borderY1);
+		g.drawLine(borderX1, borderY2, borderX2, borderY2);
+		g.drawLine(borderX1, borderY1, borderX1, borderY2);
+		g.drawLine(borderX2, borderY1, borderX2, borderY2);
+		g2.setStroke(new BasicStroke(1));
+	}
+
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {

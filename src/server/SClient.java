@@ -2,24 +2,19 @@ package server;
 
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import game.world.Tiles.Tile;
+import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
+import client.Client;
 
 // clients from the server's perspective
-class SClient extends PacketLord<Server> {
-	private double xx = 5000, yy = 5000;
+class SClient extends Circle {
+	private double lastx, lasty;
 	private Tile[][][] visibleTiles;
-
-	public int getX() {
-		return (int) xx;
-	}
-
-	public int getY() {
-		return (int) yy;
-	}
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -33,8 +28,8 @@ class SClient extends PacketLord<Server> {
 		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
 				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
 						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
-		int x = getX();
-		int y = getY();
+		int x = (int)getX();
+		int y = (int)getY();
 
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
@@ -45,111 +40,54 @@ class SClient extends PacketLord<Server> {
 		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
 				- GlobalConstants.TILE_Y_BUFFER;
 
-		// System.out.println("topLeftX: " + topLeftX);
-		// System.out.println("topLeftY: " + topLeftY);
-
 		// loop through the visible tiles and set them to the corresponding tiles in the
 		// map
-		for (int x1 = 0; x1 < visibleTiles.length; x1++)
-			for (int y1 = 0; y1 < visibleTiles[0].length; y1++)
-				for (int z = 0; z < visibleTiles[0][0].length; z++)
-					visibleTiles[x1][y1][z] = map[topLeftX + x1][topLeftY + y1][z];
-
-		// for (int x1 = 0; x1 < visibleTiles.length; x1++)
-		// for (int y1 = 0; y1 < visibleTiles[0].length; y1++)
-		// for (int z = 0; z < visibleTiles[0][0].length; z++)
-		// if (visibleTiles[x1][y1][z] != null)
-		// System.out.println(visibleTiles[x1][y1][z].getType() + " " +
-		// visibleTiles[x1][y1][z].getState());
-		// else
-		// System.out.println("null");
-
+		for (int x1 = 0; x1 < visibleTiles.length; x1++) {
+			for (int y1 = 0; y1 < visibleTiles[0].length; y1++) {
+				for (int z = 0; z < visibleTiles[0][0].length; z++) {
+					int xIndex = topLeftX + x1;
+					int yIndex = topLeftY + y1;
+					if (xIndex < 0 || GlobalConstants.WORLD_TILE_WIDTH <= xIndex || yIndex < 0
+							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
+						// tile is out of bounds of the world, send an air tile
+						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
+					}
+					else visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+				}
+			}
+		}
 		return visibleTiles;
 	}
 
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
-		ArrayList<Tile> oldVisibleTiles = ConvertToArrayList
-				.convert(getVisibleTiles() == null ? calculateVisibleTiles(map) : getVisibleTiles());
-		ArrayList<Tile> newVisibleTiles = ConvertToArrayList.convert(calculateVisibleTiles(map));
-
-		// if the player has no tiles at all
-		// if (oldVisibleTiles == null) {
-		/*
-		 * setVisibleTiles(newVisibleTiles);
-		 * send(new SendFullClientFOV(newVisibleTiles));
-		 * return;
-		 */
-		// go through every tile and if in the new tiles, and if it is not in the old
-		// tiles, add it to the list of tiles
-		// to send, also remove it from the new tiles list and the old to not loop
-		// through the same tiles again
-		for (int i = 0; i < newVisibleTiles.size(); i++) {
-			Tile newTile = newVisibleTiles.get(i);
-			for (int j = 0; j < oldVisibleTiles.size(); j++) {
-				Tile oldTile = oldVisibleTiles.get(j);
-				if (newTile.equals(oldTile)) {
-					newVisibleTiles.remove(i);
-					oldVisibleTiles.remove(j);
-					i--;
-					break;
-				} else if (j == oldVisibleTiles.size() - 1) {
-					send(new TileUpdate(newTile));
-					newVisibleTiles.remove(i);
-					i--;
-					break;
-				}
-			}
+		if (visibleTiles == null) { // this happens on the first update
+			setVisibleTiles(calculateVisibleTiles(map));
+			send(new SendFullClientFOV(visibleTiles));
+			return;
 		}
+		Set<Tile> oldVisibleTiles = new HashSet<>(ConvertToArrayList.convert(getVisibleTiles()));
+		Set<Tile> newVisibleTiles = new HashSet<>(
+				ConvertToArrayList.convert(setVisibleTiles(calculateVisibleTiles(map))));
 
-		// if there are no tiles to send, don't send anything
+		newVisibleTiles.removeAll(oldVisibleTiles);
+		Set<Tile> tilesToSend = new HashSet<>(newVisibleTiles);
+
+		if (tilesToSend.size() > 0) {
+			send(new PartialFOVUpdate(new ArrayList<>(tilesToSend)));
+			return;
+		}
 		return;
-		// }
 
-		/*
-		 * boolean needsUpdate = false;
-		 * for (int x = 0; x < newVisibleTiles.length; x++) {
-		 * for (int y = 0; y < newVisibleTiles[0].length; y++) {
-		 * for (int z = 0; z < newVisibleTiles[0][0].length; z++) {
-		 * if (newVisibleTiles[x][y][z] == null || oldVisibleTiles[x][y][z] == null)
-		 * continue;
-		 * if (!newVisibleTiles[x][y][z].equals(oldVisibleTiles[x][y][z])) {
-		 * // System.out.println("Tile at " + x + ", " + y + ", " + z +
-		 * " needs updating");
-		 * needsUpdate = true;
-		 * tilesToSend[x][y][z] = newVisibleTiles[x][y][z];
-		 * }
-		 * }
-		 * }
-		 * }
-		 * if (needsUpdate) {
-		 * // pring out the outgoing tiles in a list style
-		 * // System.out.println("Tiles to send:");
-		 * // for (int x = 0; x < tilesToSend.length; x++) {
-		 * // for (int y = 0; y < tilesToSend[0].length; y++) {
-		 * // for (int z = 0; z < tilesToSend[0][0].length; z++) {
-		 * // if (tilesToSend[x][y][z] == null)
-		 * // System.out.print("null ");
-		 * // else
-		 * // System.out.print(tilesToSend[x][y][z].getType() + " ");
-		 * // }
-		 * // System.out.println();
-		 * // }
-		 * // System.out.println();
-		 * // }
-		 * setVisibleTiles(newVisibleTiles);
-		 * send(new PartialFOVUpdate(tilesToSend));
-		 * }
-		 */
 	}
 
 	private double angle;
 
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
-	
-	public PlayerInfo getInfo() { return new PlayerInfo(getX(), getY(), angle, health, armor, hotBar); }
+
+	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
 
 	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;
@@ -158,9 +96,16 @@ class SClient extends PacketLord<Server> {
 	private final int MAXHOTBAR = 3;
 	private int armor = 0;
 
-	SClient(Socket socket, Server state, int id) {
-		super(socket, state);
-		setID(id);
+	PacketLord<Server> pl;
+	private final int id;
+	public void send(PacketTo<Client> p) { pl.send(p); }
+	public void remove() { pl.close(); super.remove(); }
+	SClient(Socket socket, Server state, int id, Chunker c) {
+		super(5000, 5000, 25, c);
+
+		this.id = id;
+		pl = new PacketLord<Server>(socket, state);
+		pl.setID(id);
 	}
 
 	// is the client ready to receive messages?
@@ -193,29 +138,29 @@ class SClient extends PacketLord<Server> {
 
 	// todo implement
 	private void attack() {
-		System.out.printf("Client %d unleashed a devastating attack!\n", getID());
+		System.out.printf("Client %d unleashed a devastating attack!\n", id);
 		//health--;
 		//armor++;
 	}
 
 	// todo implement
 	private void reload() {
-		System.out.printf("Client %d attempts to reload\n", getID());
+		System.out.printf("Client %d attempts to reload\n", id);
 	}
 
 	// todo implement
 	private void useItem() {
-		System.out.printf("Client %d tries to use an item\n", getID());
+		System.out.printf("Client %d tries to use an item\n", id);
 	}
 
 	// todo implement
 	private void dropItem() {
-		System.out.printf("Client %d drops something on the ground\n", getID());
+		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
 	private final int speed = 5;
 
-	public void updatePlayer() {
+	public void updatePlayer(Tile[][][] map) {
 		double dx = 0, dy = 0;
 		if (up)
 			dy -= speed;
@@ -230,18 +175,21 @@ class SClient extends PacketLord<Server> {
 			dy /= Math.sqrt(2);
 		}
 
-		xx += dx;
-		yy += dy;
+		double newX = getX() + dx;
+		double newY = getY() + dy;
 
-		if (xx < 0)
-			xx = 0;
-		if (yy < 0)
-			yy = 0;
-		if (xx > GlobalConstants.WORLD_WIDTH)
-			xx = GlobalConstants.WORLD_WIDTH;
-		if (yy > GlobalConstants.WORLD_HEIGHT)
-			yy = GlobalConstants.WORLD_HEIGHT;
+		newX = Math.max(0, Math.min(newX, GlobalConstants.WORLD_WIDTH));
+		newY = Math.max(0, Math.min(newY, GlobalConstants.WORLD_HEIGHT));
 
+		setPosition(newX, newY);
+
+		if (Math.abs(newX - lastx) >= GlobalConstants.TILE_WIDTH
+				|| Math.abs(newY - lasty) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
+																			// away from the last update
+			lastx = newX;
+			lasty = newY;
+			handleVisibleTileUpdates(map);
+		}
 	}
 
 	public void sendPackets() {

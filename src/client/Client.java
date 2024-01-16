@@ -73,8 +73,10 @@ public class Client implements LastWish, ActionListener {
 	private PacketLord<Client> pl;
 
 	boolean ready = false; // gets set to true when we get our id
+
 	public void send(PacketTo<Server> p) {
-		if (!ready) return; // not ready to send yet
+		if (!ready)
+			return; // not ready to send yet
 		pl.send(p);
 	}
 
@@ -121,36 +123,39 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private class DrawingPanel2 extends JPanel {
-
 		DrawingPanel2() {
 			this.setPreferredSize(new Dimension(W, H));
 		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			//Draw game menu
+			// Draw game menu
 			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();
 		}
 	}
+
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("tick")) tick();
-		if (e.getActionCommand().equals("secUpdate")) secUpdate();
-		if (settingsMenu.isVisible()){
+		if (e.getActionCommand().equals("tick"))
+			tick();
+		if (e.getActionCommand().equals("secUpdate"))
+			secUpdate();
+		if (settingsMenu.isVisible()) {
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
-			try{
-				if (ipInput.equals("")){
+			try {
+				if (ipInput.equals("")) {
 					ip = "127.0.0.1";
-				}else{
+				} else {
 					ip = ipInput;
 				}
-				if ((portNum.getText()).equals("")){
+				if ((portNum.getText()).equals("")) {
 					port = 2000;
-				}else{
+				} else {
 					port = Integer.parseInt(portNum.getText());
 				}
 
@@ -162,9 +167,11 @@ public class Client implements LastWish, ActionListener {
 					settingsMenu.setVisible(false);
 
 				}
-			}catch(Exception exc){
-				JOptionPane.showMessageDialog(null, "Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
-					JOptionPane.ERROR_MESSAGE);
+			} catch (Exception exc) {
+				JOptionPane.showMessageDialog(null,
+						"Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000",
+						"Error, Get Smarter",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -174,8 +181,7 @@ public class Client implements LastWish, ActionListener {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
 				startGame(ip, port);
-			}
-			else if (action.equals("settings")) {
+			} else if (action.equals("settings")) {
 				mainMenu.setVisible(false);
 				settingsMenu.setVisible(true);
 				settingsMenu.setLocationRelativeTo(null);
@@ -199,7 +205,8 @@ public class Client implements LastWish, ActionListener {
 	public int getPing() {
 		return ping;
 	}
-	//asdf;lakjfas;fldkjf
+
+	// asdf;lakjfas;fldkjf
 	public int getTPS() {
 		return tps;
 	}
@@ -257,7 +264,6 @@ public class Client implements LastWish, ActionListener {
 		send(new ClientPlayerRotationPacket(angle));
 	}
 
-
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {
@@ -274,12 +280,11 @@ public class Client implements LastWish, ActionListener {
 
 	// todo implement
 	public static void toggleMap() {
-		if (!mapOpen){
+		if (!mapOpen) {
 			map.setVisible(true);
 			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
-		}
-		else if(mapOpen){
+		} else if (mapOpen) {
 			map.setVisible(false);
 			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
@@ -287,7 +292,7 @@ public class Client implements LastWish, ActionListener {
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
 	}
 
-	void setupMainMenu(){
+	void setupMainMenu() {
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainMenu.setResizable(false);
@@ -303,22 +308,23 @@ public class Client implements LastWish, ActionListener {
 
 		settings.setActionCommand("settings");
 		settings.addActionListener(this);
-		double buttonWidth = W*0.2;
-		double buttonHeight = H*0.15;
-		double playLocationWidth = W*0.58;
-		double settingsLocationWidth = W*0.2;
-		double settingsWidth = W*0.12;
-		double buttonLocationHeight = H*0.8;
+		double buttonWidth = W * 0.2;
+		double buttonHeight = H * 0.15;
+		double playLocationWidth = W * 0.58;
+		double settingsLocationWidth = W * 0.2;
+		double settingsWidth = W * 0.12;
+		double buttonLocationHeight = H * 0.8;
 		play.setOpaque(false);
 		play.setContentAreaFilled(false);
 		play.setBorderPainted(false);
-		play.setBounds((int)playLocationWidth, (int)buttonLocationHeight, (int)buttonWidth, (int)buttonHeight);
+		play.setBounds((int) playLocationWidth, (int) buttonLocationHeight, (int) buttonWidth, (int) buttonHeight);
 
 		settings.setOpaque(false);
 		settings.setBorderPainted(false);
 		settings.setContentAreaFilled(false);
 
-		settings.setBounds((int)settingsLocationWidth, (int)buttonLocationHeight, (int)settingsWidth, (int)buttonHeight);
+		settings.setBounds((int) settingsLocationWidth, (int) buttonLocationHeight, (int) settingsWidth,
+				(int) buttonHeight);
 
 		main.add(play);
 		main.add(settings);
@@ -329,7 +335,8 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.setResizable(false);
 		mainMenu.setVisible(true);
 	}
-	void setupSettingsMenu(){
+
+	void setupSettingsMenu() {
 		settingsMenu = new JFrame("Sarvivarz");
 		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		settingsPanel = new DrawingPanel2();

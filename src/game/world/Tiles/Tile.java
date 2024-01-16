@@ -18,6 +18,7 @@ public class Tile implements java.io.Serializable {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.orientation = orientation;
         this.type = type;
         this.state = state;
         this.statesMap = generateStatesMap();

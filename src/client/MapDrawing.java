@@ -20,8 +20,7 @@ public class MapDrawing extends JFrame{
     int mapSizeW = 700;
     int mapSizeH= 700;
     Client c;
-    MapDrawing() {
-		
+    MapDrawing(Client c) {
         DrawingPanel panel = new DrawingPanel();
 		Color darkGreen = new Color(0, 102, 0);
 		panel.setBackground(darkGreen);

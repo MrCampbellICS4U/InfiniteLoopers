@@ -24,7 +24,7 @@ public class Client implements LastWish, ActionListener {
 	Canvas canvas;
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
-	MapDrawing map;
+	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
@@ -42,11 +42,8 @@ public class Client implements LastWish, ActionListener {
 
 		canvas = new Canvas(this);
 		map = new MapDrawing();
-
 		canvas.setPreferredSize(new Dimension(W, H));
-		window.add(map);
 		window.add(canvas);
-		map.setVisible(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
@@ -276,15 +273,18 @@ public class Client implements LastWish, ActionListener {
 		return img;
 	}
 
-	boolean mapOpen = false;
+	public static boolean mapOpen = false;
 
 	// todo implement
-	public void toggleMap() {
+	public static void toggleMap() {
 		if (!mapOpen){
 			map.setVisible(true);
+			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
 		}
 		else if(mapOpen){
+			map.setVisible(false);
+			System.out.println(mapOpen);
 			mapOpen = !mapOpen;
 		}
 		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");

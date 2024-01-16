@@ -26,7 +26,7 @@ public class Client implements LastWish, ActionListener {
 	Canvas canvas;
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
-	MapDrawing map;
+	//MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
@@ -44,12 +44,12 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
-		map = new MapDrawing();
+		//map = new MapDrawing();
 
 		canvas.setPreferredSize(new Dimension(W, H));
 		//window.add(map);
 		window.add(canvas);
-		map.setVisible(false);
+		//map.setVisible(false);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
@@ -265,7 +265,7 @@ public class Client implements LastWish, ActionListener {
 	// todo implement
 	public void toggleMap() {
 		if (!mapOpen){
-			map.setVisible(true);
+			//map.setVisible(true);
 			mapOpen = !mapOpen;
 		}
 		else if(mapOpen){

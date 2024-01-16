@@ -147,11 +147,6 @@ class Canvas extends JPanel {
 			BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
 					+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
 
-			int imageWidth = image.getWidth();
-			int imageHeight = image.getHeight();
-			int imageRelX = groundRelX - imageWidth / 2;
-			int imageRelY = groundRelY - imageHeight / 2;
-
 			g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
 		}
 
@@ -183,7 +178,7 @@ class Canvas extends JPanel {
 		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
 		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH*GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
 		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
-		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.xGlobal + xCanvasCentre;
+		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
 
 		g2.setStroke(new BasicStroke(20));
 		g2.setColor(Color.BLACK);

@@ -15,6 +15,7 @@ import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
+import entities.Entity;
 import game.world.Tiles.Tile;
 
 public class Client implements LastWish, ActionListener {
@@ -65,9 +66,17 @@ public class Client implements LastWish, ActionListener {
 		JOptionPane.showMessageDialog(window, stackTrace, message, JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
-
+	
 	public void handleDisconnection(int id, Exception e) {
 		handleException("Could not connect to server", e);
+	}
+	
+	private ArrayList<Entity> entities = new ArrayList<>();
+	public void setEntities(ArrayList<Entity> entities) {
+		this.entities = entities;
+	}
+	public ArrayList<Entity> getEntities() {
+		return entities;
 	}
 
 	private PacketLord<Client> pl;
@@ -199,7 +208,6 @@ public class Client implements LastWish, ActionListener {
 	public int getPing() {
 		return ping;
 	}
-	//asdf;lakjfas;fldkjf
 	public int getTPS() {
 		return tps;
 	}
@@ -230,11 +238,6 @@ public class Client implements LastWish, ActionListener {
 		System.out.println("Connected!");
 	}
 
-	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
-
-	public ArrayList<PlayerInfo> getOtherPlayers() {
-		return otherPlayers;
-	}
 
 	public void setServerInfo(int ping, int tps, float collisionChecksPerFrame) {
 		this.ping = ping;
@@ -244,10 +247,6 @@ public class Client implements LastWish, ActionListener {
 
 	public void setMe(PlayerInfo me) {
 		this.me = me;
-	}
-
-	public void setOtherPlayers(ArrayList<PlayerInfo> players) {
-		otherPlayers = players;
 	}
 
 	void handleMouseMovement(int mouseX, int mouseY) {

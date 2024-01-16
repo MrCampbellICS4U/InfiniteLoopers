@@ -1,5 +1,6 @@
-package server;
+package entities;
 
+import java.awt.Graphics;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,12 +10,13 @@ import game.world.Tiles.Tile;
 import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
+import server.Server;
 import client.Client;
 
 // clients from the server's perspective
-class SClient extends Circle {
-	private double lastx, lasty;
-	private Tile[][][] visibleTiles;
+public class SClient extends Circle {
+	transient private double lastx, lasty;
+	transient private Tile[][][] visibleTiles;
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -34,7 +36,7 @@ class SClient extends Circle {
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
 		// direction
-		// converting the pixel location to tile location and round tonearest tile size
+		// converting the pixel location to tile location and round to nearest tile size
 		int topLeftX = (int) (x - GlobalConstants.DRAWING_AREA_WIDTH / 2) / GlobalConstants.TILE_WIDTH
 				- GlobalConstants.TILE_X_BUFFER;
 		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
@@ -89,23 +91,32 @@ class SClient extends Circle {
 
 	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
 
-	public String hotBar[] = new String[3];
-	private final int MAXHEALTH = 3;
-	private int health = MAXHEALTH; // 3 hearts
-	private final int MAXARMOR = 3;
-	private final int MAXHOTBAR = 3;
-	private int armor = 0;
+	transient public String hotBar[] = new String[3];
+	transient private final int MAXHEALTH = 3;
+	transient private int health = MAXHEALTH; // 3 hearts
+	transient private final int MAXARMOR = 3;
+	transient private final int MAXHOTBAR = 3;
+	transient private int armor = 0;
 
-	PacketLord<Server> pl;
-	private final int id;
+	transient PacketLord<Server> pl;
+	transient private final int id;
 	public void send(PacketTo<Client> p) { pl.send(p); }
 	public void remove() { pl.close(); super.remove(); }
-	SClient(Socket socket, Server state, int id, Chunker c) {
+	transient private FOV fov;
+	public SClient(Socket socket, Server state, int id, Chunker c) {
 		super(5000, 5000, 25, c);
 
 		this.id = id;
 		pl = new PacketLord<Server>(socket, state);
 		pl.setID(id);
+		
+		fov = new FOV(getX(), getY(),
+				(double)GlobalConstants.DRAWING_AREA_WIDTH, (double)GlobalConstants.DRAWING_AREA_HEIGHT,
+				this, c);
+	}
+	public void setPosition(double x, double y) {
+		super.setPosition(x, y);
+		fov.setPosition(x, y);
 	}
 
 	// is the client ready to receive messages?
@@ -113,13 +124,13 @@ class SClient extends Circle {
 	// to the client;
 	// it would throw a `UTFDataFormatException` if i immediately started sending
 	// messages after opening the socket
-	private boolean ready = false;
+	transient private boolean ready = false;
 
 	public void setReady() {
 		ready = true;
 	}
 
-	private boolean up, down, left, right;
+	transient private boolean up, down, left, right;
 
 	public void handleInput(Input i, InputState is) {
 		boolean isDown = is == InputState.DOWN;
@@ -158,7 +169,7 @@ class SClient extends Circle {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
-	private final int speed = 5;
+	transient private final int speed = 5;
 
 	public void updatePlayer(Tile[][][] map) {
 		double dx = 0, dy = 0;
@@ -192,22 +203,21 @@ class SClient extends Circle {
 		}
 	}
 
+	transient private ArrayList<Entity> entities = new ArrayList<>();
+	public void clearEntities() { entities = new ArrayList<>(); }
+	public void addEntity(Entity e) { System.out.println(e); entities.add(e); }
+
 	public void sendPackets() {
 		if (!ready)
 			return;
 
 		send(new MePacket(getInfo()));
-		send(new OtherPlayersPacket(otherPlayers));
+		send(new EntitiesPacket(entities));
 	}
 
-	// all the other players this one can see
-	private ArrayList<PlayerInfo> otherPlayers;
 
-	public void clearOtherPlayers() {
-		otherPlayers = new ArrayList<>();
-	}
-
-	public void addOtherPlayer(PlayerInfo player) {
-		otherPlayers.add(player);
+	public void customDraw(Graphics g, int centreX, int centreY) {
+		System.out.println("drawing");
+		g.fillOval((int)(centreX-getWidth()/2), (int)(centreY-getWidth()), (int)getWidth(), (int)getWidth());
 	}
 }

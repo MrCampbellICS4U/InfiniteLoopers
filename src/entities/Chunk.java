@@ -1,4 +1,4 @@
-package server;
+package entities;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,21 @@ public class Chunk {
 
 		for (int i = 0; i < entities.size(); i++) {
 			for (int j = i+1; j < entities.size(); j++) {
+				Entity e1 = entities.get(i);
+				Entity e2 = entities.get(j);
+				String t1 = e1.getClass().getSimpleName();
+				String t2 = e2.getClass().getSimpleName();
 				checks++;
-				if (collides(entities.get(i), entities.get(j))) System.out.println("Collision at time " + System.currentTimeMillis());
+				if (collides(e1, e2)) {
+					System.out.println("Collision at time " + System.currentTimeMillis());
+					if (t1.equals("FOV") && !t2.equals("FOV")) {
+						FOV fov = (FOV)e1;
+						fov.addEntity(e2);
+					} else if (t2.equals("FOV") && !t1.equals("FOV")) {
+						FOV fov = (FOV)e2;
+						fov.addEntity(e1);
+					}
+				}
 			}
 		}
 		changed = false;

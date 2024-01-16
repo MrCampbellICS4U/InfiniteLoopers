@@ -3,13 +3,14 @@ package server;
 import java.awt.event.*;
 import javax.swing.Timer;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.io.IOException;
 import java.net.ServerSocket;
 
 import shared.*;
 import packets.*;
 import client.Client;
+import entities.Chunker;
+import entities.SClient;
 import game.world.WorldGenerator;
 import game.world.Tiles.Tile;
 
@@ -73,20 +74,7 @@ public class Server implements LastWish, ActionListener {
 			c.updatePlayer(map);
 		}
 
-		collisionChecks += chunker.checkCollisions();
-
-		// send all players to all other players
-		for (SClient c : clients.values())
-			c.clearOtherPlayers();
-		ArrayList<SClient> clientsList = new ArrayList<>(clients.values());
-		for (int i = 0; i < clientsList.size(); i++) {
-			SClient c1 = clientsList.get(i);
-			for (int j = i + 1; j < clientsList.size(); j++) {
-				SClient c2 = clientsList.get(j);
-				c1.addOtherPlayer(c2.getInfo());
-				c2.addOtherPlayer(c1.getInfo());
-			}
-		}
+		collisionChecks += chunker.checkCollisions(clients.values());
 
 		for (SClient c : clients.values())
 			c.sendPackets();

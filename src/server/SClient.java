@@ -14,7 +14,7 @@ import entities.*;
 import collision.*;
 
 // clients from the server's perspective
-class SClient extends Circle {
+class SClient extends Circle implements Renderable {
 	private double lastx, lasty;
 	private Tile[][][] visibleTiles;
 
@@ -102,15 +102,24 @@ class SClient extends Circle {
 
 	PacketLord<Server> pl;
 	private final int id;
+	public int getID() { return id; }
+
 	public void send(PacketTo<Client> p) { pl.send(p); }
 	public void remove() { pl.close(); super.remove(); }
-	SClient(Socket socket, Server state, int id, Chunker c) {
+	
+	Tile[][][] map;
+	private Server server;
+	private Chunker chunker;
+	SClient(Socket socket, Server state, int id, Chunker c, Tile[][][] map) {
 		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
 			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
 
 		this.id = id;
 		pl = new PacketLord<Server>(socket, state);
 		pl.setID(id);
+		this.map = map;
+		this.server = state;
+		this.chunker = c;
 	}
 
 	// is the client ready to receive messages?
@@ -143,6 +152,7 @@ class SClient extends Circle {
 
 	// todo implement
 	private void attack() {
+		server.addRenderable(new Bullet(getX(), getY(), 5, angle, 1, id, chunker));
 		System.out.printf("Client %d unleashed a devastating attack!\n", id);
 		//health--;
 		//armor++;
@@ -165,7 +175,7 @@ class SClient extends Circle {
 
 	private final int speed = 5;
 
-	public void updatePlayer(Tile[][][] map) {
+	public void update() {
 		double dx = 0, dy = 0;
 		if (up)
 			dy -= speed;

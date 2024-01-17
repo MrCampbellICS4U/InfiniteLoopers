@@ -12,7 +12,8 @@ import packets.*;
 import client.Client;
 import game.world.WorldGenerator;
 import game.world.Tiles.Tile;
-import collision.Chunker;
+import collision.*;
+import entities.Renderable;
 
 public class Server implements LastWish, ActionListener {
 	public static void main(String[] args) {
@@ -40,8 +41,9 @@ public class Server implements LastWish, ActionListener {
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				SClient client = new SClient(serverSocket.accept(), this, id, chunker);
+				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map);
 				clients.put(id, client);
+				renderables.add(client);
 				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
@@ -68,10 +70,13 @@ public class Server implements LastWish, ActionListener {
 	private double collisionChecksPerFrame = 0;
 	public double getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
 
+	private ArrayList<Renderable> renderables = new ArrayList<>();
+	public void addRenderable(Renderable r) { renderables.add(r); }
+
 	void tick() {
 		tick++;
-		for (SClient c : clients.values()) {
-			c.updatePlayer(map);
+		for (int i = 0; i < renderables.size(); i++) {
+			renderables.get(i).update();
 		}
 
 		collisionChecks += chunker.checkCollisions();
@@ -79,14 +84,10 @@ public class Server implements LastWish, ActionListener {
 		// send all entities to all entities
 		for (SClient c : clients.values())
 			c.clearEntities();
-		ArrayList<SClient> clientsList = new ArrayList<>(clients.values());
-		for (int i = 0; i < clientsList.size(); i++) {
-			SClient c1 = clientsList.get(i);
-			c1.addEntity(c1.getInfo());
-			for (int j = i + 1; j < clientsList.size(); j++) {
-				SClient c2 = clientsList.get(j);
-				c1.addEntity(c2.getInfo());
-				c2.addEntity(c1.getInfo());
+
+		for (SClient c : clients.values()) {
+			for (Renderable r : renderables) {
+				c.addEntity(r.getInfo());
 			}
 		}
 
@@ -136,7 +137,9 @@ public class Server implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		System.out.printf("Client with id %d disconnected\n", id);
-		getClient(id).remove();
+		SClient c = getClient(id);
+		c.remove();
+		renderables.remove(c);
 		clients.remove(id);
 	}
 }

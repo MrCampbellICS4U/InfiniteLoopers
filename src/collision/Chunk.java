@@ -21,7 +21,6 @@ public class Chunk {
 				if (h1.collides(h2)) {
 					h1.smashInto(h2);
 					h2.smashInto(h1);
-					System.out.println("Collision at time " + System.currentTimeMillis());
 				}
 			}
 		}

@@ -1,6 +1,4 @@
-package entities;
-
-import java.util.Collection;
+package server;
 
 // the thing that manages and detects collisions
 public class Chunker {
@@ -71,9 +69,7 @@ public class Chunker {
 	}
 
 	// returns the number of collision checks
-	public int checkCollisions(Collection<SClient> clients) {
-		for (SClient c : clients) c.clearEntities();
-
+	public int checkCollisions() {
 		int checks = 0;
 		for (Chunk[] slice : chunks) {
 			for (Chunk c : slice) {

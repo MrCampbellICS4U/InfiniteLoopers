@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import entities.Entity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,18 +55,14 @@ class Canvas extends JPanel {
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
 		g.drawString("collision checks/frame: " + client.getCollisionChecksPerFrame(), 20, 240);
 
-		PlayerInfo me = client.getMe();
-		for (Entity entity : client.getEntities()) {
-			System.out.println("entity");
-			entity.draw(g, me.xGlobal, me.yGlobal);
-		}
+		for (PlayerInfo player : client.getOtherPlayers())
+			drawPlayer(g, player);
 
-		//drawPlayer(g, client.getMe());
+		drawPlayer(g, client.getMe());
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 	}
 
-	/*
 	final private int playerWidth = 50;
 	int red = rand.nextInt(255) + 1;
 	int green = rand.nextInt(255) + 1;
@@ -96,7 +89,6 @@ class Canvas extends JPanel {
 		g.drawLine(playerRelX, playerRelY, playerRelX + (int) (Math.cos(player.angle) * length),
 				playerRelY + (int) (Math.sin(player.angle) * length));
 	}
-	*/
 
 	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;

@@ -1,12 +1,9 @@
-package entities;
+package server;
 
-import java.awt.Graphics;
-import java.io.Serializable;
-import game.world.Tiles.Tile;
-
-public class Entity implements Serializable {
+// an entity that can collide
+public abstract class Entity {
 	private double x, y; // the centre of the entity
-	transient private Chunker chunker;
+	private Chunker chunker;
 
 	public double getX() { return x; }
 	public double getY() { return y; }
@@ -42,10 +39,4 @@ public class Entity implements Serializable {
 	public void remove() {
 		chunker.removeEntity(this);
 	}
-	
-	public void update(Tile[][][] map) {};
-	public void draw(Graphics g, double playerX, double playerY) {
-		customDraw(g, x-playerX, y-playerY);
-	}
-	public void customDraw(Graphics g, double relCentreX, double relCentreY) {};
 }

@@ -105,20 +105,21 @@ class SClient extends Circle implements Renderable {
 	public int getID() { return id; }
 
 	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void remove() { pl.close(); super.remove(); }
+	public void remove() { pl.close(); super.remove(); server.removeRenderable(this); }
 	
 	Tile[][][] map;
 	private Server server;
 	private Chunker chunker;
-	SClient(Socket socket, Server state, int id, Chunker c, Tile[][][] map) {
+	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map) {
 		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
 			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
 
 		this.id = id;
-		pl = new PacketLord<Server>(socket, state);
+		pl = new PacketLord<Server>(socket, server);
 		pl.setID(id);
 		this.map = map;
-		this.server = state;
+		this.server = server;
+		server.addRenderable(this);
 		this.chunker = c;
 	}
 
@@ -152,10 +153,7 @@ class SClient extends Circle implements Renderable {
 
 	// todo implement
 	private void attack() {
-		server.addRenderable(new Bullet(getX(), getY(), 5, angle, 1, id, chunker));
-		System.out.printf("Client %d unleashed a devastating attack!\n", id);
-		//health--;
-		//armor++;
+		new Bullet(getX(), getY(), 5, angle, 1, id, chunker, server);
 	}
 
 	// todo implement
@@ -227,6 +225,6 @@ class SClient extends Circle implements Renderable {
 	}
 
 	public void smashInto(Hitbox h) {
-		System.out.println("client smashed into something at time " + System.currentTimeMillis());
+		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
 	}
 }

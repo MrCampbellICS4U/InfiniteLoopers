@@ -43,7 +43,6 @@ public class Server implements LastWish, ActionListener {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map);
 				clients.put(id, client);
-				renderables.add(client);
 				sendToClient(id, new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
@@ -72,6 +71,7 @@ public class Server implements LastWish, ActionListener {
 
 	private ArrayList<Renderable> renderables = new ArrayList<>();
 	public void addRenderable(Renderable r) { renderables.add(r); }
+	public void removeRenderable(Renderable r) { renderables.remove(r); }
 
 	void tick() {
 		tick++;
@@ -139,7 +139,6 @@ public class Server implements LastWish, ActionListener {
 		System.out.printf("Client with id %d disconnected\n", id);
 		SClient c = getClient(id);
 		c.remove();
-		renderables.remove(c);
 		clients.remove(id);
 	}
 }

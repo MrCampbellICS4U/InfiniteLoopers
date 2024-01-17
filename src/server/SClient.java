@@ -11,8 +11,7 @@ import shared.*;
 import packets.*;
 import client.Client;
 import entities.*;
-import collision.Circle;
-import collision.Chunker;
+import collision.*;
 
 // clients from the server's perspective
 class SClient extends Circle {
@@ -213,5 +212,9 @@ class SClient extends Circle {
 
 	public void addEntity(Entity e) {
 		entities.add(e);
+	}
+
+	public void smashInto(Hitbox h) {
+		System.out.println("client smashed into something at time " + System.currentTimeMillis());
 	}
 }

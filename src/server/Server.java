@@ -65,8 +65,8 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	private int collisionChecks = 0;
-	private float collisionChecksPerFrame = 0;
-	public float getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
+	private double collisionChecksPerFrame = 0;
+	public double getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
 
 	void tick() {
 		tick++;
@@ -99,7 +99,7 @@ public class Server implements LastWish, ActionListener {
 		tps = tick;
 		tick = 0;
 
-		collisionChecksPerFrame = collisionChecks / (float)tps;
+		collisionChecksPerFrame = collisionChecks / (double)tps;
 		collisionChecks = 0;
 	}
 

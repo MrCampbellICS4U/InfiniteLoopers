@@ -191,7 +191,7 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private int fps, frame, ping, tps;
-	private float collisionChecksPerFrame;
+	private double collisionChecksPerFrame;
 
 	public int getFPS() {
 		return fps;
@@ -205,7 +205,7 @@ public class Client implements LastWish, ActionListener {
 		return tps;
 	}
 
-	public float getCollisionChecksPerFrame() {
+	public double getCollisionChecksPerFrame() {
 		return collisionChecksPerFrame;
 	}
 
@@ -237,7 +237,7 @@ public class Client implements LastWish, ActionListener {
 		return entities;
 	}
 
-	public void setServerInfo(int ping, int tps, float collisionChecksPerFrame) {
+	public void setServerInfo(int ping, int tps, double collisionChecksPerFrame) {
 		this.ping = ping;
 		this.tps = tps;
 		this.collisionChecksPerFrame = collisionChecksPerFrame;

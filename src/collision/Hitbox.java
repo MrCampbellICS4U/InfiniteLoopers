@@ -38,4 +38,10 @@ public abstract class Hitbox {
 	public void remove() {
 		chunker.removeHitbox(this);
 	}
+
+	// does this hitbox collide with another?
+	abstract public boolean collides(Hitbox h);
+
+	// what to do on collision
+	abstract public void smashInto(Hitbox h);
 }

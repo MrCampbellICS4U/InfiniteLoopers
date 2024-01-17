@@ -22,9 +22,8 @@ public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
 		new Client();
 	}
-
 	JFrame window, mainMenu, settingsMenu;
-	Canvas canvas;
+
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
@@ -38,6 +37,9 @@ public class Client implements LastWish, ActionListener {
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
+
+	Canvas canvas;
+	public Canvas getCanvas() { return canvas; }
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -222,11 +224,15 @@ public class Client implements LastWish, ActionListener {
 		frame = 0;
 		send(new GetServerInfoPacket());
 	}
+	
+	private int id;
+	public int getID() { return id; }
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
+		this.id = id;
 		ready = true;
 		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");

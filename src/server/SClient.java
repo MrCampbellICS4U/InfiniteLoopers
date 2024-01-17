@@ -36,7 +36,7 @@ class SClient extends Circle {
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
 		// direction
-		// converting the pixel location to tile location and round tonearest tile size
+		// converting the pixel location to tile location and round to nearest tile size
 		int topLeftX = (int) (x - GlobalConstants.DRAWING_AREA_WIDTH / 2) / GlobalConstants.TILE_WIDTH
 				- GlobalConstants.TILE_X_BUFFER;
 		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
@@ -89,7 +89,9 @@ class SClient extends Circle {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 
-	public PlayerEntity getInfo() { return new PlayerEntity((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
+	public PlayerEntity getInfo() {
+		return new PlayerEntity((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
+	}
 
 	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;

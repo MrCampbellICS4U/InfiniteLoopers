@@ -17,7 +17,7 @@ import game.world.Tiles.Tile;
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	BufferedImage healthImage, armorImage;
+	BufferedImage healthImage, armorImage, gunImage;
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
@@ -26,6 +26,7 @@ class Canvas extends JPanel {
 		client = c;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
+		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
 	}
 	Random rand = new Random();
 

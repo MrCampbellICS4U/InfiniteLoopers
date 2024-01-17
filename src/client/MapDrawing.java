@@ -51,8 +51,6 @@ public class MapDrawing extends JFrame{
 			PlayerInfo me = c.getMe();
 			double playerRelX = (((double)me.xGlobal)/GlobalConstants.WORLD_WIDTH);
 			double playerRelY = (((double)me.yGlobal)/GlobalConstants.WORLD_HEIGHT);
-			System.out.println(playerRelX);
-			System.out.println(playerRelY);
 			g.fillOval((int) (playerRelX*mapSizeW), (int) (playerRelY*mapSizeH), 10, 10);
 		}
 	}

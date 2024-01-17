@@ -89,11 +89,12 @@ class SClient extends Circle {
 
 	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
 
-	public String hotBar[] = new String[3];
-	private final int MAXHEALTH = 3;
+	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
+	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
-	private final int MAXHOTBAR = 3;
+
+	public String hotBar[] = new String[MAXHOTBAR];
 	private int armor = 0;
 
 	PacketLord<Server> pl;

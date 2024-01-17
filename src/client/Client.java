@@ -210,10 +210,9 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	void tick() {
-
 		frame++;
 		setVisibleTiles(getNextVisibleTiles());
-		canvas.repaint();			
+		canvas.repaint();
 		map.repaint();
 
 	}
@@ -256,6 +255,9 @@ public class Client implements LastWish, ActionListener {
 
 	public void setEntities(ArrayList<Entity> entities) {
 		this.entities = entities;
+		for (Entity e : entities) {
+			if (e.id == id) setMe((PlayerEntity)e);
+		}
 	}
 
 	void handleMouseMovement(int mouseX, int mouseY) {

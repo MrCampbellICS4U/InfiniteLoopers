@@ -209,7 +209,6 @@ class SClient extends Circle implements Renderable {
 		if (!ready)
 			return;
 
-		send(new MePacket(getInfo()));
 		send(new EntitiesPacket(entities));
 	}
 

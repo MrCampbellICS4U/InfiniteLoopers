@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import shared.GlobalConstants;
-import shared.PlayerInfo;
+import entities.*;
 import game.world.Tiles.Tile;
 
 class Canvas extends JPanel {
@@ -56,10 +56,9 @@ class Canvas extends JPanel {
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
 		g.drawString("collision checks/frame: " + client.getCollisionChecksPerFrame(), 20, 240);
 
-		for (PlayerInfo player : client.getOtherPlayers())
-			drawPlayer(g, player);
+		for (Entity entity : client.getEntities())
+			drawPlayer(g, (PlayerEntity)entity);
 
-		drawPlayer(g, client.getMe());
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 	}
@@ -67,11 +66,11 @@ class Canvas extends JPanel {
 	int red = rand.nextInt(255) + 1;
 	int green = rand.nextInt(255) + 1;
 	int blue = rand.nextInt(255) + 1;
-	private void drawPlayer(Graphics g, PlayerInfo player) {
+	private void drawPlayer(Graphics g, PlayerEntity player) {
 		int xCanvasCentre = W/2;
 		int yCanvasCentre = H/2;
 
-		PlayerInfo me = client.getMe();
+		PlayerEntity me = client.getMe();
 		int playerRelX = player.xGlobal - me.xGlobal + xCanvasCentre;
 		int playerRelY = player.yGlobal - me.yGlobal + yCanvasCentre;
 		if (me.equals(player)){
@@ -90,7 +89,7 @@ class Canvas extends JPanel {
 				playerRelY + (int) (Math.sin(player.angle) * length));
 	}
 
-	private void drawUI(Graphics g, PlayerInfo p) {
+	private void drawUI(Graphics g, PlayerEntity p) {
 		int itemHotbarSize = 80;
 		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
@@ -129,7 +128,7 @@ class Canvas extends JPanel {
 
 	private void drawTerrain(Graphics g) {
 
-		PlayerInfo me = client.getMe();
+		PlayerEntity me = client.getMe();
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (Tile currentTile : tiles) {
@@ -155,7 +154,7 @@ class Canvas extends JPanel {
 	}
 
 	private void drawGrid(Graphics g) { // deprecated (soon)
-		PlayerInfo me = client.getMe();
+		PlayerEntity me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
 		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
@@ -169,7 +168,7 @@ class Canvas extends JPanel {
 	}
 
 	private void drawBorder(Graphics g) {
-		PlayerInfo me = client.getMe();
+		PlayerEntity me = client.getMe();
 
 		int xCanvasCentre = W/2;
 		int yCanvasCentre = H/2;

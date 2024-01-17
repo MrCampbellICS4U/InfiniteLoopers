@@ -5,8 +5,8 @@ import client.Client;
 public class SetServerInfoPacket extends PacketTo<Client> {
 	private long start;
 	private int tps;
-	private float collisionChecksPerFrame;
-	public SetServerInfoPacket(long start, int tps, float collisionChecksPerFrame) {
+	private double collisionChecksPerFrame;
+	public SetServerInfoPacket(long start, int tps, double collisionChecksPerFrame) {
 		this.start = start;
 		this.tps = tps;
 		this.collisionChecksPerFrame = collisionChecksPerFrame;

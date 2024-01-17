@@ -1,4 +1,4 @@
-package server;
+package collision;
 
 // the thing that manages and detects collisions
 public class Chunker {
@@ -24,7 +24,7 @@ public class Chunker {
 	private int toChunkX(double x) { return ((int)x)/chunkWidth; }
 	private int toChunkY(double y) { return ((int)y)/chunkHeight; }
 
-	public void addEntity(Entity e) {
+	public void addHitbox(Hitbox e) {
 		for (int x = toChunkX(e.getX1()); x <= toChunkX(e.getX2()); x++) {
 			for (int y = toChunkX(e.getY1()); y <= toChunkY(e.getY2()); y++) {
 				chunks[x][y].add(e);
@@ -33,7 +33,7 @@ public class Chunker {
 		}
 	}
 
-	private void removeEntity(Entity e, int x1, int x2, int y1, int y2) {
+	private void removeHitbox(Hitbox e, int x1, int x2, int y1, int y2) {
 		for (int x = x1; x <= x2; x++) {
 			for (int y = y1; y <= y2; y++) {
 				// don't count this as a change, since, if anything, it would just end a collision
@@ -41,12 +41,12 @@ public class Chunker {
 			}
 		}
 	}
-	public void removeEntity(Entity e) {
-		removeEntity(e, toChunkX(e.getX1()), toChunkX(e.getX2()), toChunkY(e.getY1()), toChunkY(e.getY2()));
+	public void removeHitbox(Hitbox e) {
+		removeHitbox(e, toChunkX(e.getX1()), toChunkX(e.getX2()), toChunkY(e.getY1()), toChunkY(e.getY2()));
 	}
 
-	public void updateEntity(Entity e, double oldX, double oldY) {
-		if (oldX == e.getX() && oldY == e.getY()) return; // entity didn't move
+	public void updateHitbox(Hitbox e, double oldX, double oldY) {
+		if (oldX == e.getX() && oldY == e.getY()) return; // hitbox didn't move
 
 		int oldX1Chunk = toChunkX(oldX - e.getWidth()/2);
 		int oldX2Chunk = toChunkX(oldX + e.getWidth()/2);
@@ -64,8 +64,8 @@ public class Chunker {
 			return;
 		}
 
-		removeEntity(e, oldX1Chunk, oldX2Chunk, oldY1Chunk, oldY2Chunk);
-		addEntity(e);
+		removeHitbox(e, oldX1Chunk, oldX2Chunk, oldY1Chunk, oldY2Chunk);
+		addHitbox(e);
 	}
 
 	// returns the number of collision checks

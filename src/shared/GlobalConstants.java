@@ -28,4 +28,9 @@ public class GlobalConstants {
     public static final int SERVER_PORT = 2000;
     public static final String SERVER_IP = "127.0.0.1";
 
+    public static final int MAXHOTBAR = 3;
+    public static final int MAXHEALTH = 3;
+    public static final int MAXARMOR = 3;
+
+
 }

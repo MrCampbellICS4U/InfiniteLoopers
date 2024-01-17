@@ -17,7 +17,7 @@ import game.world.Tiles.Tile;
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	BufferedImage healthImage, armorImage;
+	BufferedImage healthImage, armorImage, gunImage;
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
@@ -26,6 +26,7 @@ class Canvas extends JPanel {
 		client = c;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
+		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
 	}
 	Random rand = new Random();
 
@@ -94,9 +95,10 @@ class Canvas extends JPanel {
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
-		for (int i = 0; i < p.hotBar.length;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+
+		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 		g.setColor(new Color(50, 50, 50, 100));
-		for (int i = 0; i < p.hotBar.length;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 		
 	}
 

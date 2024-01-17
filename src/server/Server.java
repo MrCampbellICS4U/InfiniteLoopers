@@ -12,6 +12,7 @@ import packets.*;
 import client.Client;
 import game.world.WorldGenerator;
 import game.world.Tiles.Tile;
+import collision.Chunker;
 
 public class Server implements LastWish, ActionListener {
 	public static void main(String[] args) {
@@ -75,16 +76,17 @@ public class Server implements LastWish, ActionListener {
 
 		collisionChecks += chunker.checkCollisions();
 
-		// send all players to all other players
+		// send all entities to all entities
 		for (SClient c : clients.values())
-			c.clearOtherPlayers();
+			c.clearEntities();
 		ArrayList<SClient> clientsList = new ArrayList<>(clients.values());
 		for (int i = 0; i < clientsList.size(); i++) {
 			SClient c1 = clientsList.get(i);
+			c1.addEntity(c1.getInfo());
 			for (int j = i + 1; j < clientsList.size(); j++) {
 				SClient c2 = clientsList.get(j);
-				c1.addOtherPlayer(c2.getInfo());
-				c2.addOtherPlayer(c1.getInfo());
+				c1.addEntity(c2.getInfo());
+				c2.addEntity(c1.getInfo());
 			}
 		}
 

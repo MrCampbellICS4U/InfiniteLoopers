@@ -16,6 +16,7 @@ import shared.*;
 import packets.*;
 import server.Server;
 import game.world.Tiles.Tile;
+import entities.*;
 
 public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
@@ -183,9 +184,9 @@ public class Client implements LastWish, ActionListener {
 		}
 	}
 
-	private PlayerInfo me;
+	private PlayerEntity me;
 
-	public PlayerInfo getMe() {
+	public PlayerEntity getMe() {
 		return me;
 	}
 
@@ -230,10 +231,10 @@ public class Client implements LastWish, ActionListener {
 		System.out.println("Connected!");
 	}
 
-	private ArrayList<PlayerInfo> otherPlayers = new ArrayList<>();
+	private ArrayList<Entity> entities = new ArrayList<>();
 
-	public ArrayList<PlayerInfo> getOtherPlayers() {
-		return otherPlayers;
+	public ArrayList<Entity> getEntities() {
+		return entities;
 	}
 
 	public void setServerInfo(int ping, int tps, float collisionChecksPerFrame) {
@@ -242,12 +243,12 @@ public class Client implements LastWish, ActionListener {
 		this.collisionChecksPerFrame = collisionChecksPerFrame;
 	}
 
-	public void setMe(PlayerInfo me) {
+	public void setMe(PlayerEntity me) {
 		this.me = me;
 	}
 
-	public void setOtherPlayers(ArrayList<PlayerInfo> players) {
-		otherPlayers = players;
+	public void setEntities(ArrayList<Entity> entities) {
+		this.entities = entities;
 	}
 
 	void handleMouseMovement(int mouseX, int mouseY) {
@@ -272,19 +273,9 @@ public class Client implements LastWish, ActionListener {
 
 	public static boolean mapOpen = false;
 
-	// todo implement
 	public static void toggleMap() {
-		if (!mapOpen){
-			map.setVisible(true);
-			System.out.println(mapOpen);
-			mapOpen = !mapOpen;
-		}
-		else if(mapOpen){
-			map.setVisible(false);
-			System.out.println(mapOpen);
-			mapOpen = !mapOpen;
-		}
-		System.out.printf("The map is now %s\n", mapOpen ? "open" : "closed");
+		mapOpen = !mapOpen;
+		map.setVisible(mapOpen);
 	}
 
 	void setupMainMenu(){
@@ -413,7 +404,7 @@ public class Client implements LastWish, ActionListener {
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
-		PlayerInfo me = this.getMe();
+		PlayerEntity me = this.getMe();
 		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
 			return tiles;
 

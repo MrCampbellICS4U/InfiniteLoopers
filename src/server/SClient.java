@@ -10,6 +10,9 @@ import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
 import client.Client;
+import entities.*;
+import collision.Circle;
+import collision.Chunker;
 
 // clients from the server's perspective
 class SClient extends Circle {
@@ -87,7 +90,7 @@ class SClient extends Circle {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 
-	public PlayerInfo getInfo() { return new PlayerInfo((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
+	public PlayerEntity getInfo() { return new PlayerEntity((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
 
 	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;
@@ -101,7 +104,8 @@ class SClient extends Circle {
 	public void send(PacketTo<Client> p) { pl.send(p); }
 	public void remove() { pl.close(); super.remove(); }
 	SClient(Socket socket, Server state, int id, Chunker c) {
-		super(5000, 5000, 25, c);
+		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
+			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
 
 		this.id = id;
 		pl = new PacketLord<Server>(socket, state);
@@ -197,17 +201,17 @@ class SClient extends Circle {
 			return;
 
 		send(new MePacket(getInfo()));
-		send(new OtherPlayersPacket(otherPlayers));
+		send(new EntitiesPacket(entities));
 	}
 
-	// all the other players this one can see
-	private ArrayList<PlayerInfo> otherPlayers;
+	// all the entities, including self, you can see
+	private ArrayList<Entity> entities = new ArrayList<>();
 
-	public void clearOtherPlayers() {
-		otherPlayers = new ArrayList<>();
+	public void clearEntities() {
+		entities = new ArrayList<>(); // DO NOT CHANGE THIS TO CLEAR, IT BREAKS AND I DO NOT KNOW WHY
 	}
 
-	public void addOtherPlayer(PlayerInfo player) {
-		otherPlayers.add(player);
+	public void addEntity(Entity e) {
+		entities.add(e);
 	}
 }

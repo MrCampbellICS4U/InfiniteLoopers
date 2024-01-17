@@ -45,7 +45,7 @@ public class Client implements LastWish, ActionListener {
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 
 		canvas = new Canvas(this);
-		map = new MapDrawing(this);
+		map = new MapDrawing(this, me);
 		canvas.setPreferredSize(new Dimension(W, H));
 		window.add(canvas);
 		window.pack();
@@ -167,7 +167,6 @@ public class Client implements LastWish, ActionListener {
 				JOptionPane.showMessageDialog(null, "Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
 					JOptionPane.ERROR_MESSAGE);
 			}
-
 		}
 		if (mainMenu.isVisible()) {
 			String action = e.getActionCommand();
@@ -210,9 +209,12 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	void tick() {
+
 		frame++;
 		setVisibleTiles(getNextVisibleTiles());
-		canvas.repaint();
+		canvas.repaint();			
+		map.repaint();
+
 	}
 
 	// gets called once a second

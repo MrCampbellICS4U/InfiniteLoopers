@@ -61,7 +61,6 @@ class Canvas extends JPanel {
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 	}
-
 	final private int playerWidth = 50;
 	int red = rand.nextInt(255) + 1;
 	int green = rand.nextInt(255) + 1;

@@ -13,6 +13,7 @@ import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
+import entities.PlayerEntity;
 import game.world.Tiles.Tile;
 
 public class MapDrawing extends JFrame{
@@ -20,10 +21,12 @@ public class MapDrawing extends JFrame{
     int mapSizeW = 700;
     int mapSizeH= 700;
     Client c;
-    MapDrawing(Client c) {
+    MapDrawing(Client c, PlayerEntity player) {
+		this.c = c;
         DrawingPanel panel = new DrawingPanel();
 		Color darkGreen = new Color(0, 102, 0);
 		panel.setBackground(darkGreen);
+		panel.repaint();
         this.add(panel);
 		this.setUndecorated(true);
         this.pack();		
@@ -42,9 +45,14 @@ public class MapDrawing extends JFrame{
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
+			int xMapCentre = mapSizeW/2;
+			int yMapCentre = mapSizeH/2;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			// Draw game menu
+			PlayerEntity me = c.getMe();
+			double playerRelX = (((double)me.xGlobal)/GlobalConstants.WORLD_WIDTH);
+			double playerRelY = (((double)me.yGlobal)/GlobalConstants.WORLD_HEIGHT);
+			g.fillOval((int) (playerRelX*mapSizeW), (int) (playerRelY*mapSizeH), 10, 10);
 		}
 	}
 	void toggleMap(){

@@ -1,7 +1,6 @@
-package server;
+package collision;
 
-// an entity that can collide
-public abstract class Entity {
+public abstract class Hitbox {
 	private double x, y; // the centre of the entity
 	private Chunker chunker;
 
@@ -16,27 +15,33 @@ public abstract class Entity {
 	public void setPosition(double newX, double newY) {
 		double oldX = x;
 		double oldY = y;
-		
+
 		x = newX;
 		y = newY;
-		
-		chunker.updateEntity(this, oldX, oldY);
+
+		chunker.updateHitbox(this, oldX, oldY);
 	}
 
 	private final double width, height; // width and height of the smallest rectangle that fully contains the entity
 	public double getWidth() { return width; }
 	public double getHeight() { return height; }
 
-	public Entity(double x, double y, double width, double height, Chunker c) {
+	public Hitbox(double x, double y, double width, double height, Chunker c) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.chunker = c;
-		chunker.addEntity(this);
+		chunker.addHitbox(this);
 	}
 
 	public void remove() {
-		chunker.removeEntity(this);
+		chunker.removeHitbox(this);
 	}
+
+	// does this hitbox collide with another?
+	abstract public boolean collides(Hitbox h);
+
+	// what to do on collision
+	abstract public void smashInto(Hitbox h);
 }

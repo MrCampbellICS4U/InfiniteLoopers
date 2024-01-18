@@ -5,55 +5,66 @@ import game.world.Tiles.Tile;
 public class Structure {
     Tile[][][] tiles;
     int x, y, z; // top left corner of the structues bounding box
+    int width, height, depth; // dimensions of the bounding box
+    int orientation; // 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
 
     public Structure(int x, int y, int z, Tile[][][] tiles, int orientation) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.tiles = tiles;
-        rotate(tiles, orientation);
+        // rotate(tiles, orientation);
+        this.depth = tiles.length;
+        this.height = tiles[0].length;
+        this.width = tiles[0][0].length;
+        this.orientation = orientation;
     }
 
-    private void rotate(int orientation) {
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public Tile getTile(int x, int y, int z) {
+        return tiles[z][y][x];
+    }
+
+    public void rotate(Tile[][][] tiles, int orientation) {
         // takes the array of tiles and rotates it clock-wise creating a new array with
         // maybe different dimensions
         // 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
-        if (orientation == 0)
-            return;
-        // it rotates the array 90 degrees clockwise about its center
-
-    }
-
-    public static void rotate(Tile[][][] tiles, int orientation) {
         for (int z = 0; z < tiles.length; z++) {
             rotateLayer(tiles[z], orientation);
         }
+        this.depth = tiles.length;
+        this.width = tiles[0].length;
+        this.height = tiles[0][0].length;
+
     }
 
-    private static void rotateLayer(Tile[][] layer, int orientation) {
-        int n = layer.length;
-        for (int i = 0; i < n / 2; i++) {
-            for (int j = i; j < n - i - 1; j++) {
-                Tile temp = layer[i][j];
-                int newX = j, newY = i;
+    private void rotateLayer(Tile[][] layer, int orientation) {
+        // 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
+        // structure is [z][y][x]
 
-                for (int k = 0; k < orientation; k++) {
-                    int tempX = newX;
-                    newX = newY;
-                    newY = n - 1 - tempX;
-                }
-
-                temp.setX(newX);
-                temp.setY(newY);
-                temp.setOrientation((temp.getOrientation() + orientation) % 4);
-
-                // Perform rotation of tiles
-                layer[i][j] = layer[newY][n - 1 - newX];
-                layer[newY][n - 1 - newX] = layer[n - 1 - newX][n - 1 - newY];
-                layer[n - 1 - newX][n - 1 - newY] = layer[n - 1 - newY][i];
-                layer[n - 1 - newY][i] = temp;
-            }
-        }
     }
 
 }

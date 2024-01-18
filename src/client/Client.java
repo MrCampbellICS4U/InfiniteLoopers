@@ -395,6 +395,8 @@ public class Client implements LastWish, ActionListener {
 		// if the tile is not in the arraylist, add it
 		for (int i = 0; i < nextVisibleTiles.size(); i++) {
 			Tile currentTile = nextVisibleTiles.get(i);
+			// if (currentTile == null)
+			// continue;
 			if (currentTile.getX() == newTile.getX() && currentTile.getY() == newTile.getY()
 					&& currentTile.getZ() == newTile.getZ()) {
 				nextVisibleTiles.set(i, newTile);

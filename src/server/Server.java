@@ -23,7 +23,9 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 
-	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT, GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT,
+			GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+
 	Server() {
 		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
 		tickTimer.setActionCommand("tick");
@@ -33,7 +35,7 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 3)
+		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 4)
 				.generateWorld();
 
 		System.out.println("Running server on port " + port);
@@ -66,7 +68,10 @@ public class Server implements LastWish, ActionListener {
 
 	private int collisionChecks = 0;
 	private double collisionChecksPerFrame = 0;
-	public double getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
+
+	public double getCollisionChecksPerFrame() {
+		return collisionChecksPerFrame;
+	}
 
 	void tick() {
 		tick++;
@@ -74,7 +79,7 @@ public class Server implements LastWish, ActionListener {
 			c.updatePlayer(map);
 		}
 
-		collisionChecks += chunker.checkCollisions();
+		// collisionChecks += chunker.checkCollisions();
 
 		// send all entities to all entities
 		for (SClient c : clients.values())
@@ -99,7 +104,7 @@ public class Server implements LastWish, ActionListener {
 		tps = tick;
 		tick = 0;
 
-		collisionChecksPerFrame = collisionChecks / (double)tps;
+		collisionChecksPerFrame = collisionChecks / (double) tps;
 		collisionChecks = 0;
 	}
 

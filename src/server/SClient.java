@@ -151,7 +151,6 @@ class SClient extends Circle {
 	// todo implement
 	private void attack() {
 		System.out.printf("Client %d unleashed a devastating attack!\n", id);
-		health--;
 	}
 
 	// todo implement

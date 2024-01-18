@@ -21,7 +21,6 @@ class Canvas extends JPanel {
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
-
 	public Canvas(Client c) {
 		client = c;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
@@ -159,7 +158,10 @@ class Canvas extends JPanel {
 			g.setColor(reddish);
 			g.fillRect(0, 0, W, H);
 			g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
-
+			g.setColor(Color.BLACK);
+			//Font f = new Font("Arial", Font.PLAIN, 70);
+			// g.setFont(f);
+			// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
 		}
 
 	}

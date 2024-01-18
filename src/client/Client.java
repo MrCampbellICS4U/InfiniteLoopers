@@ -30,7 +30,6 @@ public class Client implements LastWish, ActionListener {
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG;
 	JButton play, settings, back;
-	boolean dead;
 	RoundJTextField ipAddress, portNum;
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
 	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
@@ -40,11 +39,12 @@ public class Client implements LastWish, ActionListener {
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
+	public static boolean dead = false;
+
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
-		dead = false;
 		canvas = new Canvas(this);
 		map = new MapDrawing(this, me);
 		canvas.setPreferredSize(new Dimension(W, H));
@@ -87,7 +87,11 @@ public class Client implements LastWish, ActionListener {
 			pl = new PacketLord<Client>(socket, this);
 		} catch (UnknownHostException e) {
 			handleException("Could not connect to server", e);
-		} catch (IOException e) {
+		
+		} catch (java.io.EOFException e){
+			System.out.println("GG");
+		}
+		catch (IOException e) {
 			handleException("Could not connect to server", e);
 		}
 

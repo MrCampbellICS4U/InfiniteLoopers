@@ -9,10 +9,9 @@ import game.world.Tiles.Tile;
 import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
-import client.Client;
+import client.*;
 import entities.*;
 import collision.*;
-
 // clients from the server's perspective
 class SClient extends Circle {
 	private double lastx, lasty;
@@ -141,8 +140,13 @@ class SClient extends Circle {
 
 		}
 	}
+	int counter = 0;
 	private void kysURSELF(){
 		health = 0;
+		counter++;
+		if(counter > 100){
+			pl.close();
+		}
 	}
 	// todo implement
 	private void attack() {

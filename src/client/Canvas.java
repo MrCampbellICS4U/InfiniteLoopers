@@ -17,15 +17,17 @@ import game.world.Tiles.Tile;
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	BufferedImage healthImage, armorImage;
+	BufferedImage healthImage, armorImage, gunImage, deathImage;
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
-
 	public Canvas(Client c) {
 		client = c;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
+		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
+		deathImage = Canvas.loadImage("res/Menus/Death.png");
+
 	}
 
 	public void paintComponent(Graphics g) {
@@ -45,7 +47,6 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g);
-
 		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
@@ -61,6 +62,7 @@ public class Canvas extends JPanel {
 
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
+		drawDeath(g, client.getMe());
 	}
 
 	Random rand = new Random();
@@ -76,10 +78,11 @@ public class Canvas extends JPanel {
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
-		for (int i = 0; i < p.hotBar.length;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+
+		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 		g.setColor(new Color(50, 50, 50, 100));
-		for (int i = 0; i < p.hotBar.length;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-		
+		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+
 	}
 
 	final private int gridWidth = 100;
@@ -105,7 +108,6 @@ public class Canvas extends JPanel {
 		}
 		return images;
 	}
-
 	private void drawTerrain(Graphics g) {
 
 		PlayerInfo me = client.getMe();
@@ -132,7 +134,19 @@ public class Canvas extends JPanel {
 
 		drawGrid(g);
 	}
+	public void drawDeath(Graphics g, PlayerEntity p){
+		if(p.health <= 0){
+			Color reddish = new Color(135, 0, 0, 50);
+			g.setColor(reddish);
+			g.fillRect(0, 0, W, H);
+			g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
+			g.setColor(Color.BLACK);
+			//Font f = new Font("Arial", Font.PLAIN, 70);
+			// g.setFont(f);
+			// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
+		}
 
+	}
 	private void drawGrid(Graphics g) { // deprecated (soon)
 		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;

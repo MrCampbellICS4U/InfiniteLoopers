@@ -9,10 +9,9 @@ import game.world.Tiles.Tile;
 import game.world.Tiles.AirTile;
 import shared.*;
 import packets.*;
-import client.Client;
+import client.*;
 import entities.*;
 import collision.*;
-
 // clients from the server's perspective
 class SClient extends Circle implements Entity {
 	private double lastx, lasty;
@@ -93,11 +92,12 @@ class SClient extends Circle implements Entity {
 		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
 	}
 
-	public String hotBar[] = new String[3];
-	private final int MAXHEALTH = 3;
+	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
+	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
 	private int health = MAXHEALTH; // 3 hearts
 	private final int MAXARMOR = 3;
-	private final int MAXHOTBAR = 3;
+
+	public String hotBar[] = new String[MAXHOTBAR];
 	private int armor = 0;
 
 	PacketLord<Server> pl;
@@ -148,9 +148,18 @@ class SClient extends Circle implements Entity {
 			case RELOAD -> reload();
 			case USE -> useItem();
 			case DROP -> dropItem();
+			case Dead -> kysURSELF();
+
 		}
 	}
-
+	int counter = 0;
+	private void kysURSELF(){
+		health = 0;
+		counter++;
+		if(counter > 100){
+			pl.close();
+		}
+	}
 	// todo implement
 	private void attack() {
 		new Bullet(getX(), getY(), 5, angle, 1, id, chunker, server);
@@ -171,6 +180,11 @@ class SClient extends Circle implements Entity {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
+	
+	public void getShot() {
+		health--;
+	}
+
 	private final int speed = 5;
 
 	public void update() {
@@ -186,6 +200,9 @@ class SClient extends Circle implements Entity {
 		if (dx != 0 && dy != 0) {
 			dx /= Math.sqrt(2);
 			dy /= Math.sqrt(2);
+		}
+		if (health <= 0){
+			kysURSELF();
 		}
 
 		double newX = getX() + dx;

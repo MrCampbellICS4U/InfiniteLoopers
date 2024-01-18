@@ -41,8 +41,9 @@ public class Bullet extends Circle implements Entity {
 		if (ticksAlive >= 3000) remove();
 	}
 
-	public void remove() {
-		super.remove();
-		server.removeEntity(this);
-	}
+	private boolean shouldRemove = false;
+	public void remove() { shouldRemove = true; }
+	public boolean shouldRemove() { return shouldRemove; }
+
+	public Hitbox getHitbox() { return this; }
 }

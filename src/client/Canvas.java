@@ -17,7 +17,7 @@ import game.world.Tiles.Tile;
 class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
-	BufferedImage healthImage, armorImage, gunImage;
+	BufferedImage healthImage, armorImage, gunImage, deathImage;
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
@@ -27,6 +27,8 @@ class Canvas extends JPanel {
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
+		deathImage = Canvas.loadImage("res/Menus/Death.png");
+
 	}
 	Random rand = new Random();
 
@@ -46,7 +48,6 @@ class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g);
-
 		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
@@ -61,6 +62,7 @@ class Canvas extends JPanel {
 
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
+		drawDeath(g, client.getMe());
 	}
 	final private int playerWidth = 50;
 	int red = rand.nextInt(255) + 1;
@@ -99,7 +101,7 @@ class Canvas extends JPanel {
 		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 		g.setColor(new Color(50, 50, 50, 100));
 		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-		
+
 	}
 
 	final private int gridWidth = 100;
@@ -125,7 +127,6 @@ class Canvas extends JPanel {
 		}
 		return images;
 	}
-
 	private void drawTerrain(Graphics g) {
 
 		PlayerEntity me = client.getMe();
@@ -152,7 +153,16 @@ class Canvas extends JPanel {
 
 		drawGrid(g);
 	}
+	public void drawDeath(Graphics g, PlayerEntity p){
+		if(p.health <= 0){
+			Color reddish = new Color(135, 0, 0, 50);
+			g.setColor(reddish);
+			g.fillRect(0, 0, W, H);
+			g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
 
+		}
+
+	}
 	private void drawGrid(Graphics g) { // deprecated (soon)
 		PlayerEntity me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;

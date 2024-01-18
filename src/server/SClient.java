@@ -137,14 +137,17 @@ class SClient extends Circle {
 			case RELOAD -> reload();
 			case USE -> useItem();
 			case DROP -> dropItem();
+			case Dead -> kysURSELF();
+
 		}
 	}
-
+	private void kysURSELF(){
+		health = 0;
+	}
 	// todo implement
 	private void attack() {
 		System.out.printf("Client %d unleashed a devastating attack!\n", id);
-		//health--;
-		//armor++;
+		health--;
 	}
 
 	// todo implement
@@ -177,6 +180,9 @@ class SClient extends Circle {
 		if (dx != 0 && dy != 0) {
 			dx /= Math.sqrt(2);
 			dy /= Math.sqrt(2);
+		}
+		if (health <= 0){
+			kysURSELF();
 		}
 
 		double newX = getX() + dx;

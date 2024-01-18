@@ -8,11 +8,10 @@ import shared.GlobalConstants;
 // the shared class that holds information about players and gets sent from the server to clients
 // and draws them on the client
 public abstract class EntityInfo implements Serializable {
-	public int xGlobal, yGlobal, id;
-	public EntityInfo(int x, int y, int id) {
+	public int xGlobal, yGlobal;
+	public EntityInfo(int x, int y) {
 		this.xGlobal = x;
 		this.yGlobal = y;
-		this.id = id;
 	}
 	public void draw(Graphics g, Client c, int playerX, int playerY) {
 		customDraw(g, c, xGlobal - playerX + GlobalConstants.DRAWING_AREA_WIDTH/2,

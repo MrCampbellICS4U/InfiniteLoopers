@@ -6,7 +6,7 @@ import client.Client;
 public class BulletInfo extends EntityInfo {
 	private int radius;
 	public BulletInfo(int x, int y, int radius) {
-		super(x, y, -1);
+		super(x, y);
 		this.radius = radius;
 	}
 

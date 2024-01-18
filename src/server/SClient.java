@@ -1,9 +1,7 @@
 package server;
 
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import game.world.Tiles.Tile;
 import game.world.Tiles.AirTile;
@@ -151,6 +149,7 @@ class SClient extends Circle {
 	// todo implement
 	private void attack() {
 		System.out.printf("Client %d unleashed a devastating attack!\n", id);
+		health--;
 	}
 
 	// todo implement
@@ -169,7 +168,7 @@ class SClient extends Circle {
 	}
 
 	private final int speed = 5;
-
+	boolean checking = false;
 	public void updatePlayer(Tile[][][] map) {
 		double dx = 0, dy = 0;
 		if (up)
@@ -186,6 +185,10 @@ class SClient extends Circle {
 		}
 		if (health <= 0){
 			kysURSELF();
+		}
+		else if (health < 3 && health > 0 && !checking){
+			checkHealth();
+			checking = true;
 		}
 
 		double newX = getX() + dx;
@@ -204,7 +207,24 @@ class SClient extends Circle {
 			handleVisibleTileUpdates(map);
 		}
 	}
+	public void checkHealth(){
+		Timer timer = new Timer();
+		int seconds = 6;
 
+		timer.schedule(new TimerTask() {
+			int count = seconds;
+
+			@Override
+			public void run() {
+				if (count == 0) {
+					health++;
+					checking = !checking;
+					timer.cancel(); // Stop the timer
+				}
+				count--;
+			}
+		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
+	}
 	public void sendPackets() {
 		if (!ready)
 			return;

@@ -103,8 +103,11 @@ class SClient extends Circle implements Entity {
 	public int getID() { return id; }
 
 	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void remove() { pl.close(); super.remove(); server.removeEntity(this); }
-	
+
+	private boolean shouldRemove = false;
+	public void remove() { pl.close(); shouldRemove = true; }
+	public boolean shouldRemove() { return shouldRemove; }
+
 	Tile[][][] map;
 	private Server server;
 	private Chunker chunker;
@@ -263,4 +266,6 @@ class SClient extends Circle implements Entity {
 	public void smashInto(Hitbox h) {
 		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
 	}
+
+	public Hitbox getHitbox() { return this; }
 }

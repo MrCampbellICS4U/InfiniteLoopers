@@ -4,17 +4,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.HashMap;
 
 import shared.GlobalConstants;
 import entities.*;
 import game.world.Tiles.Tile;
 
-class Canvas extends JPanel {
+public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 	private int W, H; // width and height
 	BufferedImage healthImage, armorImage, gunImage, deathImage;
@@ -29,12 +29,12 @@ class Canvas extends JPanel {
 		deathImage = Canvas.loadImage("res/Menus/Death.png");
 
 	}
-	Random rand = new Random();
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		if (client.getMe() == null)
+		PlayerInfo me = client.getMe();
+		if (me == null)
 			return; // we haven't got a packet from the server telling us our position yet
 
 		Graphics2D g2 = (Graphics2D) g;
@@ -54,43 +54,25 @@ class Canvas extends JPanel {
 		g.drawString(client.getTPS() + " tps", 20, 120);
 		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
-		g.drawString("collision checks/frame: " + client.getCollisionChecksPerFrame(), 20, 240);
+		g.drawString("collision checks/tick: " + client.getCollisionChecksPerFrame(), 20, 240);
 
-		for (Entity entity : client.getEntities())
-			drawPlayer(g, (PlayerEntity)entity);
+		for (EntityInfo entity : client.getEntities()) {
+			entity.draw(g2, client, me.xGlobal, me.yGlobal);
+		}
 
 		drawBorder(g); // draw border over players
 		drawUI(g, client.getMe());
 		drawDeath(g, client.getMe());
 	}
-	final private int playerWidth = 50;
+
+	Random rand = new Random();
 	int red = rand.nextInt(255) + 1;
 	int green = rand.nextInt(255) + 1;
 	int blue = rand.nextInt(255) + 1;
-	private void drawPlayer(Graphics g, PlayerEntity player) {
-		int xCanvasCentre = W/2;
-		int yCanvasCentre = H/2;
-
-		PlayerEntity me = client.getMe();
-		int playerRelX = player.xGlobal - me.xGlobal + xCanvasCentre;
-		int playerRelY = player.yGlobal - me.yGlobal + yCanvasCentre;
-		if (me.equals(player)){
-			// drawing me
-			Color playerColor = new Color(red, green, blue);
-			g.setColor(playerColor);
-		} else {
-			// drawing an opponent
-			g.setColor(Color.RED);
-		}
-		g.fillOval(playerRelX - playerWidth/2, playerRelY - playerWidth/2, playerWidth, playerWidth);
-
-		int length = 100;
-		g.setColor(Color.RED);
-		g.drawLine(playerRelX, playerRelY, playerRelX + (int) (Math.cos(player.angle) * length),
-				playerRelY + (int) (Math.sin(player.angle) * length));
-	}
-
-	private void drawUI(Graphics g, PlayerEntity p) {
+	Color playerColor = new Color(red, green, blue);
+	public Color getPlayerColor() { return playerColor; }
+	
+	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
 		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
@@ -128,7 +110,7 @@ class Canvas extends JPanel {
 	}
 	private void drawTerrain(Graphics g) {
 
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (Tile currentTile : tiles) {
@@ -152,7 +134,7 @@ class Canvas extends JPanel {
 
 		drawGrid(g);
 	}
-	public void drawDeath(Graphics g, PlayerEntity p){
+	public void drawDeath(Graphics g, PlayerInfo p){
 		if(p.health <= 0){
 			Color reddish = new Color(135, 0, 0, 50);
 			g.setColor(reddish);
@@ -166,7 +148,7 @@ class Canvas extends JPanel {
 
 	}
 	private void drawGrid(Graphics g) { // deprecated (soon)
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
 		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
@@ -180,7 +162,7 @@ class Canvas extends JPanel {
 	}
 
 	private void drawBorder(Graphics g) {
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 
 		int xCanvasCentre = W/2;
 		int yCanvasCentre = H/2;

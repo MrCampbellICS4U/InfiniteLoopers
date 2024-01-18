@@ -22,9 +22,8 @@ public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
 		new Client();
 	}
-
 	JFrame window, mainMenu, settingsMenu;
-	Canvas canvas;
+
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
@@ -39,6 +38,8 @@ public class Client implements LastWish, ActionListener {
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
+	Canvas canvas;
+	public Canvas getCanvas() { return canvas; }
 	public static boolean dead = false;
 
 	Client() {
@@ -154,9 +155,9 @@ public class Client implements LastWish, ActionListener {
 		}
 	}
 
-	private PlayerEntity me;
+	private PlayerInfo me;
 
-	public PlayerEntity getMe() {
+	public PlayerInfo getMe() {
 		return me;
 	}
 
@@ -179,7 +180,11 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	void tick() {
-		PlayerEntity player = this.getMe();
+		frame++;
+		setVisibleTiles(getNextVisibleTiles());
+		canvas.repaint();
+		map.repaint();
+		PlayerInfo player = this.getMe();
 		if (player == null) return;
 		if (player.health > 0 || !dead){
 			frame++;
@@ -190,7 +195,6 @@ public class Client implements LastWish, ActionListener {
 				dead = true;
 			}
 		}
-
 	}
 
 	// gets called once a second
@@ -199,19 +203,23 @@ public class Client implements LastWish, ActionListener {
 		frame = 0;
 		send(new GetServerInfoPacket());
 	}
+	
+	private int id;
+	public int getID() { return id; }
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
+		this.id = id;
 		ready = true;
 		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 	}
 
-	private ArrayList<Entity> entities = new ArrayList<>();
+	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
-	public ArrayList<Entity> getEntities() {
+	public ArrayList<EntityInfo> getEntities() {
 		return entities;
 	}
 
@@ -221,12 +229,18 @@ public class Client implements LastWish, ActionListener {
 		this.collisionChecksPerFrame = collisionChecksPerFrame;
 	}
 
-	public void setMe(PlayerEntity me) {
+	public void setMe(PlayerInfo me) {
 		this.me = me;
 	}
 
-	public void setEntities(ArrayList<Entity> entities) {
+	public void setEntities(ArrayList<EntityInfo> entities) {
 		this.entities = entities;
+		for (EntityInfo e : entities) {
+			if (e instanceof PlayerInfo) {
+				PlayerInfo p = (PlayerInfo)e;
+				if (p.id == id) setMe((PlayerInfo)p);
+			}
+		}
 	}
 
 	void handleMouseMovement(int mouseX, int mouseY) {
@@ -295,7 +309,7 @@ public class Client implements LastWish, ActionListener {
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
-		PlayerEntity me = this.getMe();
+		PlayerInfo me = this.getMe();
 		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
 			return tiles;
 

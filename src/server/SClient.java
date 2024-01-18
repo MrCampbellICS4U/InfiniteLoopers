@@ -11,7 +11,7 @@ import client.*;
 import entities.*;
 import collision.*;
 // clients from the server's perspective
-class SClient extends Circle {
+class SClient extends Circle implements Entity {
 	private double lastx, lasty;
 	private Tile[][][] visibleTiles;
 
@@ -33,7 +33,7 @@ class SClient extends Circle {
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
 		// direction
-		// converting the pixel location to tile location and round tonearest tile size
+		// converting the pixel location to tile location and round to nearest tile size
 		int topLeftX = (int) (x - GlobalConstants.DRAWING_AREA_WIDTH / 2) / GlobalConstants.TILE_WIDTH
 				- GlobalConstants.TILE_X_BUFFER;
 		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
@@ -86,7 +86,9 @@ class SClient extends Circle {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 
-	public PlayerEntity getInfo() { return new PlayerEntity((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
+	public PlayerInfo getInfo() {
+		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
+	}
 
 	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
 	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
@@ -98,15 +100,25 @@ class SClient extends Circle {
 
 	PacketLord<Server> pl;
 	private final int id;
+	public int getID() { return id; }
+
 	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void remove() { pl.close(); super.remove(); }
-	SClient(Socket socket, Server state, int id, Chunker c) {
+	public void remove() { pl.close(); super.remove(); server.removeEntity(this); }
+	
+	Tile[][][] map;
+	private Server server;
+	private Chunker chunker;
+	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map) {
 		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
 			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
 
 		this.id = id;
-		pl = new PacketLord<Server>(socket, state);
+		pl = new PacketLord<Server>(socket, server);
 		pl.setID(id);
+		this.map = map;
+		this.server = server;
+		server.addEntity(this);
+		this.chunker = c;
 	}
 
 	// is the client ready to receive messages?
@@ -148,8 +160,7 @@ class SClient extends Circle {
 	}
 	// todo implement
 	private void attack() {
-		System.out.printf("Client %d unleashed a devastating attack!\n", id);
-		health--;
+		new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
 	}
 
 	// todo implement
@@ -167,9 +178,15 @@ class SClient extends Circle {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
+	
+	public void getShot() {
+		health--;
+	}
+
 	private final int speed = 5;
-	boolean checking = false;
-	public void updatePlayer(Tile[][][] map) {
+
+  boolean checking = false;
+	public void update() {
 		double dx = 0, dy = 0;
 		if (up)
 			dy -= speed;
@@ -229,22 +246,21 @@ class SClient extends Circle {
 		if (!ready)
 			return;
 
-		send(new MePacket(getInfo()));
 		send(new EntitiesPacket(entities));
 	}
 
 	// all the entities, including self, you can see
-	private ArrayList<Entity> entities = new ArrayList<>();
+	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
 	public void clearEntities() {
 		entities = new ArrayList<>(); // DO NOT CHANGE THIS TO CLEAR, IT BREAKS AND I DO NOT KNOW WHY
 	}
 
-	public void addEntity(Entity e) {
+	public void addEntity(EntityInfo e) {
 		entities.add(e);
 	}
 
 	public void smashInto(Hitbox h) {
-		System.out.println("client smashed into something at time " + System.currentTimeMillis());
+		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
 	}
 }

@@ -185,9 +185,9 @@ public class Client implements LastWish, ActionListener {
 		}
 	}
 
-	private PlayerEntity me;
+	private PlayerInfo me;
 
-	public PlayerEntity getMe() {
+	public PlayerInfo getMe() {
 		return me;
 	}
 
@@ -237,9 +237,9 @@ public class Client implements LastWish, ActionListener {
 		System.out.println("Connected!");
 	}
 
-	private ArrayList<Entity> entities = new ArrayList<>();
+	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
-	public ArrayList<Entity> getEntities() {
+	public ArrayList<EntityInfo> getEntities() {
 		return entities;
 	}
 
@@ -249,14 +249,14 @@ public class Client implements LastWish, ActionListener {
 		this.collisionChecksPerFrame = collisionChecksPerFrame;
 	}
 
-	public void setMe(PlayerEntity me) {
+	public void setMe(PlayerInfo me) {
 		this.me = me;
 	}
 
-	public void setEntities(ArrayList<Entity> entities) {
+	public void setEntities(ArrayList<EntityInfo> entities) {
 		this.entities = entities;
-		for (Entity e : entities) {
-			if (e.id == id) setMe((PlayerEntity)e);
+		for (EntityInfo e : entities) {
+			if (e.id == id) setMe((PlayerInfo)e);
 		}
 	}
 
@@ -413,7 +413,7 @@ public class Client implements LastWish, ActionListener {
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
-		PlayerEntity me = this.getMe();
+		PlayerInfo me = this.getMe();
 		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
 			return tiles;
 

@@ -4,14 +4,13 @@ import java.awt.*;
 import client.Client;
 import shared.GlobalConstants;
 
-// the shared class that holds information about players
-public class PlayerEntity extends Entity {
+public class PlayerInfo extends EntityInfo {
 	public double angle;
 	public int radius;
 	public int health;
 	public int armor;
 	public String hotBar[] = new String[3];
-	public PlayerEntity(int x, int y, int id, int radius, double angle, int health, int armor, String[] hotBar) {
+	public PlayerInfo(int x, int y, int id, int radius, double angle, int health, int armor, String[] hotBar) {
 		super(x, y, id);
 		this.radius = radius;
 		this.angle = angle;

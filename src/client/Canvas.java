@@ -31,7 +31,7 @@ public class Canvas extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 		if (me == null)
 			return; // we haven't got a packet from the server telling us our position yet
 
@@ -55,7 +55,7 @@ public class Canvas extends JPanel {
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
 		g.drawString("collision checks/tick: " + client.getCollisionChecksPerFrame(), 20, 240);
 
-		for (Entity entity : client.getEntities()) {
+		for (EntityInfo entity : client.getEntities()) {
 			entity.draw(g2, client, me.xGlobal, me.yGlobal);
 		}
 
@@ -70,7 +70,7 @@ public class Canvas extends JPanel {
 	Color playerColor = new Color(red, green, blue);
 	public Color getPlayerColor() { return playerColor; }
 	
-	private void drawUI(Graphics g, PlayerEntity p) {
+	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
 		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
 		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
@@ -108,7 +108,7 @@ public class Canvas extends JPanel {
 
 	private void drawTerrain(Graphics g) {
 
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (Tile currentTile : tiles) {
@@ -134,7 +134,7 @@ public class Canvas extends JPanel {
 	}
 
 	private void drawGrid(Graphics g) { // deprecated (soon)
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
 		int yCentre = H / 2 - me.yGlobal % gridWidth;
 
@@ -148,7 +148,7 @@ public class Canvas extends JPanel {
 	}
 
 	private void drawBorder(Graphics g) {
-		PlayerEntity me = client.getMe();
+		PlayerInfo me = client.getMe();
 
 		int xCanvasCentre = W/2;
 		int yCanvasCentre = H/2;

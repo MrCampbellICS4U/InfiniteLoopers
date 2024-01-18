@@ -13,7 +13,7 @@ import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
-import entities.PlayerEntity;
+import entities.PlayerInfo;
 import game.world.Tiles.Tile;
 
 public class MapDrawing extends JFrame{
@@ -21,7 +21,7 @@ public class MapDrawing extends JFrame{
     int mapSizeW = 700;
     int mapSizeH= 700;
     Client c;
-    MapDrawing(Client c, PlayerEntity player) {
+    MapDrawing(Client c, PlayerInfo player) {
 		this.c = c;
         DrawingPanel panel = new DrawingPanel();
 		Color darkGreen = new Color(0, 102, 0);
@@ -49,7 +49,7 @@ public class MapDrawing extends JFrame{
 			int yMapCentre = mapSizeH/2;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			PlayerEntity me = c.getMe();
+			PlayerInfo me = c.getMe();
 			double playerRelX = (((double)me.xGlobal)/GlobalConstants.WORLD_WIDTH);
 			double playerRelY = (((double)me.yGlobal)/GlobalConstants.WORLD_HEIGHT);
 			g.fillOval((int) (playerRelX*mapSizeW), (int) (playerRelY*mapSizeH), 10, 10);

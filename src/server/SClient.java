@@ -14,7 +14,7 @@ import entities.*;
 import collision.*;
 
 // clients from the server's perspective
-class SClient extends Circle implements Renderable {
+class SClient extends Circle implements Entity {
 	private double lastx, lasty;
 	private Tile[][][] visibleTiles;
 
@@ -89,8 +89,8 @@ class SClient extends Circle implements Renderable {
 	public double setAngle(double angle) { return this.angle = angle; }
 	public double getAngle() { return angle; }
 
-	public PlayerEntity getInfo() {
-		return new PlayerEntity((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
+	public PlayerInfo getInfo() {
+		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
 	}
 
 	public String hotBar[] = new String[3];
@@ -105,7 +105,7 @@ class SClient extends Circle implements Renderable {
 	public int getID() { return id; }
 
 	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void remove() { pl.close(); super.remove(); server.removeRenderable(this); }
+	public void remove() { pl.close(); super.remove(); server.removeEntity(this); }
 	
 	Tile[][][] map;
 	private Server server;
@@ -119,7 +119,7 @@ class SClient extends Circle implements Renderable {
 		pl.setID(id);
 		this.map = map;
 		this.server = server;
-		server.addRenderable(this);
+		server.addEntity(this);
 		this.chunker = c;
 	}
 
@@ -213,13 +213,13 @@ class SClient extends Circle implements Renderable {
 	}
 
 	// all the entities, including self, you can see
-	private ArrayList<Entity> entities = new ArrayList<>();
+	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
 	public void clearEntities() {
 		entities = new ArrayList<>(); // DO NOT CHANGE THIS TO CLEAR, IT BREAKS AND I DO NOT KNOW WHY
 	}
 
-	public void addEntity(Entity e) {
+	public void addEntity(EntityInfo e) {
 		entities.add(e);
 	}
 

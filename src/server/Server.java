@@ -13,7 +13,7 @@ import client.Client;
 import game.world.WorldGenerator;
 import game.world.Tiles.Tile;
 import collision.*;
-import entities.Renderable;
+import entities.Entity;
 
 public class Server implements LastWish, ActionListener {
 	public static void main(String[] args) {
@@ -69,14 +69,14 @@ public class Server implements LastWish, ActionListener {
 	private double collisionChecksPerFrame = 0;
 	public double getCollisionChecksPerFrame() { return collisionChecksPerFrame; }
 
-	private ArrayList<Renderable> renderables = new ArrayList<>();
-	public void addRenderable(Renderable r) { renderables.add(r); }
-	public void removeRenderable(Renderable r) { renderables.remove(r); }
+	private ArrayList<Entity> entities = new ArrayList<>();
+	public void addEntity(Entity r) { entities.add(r); }
+	public void removeEntity(Entity r) { entities.remove(r); }
 
 	void tick() {
 		tick++;
-		for (int i = 0; i < renderables.size(); i++) {
-			renderables.get(i).update();
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).update();
 		}
 
 		collisionChecks += chunker.checkCollisions();
@@ -86,7 +86,7 @@ public class Server implements LastWish, ActionListener {
 			c.clearEntities();
 
 		for (SClient c : clients.values()) {
-			for (Renderable r : renderables) {
+			for (Entity r : entities) {
 				c.addEntity(r.getInfo());
 			}
 		}

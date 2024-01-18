@@ -3,11 +3,11 @@ package server;
 import collision.Chunker;
 import collision.Circle;
 import collision.Hitbox;
-import entities.BulletEntity;
+import entities.BulletInfo;
 import entities.Entity;
-import entities.Renderable;
+import entities.EntityInfo;
 
-public class Bullet extends Circle implements Renderable {
+public class Bullet extends Circle implements Entity {
 	final private double angle;
 	private double speed;
 	private int senderID;
@@ -18,7 +18,7 @@ public class Bullet extends Circle implements Renderable {
 		this.angle = angle;
 		this.senderID = senderID;
 		this.server = server;
-		server.addRenderable(this);
+		server.addEntity(this);
 	}
 
 	public void smashInto(Hitbox h) {
@@ -30,8 +30,8 @@ public class Bullet extends Circle implements Renderable {
 		}
 	}
 
-	public Entity getInfo() {
-		return new BulletEntity((int)getX(), (int)getY(), (int)getRadius());
+	public EntityInfo getInfo() {
+		return new BulletInfo((int)getX(), (int)getY(), (int)getRadius());
 	}
 
 	public void update() {
@@ -40,6 +40,6 @@ public class Bullet extends Circle implements Renderable {
 
 	public void remove() {
 		super.remove();
-		server.removeRenderable(this);
+		server.removeEntity(this);
 	}
 }

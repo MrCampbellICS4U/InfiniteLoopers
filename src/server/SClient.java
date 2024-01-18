@@ -162,7 +162,7 @@ class SClient extends Circle implements Entity {
 	}
 	// todo implement
 	private void attack() {
-		new Bullet(getX(), getY(), 5, angle, 1, id, chunker, server);
+		new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
 	}
 
 	// todo implement

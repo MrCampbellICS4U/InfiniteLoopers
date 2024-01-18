@@ -12,6 +12,7 @@ public class Bullet extends Circle implements Entity {
 	private double speed;
 	private int senderID;
 	private Server server;
+	private int ticksAlive;
 	public Bullet(double x, double y, double radius, double angle, double speed, int senderID, Chunker c, Server server) {
 		super(x, y, radius, c);
 		this.speed = speed;
@@ -36,6 +37,8 @@ public class Bullet extends Circle implements Entity {
 
 	public void update() {
 		setPosition(getX() + Math.cos(angle)*speed, getY() + Math.sin(angle)*speed);
+		ticksAlive++;
+		if (ticksAlive >= 3000) remove();
 	}
 
 	public void remove() {

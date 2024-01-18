@@ -25,7 +25,7 @@ public class Bullet extends Circle implements Entity {
 		if (h instanceof SClient) {
 			SClient client = (SClient)h;
 			if (client.getID() == senderID) return; // hit self
-			System.out.println("Bullet hit something!");
+			client.getShot();
 			this.remove();
 		}
 	}

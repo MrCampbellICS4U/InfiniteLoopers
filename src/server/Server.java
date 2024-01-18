@@ -82,17 +82,19 @@ public class Server implements LastWish, ActionListener {
 		collisionChecks += chunker.checkCollisions();
 
 		// send all entities to all entities
-		for (SClient c : clients.values())
-			c.clearEntities();
+		for (int i = 0; i < clients.size(); i++) {
+			clients.get(i).clearEntities();
+		}
 
-		for (SClient c : clients.values()) {
+		for (int i = 0; i < clients.size(); i++) {
 			for (Entity r : entities) {
-				c.addEntity(r.getInfo());
+				clients.get(i).addEntity(r.getInfo());
 			}
 		}
 
-		for (SClient c : clients.values())
-			c.sendPackets();
+		for (int i = 0; i < clients.size(); i++) {
+			clients.get(i).sendPackets();
+		}
 	}
 
 	// gets called once a second

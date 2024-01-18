@@ -134,7 +134,7 @@ public class Canvas extends JPanel {
 
 		drawGrid(g);
 	}
-	public void drawDeath(Graphics g, PlayerEntity p){
+	public void drawDeath(Graphics g, PlayerInfo p){
 		if(p.health <= 0){
 			Color reddish = new Color(135, 0, 0, 50);
 			g.setColor(reddish);

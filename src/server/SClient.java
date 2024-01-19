@@ -157,7 +157,7 @@ class SClient extends Circle implements Entity {
 	private void kysURSELF(){
 		health = 0;
 		counter++;
-		if(counter > 100){
+		if(counter > 10){
 			pl.close();
 		}
 	}

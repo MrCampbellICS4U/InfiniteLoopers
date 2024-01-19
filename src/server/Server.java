@@ -24,8 +24,10 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 
-	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT, GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT,
+			GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
 	private long lastTickTime = System.currentTimeMillis();
+
 	Server() {
 		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
 		tickTimer.setActionCommand("tick");
@@ -35,7 +37,8 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 4)
+		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT,
+				GlobalConstants.SEED)
 				.generateWorld();
 
 		System.out.println("Running server on port " + port);
@@ -74,11 +77,14 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	private ArrayList<Entity> entities = new ArrayList<>();
-	public void addEntity(Entity r) { entities.add(r); }
+
+	public void addEntity(Entity r) {
+		entities.add(r);
+	}
 
 	void tick() {
 		long currentTime = System.currentTimeMillis();
-		double deltaTime = (double)(currentTime - lastTickTime) / (1/(double)GlobalConstants.TPS * 1000);
+		double deltaTime = (double) (currentTime - lastTickTime) / (1 / (double) GlobalConstants.TPS * 1000);
 		lastTickTime = currentTime;
 
 		tick++;
@@ -89,7 +95,7 @@ public class Server implements LastWish, ActionListener {
 				entities.remove(i);
 				chunker.removeHitbox(e.getHitbox());
 				if (e instanceof SClient) {
-					SClient c = (SClient)e;
+					SClient c = (SClient) e;
 					clients.remove(c.getID());
 				}
 
@@ -101,7 +107,6 @@ public class Server implements LastWish, ActionListener {
 		}
 
 		collisionChecks += chunker.checkCollisions();
-
 
 		// send all entities to all clients
 		for (SClient c : clients.values()) {

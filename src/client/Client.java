@@ -2,6 +2,8 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.Timer;
+
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.*;
@@ -22,6 +24,7 @@ public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
 		new Client();
 	}
+
 	JFrame window, mainMenu, settingsMenu;
 
 	DrawingPanel main;
@@ -39,7 +42,10 @@ public class Client implements LastWish, ActionListener {
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
 	Canvas canvas;
-	public Canvas getCanvas() { return canvas; }
+
+	public Canvas getCanvas() {
+		return canvas;
+	}
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -70,20 +76,24 @@ public class Client implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
-		//handleException("Could not connect to server", e);
+		// handleException("Could not connect to server", e);
 	}
 
 	private PacketLord<Client> pl;
 
 	boolean ready = false; // gets set to true when we get our id
+
 	public void send(PacketTo<Server> p) {
-		if (!ready) return; // not ready to send yet
-		if (me != null && me.health == 0) return; // don't send packets when you're dead (and the socket is closed)
+		if (!ready)
+			return; // not ready to send yet
+		if (me != null && me.health == 0)
+			return; // don't send packets when you're dead (and the socket is closed)
 
 		pl.send(p);
 	}
 
 	Timer tickTimer;
+
 	private void startGame(String ip, int port) {
 
 		try {
@@ -91,10 +101,9 @@ public class Client implements LastWish, ActionListener {
 			pl = new PacketLord<Client>(socket, this);
 		} catch (UnknownHostException e) {
 			handleException("Could not connect to server", e);
-		} catch (java.io.EOFException e){
+		} catch (java.io.EOFException e) {
 			System.out.println("GG");
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			handleException("Could not connect to server", e);
 		}
 
@@ -112,20 +121,22 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("tick")) tick();
-		if (e.getActionCommand().equals("secUpdate")) secUpdate();
-		if (settingsMenu.isVisible()){
+		if (e.getActionCommand().equals("tick"))
+			tick();
+		if (e.getActionCommand().equals("secUpdate"))
+			secUpdate();
+		if (settingsMenu.isVisible()) {
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
-			try{
-				if (ipInput.equals("")){
+			try {
+				if (ipInput.equals("")) {
 					ip = "127.0.0.1";
-				}else{
+				} else {
 					ip = ipInput;
 				}
-				if ((portNum.getText()).equals("")){
+				if ((portNum.getText()).equals("")) {
 					port = 2000;
-				}else{
+				} else {
 					port = Integer.parseInt(portNum.getText());
 				}
 
@@ -137,9 +148,11 @@ public class Client implements LastWish, ActionListener {
 					settingsMenu.setVisible(false);
 
 				}
-			}catch(Exception exc){
-				JOptionPane.showMessageDialog(null, "Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000", "Error, Get Smarter",
-					JOptionPane.ERROR_MESSAGE);
+			} catch (Exception exc) {
+				JOptionPane.showMessageDialog(null,
+						"Please enter a valid ip and port number. \nIP Format: 00.000.00.0\nPort Format: 0000",
+						"Error, Get Smarter",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		if (mainMenu.isVisible()) {
@@ -148,8 +161,7 @@ public class Client implements LastWish, ActionListener {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
 				startGame(ip, port);
-			}
-			else if (action.equals("settings")) {
+			} else if (action.equals("settings")) {
 				mainMenu.setVisible(false);
 				settingsMenu.setVisible(true);
 				settingsMenu.setLocationRelativeTo(null);
@@ -173,6 +185,7 @@ public class Client implements LastWish, ActionListener {
 	public int getPing() {
 		return ping;
 	}
+
 	public int getTPS() {
 		return tps;
 	}
@@ -188,7 +201,8 @@ public class Client implements LastWish, ActionListener {
 		map.repaint();
 
 		PlayerInfo me = this.getMe();
-		if (me == null) return;
+		if (me == null)
+			return;
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
@@ -209,7 +223,10 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private int id;
-	public int getID() { return id; }
+
+	public int getID() {
+		return id;
+	}
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
@@ -241,8 +258,9 @@ public class Client implements LastWish, ActionListener {
 		this.entities = entities;
 		for (EntityInfo e : entities) {
 			if (e instanceof PlayerInfo) {
-				PlayerInfo p = (PlayerInfo)e;
-				if (p.id == id) setMe((PlayerInfo)p);
+				PlayerInfo p = (PlayerInfo) e;
+				if (p.id == id)
+					setMe((PlayerInfo) p);
 			}
 		}
 	}
@@ -254,17 +272,12 @@ public class Client implements LastWish, ActionListener {
 		send(new ClientPlayerRotationPacket(angle));
 	}
 
-
-
-
 	public static boolean mapOpen = false;
 
 	public static void toggleMap() {
 		mapOpen = !mapOpen;
 		map.setVisible(mapOpen);
 	}
-
-
 
 	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
 		return this.visibleTiles = (ArrayList<Tile>) terrain.clone();
@@ -340,14 +353,15 @@ public class Client implements LastWish, ActionListener {
 				tilesToPurge.add(currentTile);
 			}
 		}
- 
+
 		for (Tile byebyeTile : tilesToPurge) {
 			tiles.remove(byebyeTile);
 		}
 
 		return tiles;
 	}
-	void setupMainMenu(){
+
+	void setupMainMenu() {
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainMenu.setResizable(false);
@@ -363,22 +377,23 @@ public class Client implements LastWish, ActionListener {
 
 		settings.setActionCommand("settings");
 		settings.addActionListener(this);
-		double buttonWidth = W*0.2;
-		double buttonHeight = H*0.15;
-		double playLocationWidth = W*0.58;
-		double settingsLocationWidth = W*0.2;
-		double settingsWidth = W*0.12;
-		double buttonLocationHeight = H*0.8;
+		double buttonWidth = W * 0.2;
+		double buttonHeight = H * 0.15;
+		double playLocationWidth = W * 0.58;
+		double settingsLocationWidth = W * 0.2;
+		double settingsWidth = W * 0.12;
+		double buttonLocationHeight = H * 0.8;
 		play.setOpaque(false);
 		play.setContentAreaFilled(false);
 		play.setBorderPainted(false);
-		play.setBounds((int)playLocationWidth, (int)buttonLocationHeight, (int)buttonWidth, (int)buttonHeight);
+		play.setBounds((int) playLocationWidth, (int) buttonLocationHeight, (int) buttonWidth, (int) buttonHeight);
 
 		settings.setOpaque(false);
 		settings.setBorderPainted(false);
 		settings.setContentAreaFilled(false);
 
-		settings.setBounds((int)settingsLocationWidth, (int)buttonLocationHeight, (int)settingsWidth, (int)buttonHeight);
+		settings.setBounds((int) settingsLocationWidth, (int) buttonLocationHeight, (int) settingsWidth,
+				(int) buttonHeight);
 
 		main.add(play);
 		main.add(settings);
@@ -389,7 +404,8 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.setResizable(false);
 		mainMenu.setVisible(true);
 	}
-	void setupSettingsMenu(){
+
+	void setupSettingsMenu() {
 		settingsMenu = new JFrame("Sarvivarz");
 		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		settingsPanel = new DrawingPanel2();
@@ -425,22 +441,25 @@ public class Client implements LastWish, ActionListener {
 		settingsMenu.setResizable(false);
 		settingsMenu.setLocationRelativeTo(null);
 	}
+
 	private class DrawingPanel2 extends JPanel {
 
 		DrawingPanel2() {
 			this.setPreferredSize(new Dimension(W, H));
 		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			//Draw game menu
+			// Draw game menu
 			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();
 		}
 	}
+
 	// Drawing panel for the home page
 	private class DrawingPanel extends JPanel {
 
@@ -459,6 +478,7 @@ public class Client implements LastWish, ActionListener {
 			H = this.getHeight();
 		}
 	}
+
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {

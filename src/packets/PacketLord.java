@@ -23,8 +23,14 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	private Dest dest;
 
 	private int id;
-	public int getID() { return id; }
-	public void setID(int id) { this.id = id; }
+
+	public int getID() {
+		return id;
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
 
 	public PacketLord(Socket socket, Dest dest) {
 		this.socket = socket;
@@ -35,12 +41,16 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 
 			// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
 			// it appears that ObjectInputStreams are very social creatures
-			// who will throw hissy fits (block the thread) until they have their ObjectOutputStream
-			// so if both ObjectInputStreams are opened first, both the client and server will block
-			// and then neither can get around to opening an ObjectOutputStream to unblock the other
+			// who will throw hissy fits (block the thread) until they have their
+			// ObjectOutputStream
+			// so if both ObjectInputStreams are opened first, both the client and server
+			// will block
+			// and then neither can get around to opening an ObjectOutputStream to unblock
+			// the other
 
 			out = new ObjectOutputStream(socket.getOutputStream());
-			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream())); // buffering might increase performance?
+			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream())); // buffering might increase
+																							// performance?
 		} catch (SocketException e) {
 			dest.handleException("SocketException when disabling Nagle's algorithm", e);
 		} catch (IOException e) {
@@ -50,9 +60,12 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		start();
 	}
 
-	// this is synchronized so that if multiple threads try to send packets, the packets don't get mixed together
-	// which would cause the receiver to just spontaneously decide to die as it tries to read pied packets
-	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're sending it somewhere else
+	// this is synchronized so that if multiple threads try to send packets, the
+	// packets don't get mixed together
+	// which would cause the receiver to just spontaneously decide to die as it
+	// tries to read pied packets
+	// the type of p isn't PacketTo<Dest>, since we are the Destination and we're
+	// sending it somewhere else
 	public synchronized void send(PacketTo<?> p) {
 		try {
 			p.setID(id);
@@ -70,8 +83,10 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			in.close();
 			out.close();
 
-			// we need to check if it's already closed because of java's multiple ways of signalling that the socket has closed
-			if (!socket.isClosed()) socket.close();
+			// we need to check if it's already closed because of java's multiple ways of
+			// signalling that the socket has closed
+			if (!socket.isClosed())
+				socket.close();
 		} catch (IOException e) {
 			dest.handleException("IOException when closing PacketLord", e);
 		}
@@ -81,13 +96,15 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				PacketTo<Dest> p = (PacketTo<Dest>)in.readObject();
+				PacketTo<Dest> p = (PacketTo<Dest>) in.readObject();
 				p.handle(dest);
 			}
 		} catch (EOFException e) {
+			// this what's supposed to be thrown on disconnection
 			dest.handleDisconnection(id, e);
 		} catch (SocketException e) {
-			// sometimes when disconnecting it throws this for some reason, with the message "Connection reset"
+			// sometimes when disconnecting it throws this for some reason, with the message
+			// "Connection reset"
 			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
 			dest.handleException("IOException while reading packet", e);

@@ -74,15 +74,18 @@ public class Canvas extends JPanel {
 	
 	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
-		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
-		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
+		for (int i = 0; i < p.health; i++) {
+			g.drawImage(healthImage, (-30 + i * 75), 700, 200, 100, null);
+		}
+		for (int i = 0; i < p.armor; i++) {
+			g.drawImage(armorImage, (37 + i * 78), 650, 60, 55, null);
+		}
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
 
 		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 		g.setColor(new Color(50, 50, 50, 100));
 		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-
 	}
 
 	final private int gridWidth = 100;
@@ -113,23 +116,25 @@ public class Canvas extends JPanel {
 		PlayerInfo me = client.getMe();
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
-		for (Tile currentTile : tiles) {
-			if (currentTile == null || currentTile.getType().equals("air"))
-				continue;
-			// Tile currentTile = tiles[x][y][z];
+		for (int layer = 0; layer < 3; layer++) {
+			for (Tile currentTile : tiles) {
+				if (currentTile == null || currentTile.getType().equals("air") || currentTile.getZ() != layer)
+					continue;
+				// Tile currentTile = tiles[x][y][z];
 
-			// int offsetX = me.xGlobal % gridWidth;
-			// int offsetY = me.yGlobal % gridWidth;
+				// int offsetX = me.xGlobal % gridWidth;
+				// int offsetY = me.yGlobal % gridWidth;
 
-			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
-					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
-			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
-					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+				int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+						+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+				int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+						+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
-			BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
-					+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+				BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+						+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
 
-			g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+				g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+			}
 		}
 
 		drawGrid(g);
@@ -162,15 +167,15 @@ public class Canvas extends JPanel {
 	private void drawBorder(Graphics g) {
 		PlayerInfo me = client.getMe();
 
-		int xCanvasCentre = W/2;
-		int yCanvasCentre = H/2;
+		int xCanvasCentre = W / 2;
+		int yCanvasCentre = H / 2;
 
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 
 		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
-		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH*GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
+		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH * GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
 		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
-		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
+		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT * GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
 
 		g2.setStroke(new BasicStroke(20));
 		g2.setColor(Color.BLACK);

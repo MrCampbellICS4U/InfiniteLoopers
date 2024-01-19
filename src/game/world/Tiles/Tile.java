@@ -3,10 +3,6 @@ package game.world.Tiles;
 import java.io.File;
 import java.util.HashMap;
 
-import game.world.Tiles.GrassTile;
-import game.world.Tiles.AirTile;
-import game.world.Tiles.CrateTile;
-
 public class Tile implements java.io.Serializable {
     private int x, y, z, orientation; // orientation: 0 = up, 1 = right, 2 = down, 3 = left
     private String type, state; // type: "grass", "wall", "door", etc... state: "open", "closed", etc...
@@ -18,6 +14,7 @@ public class Tile implements java.io.Serializable {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.orientation = orientation;
         this.type = type;
         this.state = state;
         this.statesMap = generateStatesMap();

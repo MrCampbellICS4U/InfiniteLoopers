@@ -11,15 +11,14 @@ public class Bullet extends Circle implements Entity {
 	final private double angle;
 	private double speed;
 	private int senderID;
-	private Server server;
-	private int ticksAlive;
+	private long deathTime;
 	public Bullet(double x, double y, double radius, double angle, double speed, int senderID, Chunker c, Server server) {
 		super(x, y, radius, c);
 		this.speed = speed;
 		this.angle = angle;
 		this.senderID = senderID;
-		this.server = server;
 		server.addEntity(this);
+		deathTime = System.currentTimeMillis() + 2000; // despawn after 2 seconds
 	}
 
 	public void smashInto(Hitbox h) {
@@ -37,8 +36,7 @@ public class Bullet extends Circle implements Entity {
 
 	public void update() {
 		setPosition(getX() + Math.cos(angle)*speed, getY() + Math.sin(angle)*speed);
-		ticksAlive++;
-		if (ticksAlive >= 3000) remove();
+		if (System.currentTimeMillis() >= deathTime) remove();
 	}
 
 	private boolean shouldRemove = false;

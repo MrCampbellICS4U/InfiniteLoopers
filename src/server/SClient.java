@@ -111,6 +111,7 @@ class SClient extends Circle implements Entity {
 	Tile[][][] map;
 	private Server server;
 	private Chunker chunker;
+	private long nextShot; // the time of the soonest next shot
 	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map) {
 		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
 			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
@@ -163,7 +164,11 @@ class SClient extends Circle implements Entity {
 	}
 	// todo implement
 	private void attack() {
-		new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
+		long time = System.currentTimeMillis();
+		if (time > nextShot) {
+			new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
+			nextShot = time + 200; // 200 ms delay
+		};
 	}
 
 	// todo implement

@@ -329,7 +329,7 @@ public class Client implements LastWish, ActionListener {
 					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
 			// if the tile is outside the screen and beyond the tile buffer size remove it
-			// from the visible tiles arry
+			// from the visible tiles array
 			if (groundRelX < -GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER
 					|| groundRelX > GlobalConstants.DRAWING_AREA_WIDTH
 							+ GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER + GlobalConstants.TILE_WIDTH

@@ -58,11 +58,10 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			p.setID(id);
 			out.writeObject(p);
 			out.flush();
-		} catch(java.net.SocketException e){
-
-		}
-		catch (IOException e) {
-			dest.handleException("Something went wrong when sending a packet", e);
+		} catch (SocketException e) {
+			dest.handleException("Socket exception when sending a packet", e);
+		} catch (IOException e) {
+			dest.handleException("IO exception when sending a packet", e);
 		}
 	}
 
@@ -86,7 +85,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 				p.handle(dest);
 			}
 		} catch (EOFException e) {
-			
+			dest.handleDisconnection(id, e);
 		} catch (SocketException e) {
 			// sometimes when disconnecting it throws this for some reason, with the message "Connection reset"
 			dest.handleDisconnection(id, e);

@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.net.Socket;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.io.*;
@@ -340,7 +340,7 @@ public class Client implements LastWish, ActionListener {
 				tilesToPurge.add(currentTile);
 			}
 		}
-
+ 
 		for (Tile byebyeTile : tilesToPurge) {
 			tiles.remove(byebyeTile);
 		}

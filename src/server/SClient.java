@@ -166,6 +166,7 @@ class SClient extends Circle implements Entity {
 		new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
 	}
 
+
 	// todo implement
 	private void reload() {
 		System.out.printf("Client %d attempts to reload\n", id);

@@ -171,6 +171,7 @@ class SClient extends Circle implements Entity {
 		};
 	}
 
+
 	// todo implement
 	private void reload() {
 		System.out.printf("Client %d attempts to reload\n", id);

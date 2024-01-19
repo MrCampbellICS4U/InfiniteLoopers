@@ -97,7 +97,7 @@ public class Server implements LastWish, ActionListener {
 			entities.get(i).update();
 		}
 
-		// collisionChecks += chunker.checkCollisions();
+		collisionChecks += chunker.checkCollisions();
 
 
 		// send all entities to all clients

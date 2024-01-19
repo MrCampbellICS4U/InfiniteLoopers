@@ -33,13 +33,13 @@ public class LettersToTiles {
                         tiles[z1][y1][x1] = (Tile) tilesMap.get(letterMap[z1][y1][x1])
                                 .getConstructor(int.class, int.class, int.class, int.class, String.class)
                                 .newInstance(x + x1, y + y1, z + z1, 0, "default");
-                        System.out.print(letterMap[z1][y1][x1]);
+                        //System.out.print(letterMap[z1][y1][x1]);
                     } catch (Exception e) {
                         System.out.println("Error converting letters to tiles");
                         e.printStackTrace();
                     }
                 }
-                System.out.println();
+                //System.out.println();
             }
         }
         return tiles;

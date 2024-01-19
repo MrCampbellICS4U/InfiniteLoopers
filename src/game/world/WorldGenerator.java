@@ -193,6 +193,7 @@ public class WorldGenerator {
             }
         }
 
+        /*
         for (int y = 0; y < height; y++) { // for each row
             for (int x = 0; x < width; x++) { // for each column
                 if (newMapTiles[x][y][0] == null)
@@ -201,6 +202,7 @@ public class WorldGenerator {
             }
             System.out.println();
         }
+        */
 
         int numSandTiles = 0;
 
@@ -214,8 +216,8 @@ public class WorldGenerator {
             }
         }
 
-        System.out.println("Number of null tiles: " + numSandTiles);
-        System.out.println("Number of null tiles after: " + numSandTiles2);
+        //System.out.println("Number of null tiles: " + numSandTiles);
+        //System.out.println("Number of null tiles after: " + numSandTiles2);
 
         return newMapTiles;
     }

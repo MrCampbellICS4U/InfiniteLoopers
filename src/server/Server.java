@@ -71,29 +71,40 @@ public class Server implements LastWish, ActionListener {
 
 	private ArrayList<Entity> entities = new ArrayList<>();
 	public void addEntity(Entity r) { entities.add(r); }
-	public void removeEntity(Entity r) { entities.remove(r); }
 
 	void tick() {
 		tick++;
+
 		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
+			if (e.shouldRemove()) {
+				entities.remove(i);
+				chunker.removeHitbox(e.getHitbox());
+				if (e instanceof SClient) {
+					SClient c = (SClient)e;
+					clients.remove(c.getID());
+				}
+
+				i--; // otherwise we would skip an entity when going to the next loop
+				continue;
+			}
+
 			entities.get(i).update();
 		}
 
 		collisionChecks += chunker.checkCollisions();
 
-		// send all entities to all entities
-		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).clearEntities();
-		}
 
-		for (int i = 0; i < clients.size(); i++) {
+		// send all entities to all clients
+		for (SClient c : clients.values()) {
+			c.clearEntities();
 			for (Entity r : entities) {
-				clients.get(i).addEntity(r.getInfo());
+				c.addEntity(r.getInfo());
 			}
 		}
 
-		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendPackets();
+		for (SClient c : clients.values()) {
+			c.sendPackets();
 		}
 	}
 
@@ -141,6 +152,5 @@ public class Server implements LastWish, ActionListener {
 		System.out.printf("Client with id %d disconnected\n", id);
 		SClient c = getClient(id);
 		c.remove();
-		clients.remove(id);
 	}
 }

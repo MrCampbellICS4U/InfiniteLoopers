@@ -40,7 +40,6 @@ public class Client implements LastWish, ActionListener {
 
 	Canvas canvas;
 	public Canvas getCanvas() { return canvas; }
-	public static boolean dead = false;
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -70,7 +69,8 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void handleDisconnection(int id, Exception e) {
-		handleException("Could not connect to server", e);
+		me.health = 0;
+		//handleException("Could not connect to server", e);
 	}
 
 	private PacketLord<Client> pl;
@@ -78,9 +78,12 @@ public class Client implements LastWish, ActionListener {
 	boolean ready = false; // gets set to true when we get our id
 	public void send(PacketTo<Server> p) {
 		if (!ready) return; // not ready to send yet
+		if (me != null && me.health == 0) return; // don't send packets when you're dead (and the socket is closed)
+
 		pl.send(p);
 	}
 
+	Timer tickTimer;
 	private void startGame(String ip, int port) {
 
 		try {
@@ -88,7 +91,6 @@ public class Client implements LastWish, ActionListener {
 			pl = new PacketLord<Client>(socket, this);
 		} catch (UnknownHostException e) {
 			handleException("Could not connect to server", e);
-		
 		} catch (java.io.EOFException e){
 			System.out.println("GG");
 		}
@@ -100,7 +102,7 @@ public class Client implements LastWish, ActionListener {
 		window.addMouseListener(new GameMouseListener(this));
 		window.addMouseMotionListener(new GameMouseListener(this));
 
-		Timer tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
+		tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -184,17 +186,19 @@ public class Client implements LastWish, ActionListener {
 		setVisibleTiles(getNextVisibleTiles());
 		canvas.repaint();
 		map.repaint();
-		PlayerInfo player = this.getMe();
-		if (player == null) return;
-		if (player.health > 0 || !dead){
-			frame++;
-			setVisibleTiles(getNextVisibleTiles());
-			canvas.repaint();			
-			map.repaint();
-			if (player.health == 0){
-				dead = true;
-			}
+
+		PlayerInfo me = this.getMe();
+		if (me == null) return;
+		if (me.health == 0) {
+			// you died L
+			tickTimer.stop();
+			return;
 		}
+
+		frame++;
+		setVisibleTiles(getNextVisibleTiles());
+		canvas.repaint();
+		map.repaint();
 	}
 
 	// gets called once a second
@@ -203,7 +207,7 @@ public class Client implements LastWish, ActionListener {
 		frame = 0;
 		send(new GetServerInfoPacket());
 	}
-	
+
 	private int id;
 	public int getID() { return id; }
 

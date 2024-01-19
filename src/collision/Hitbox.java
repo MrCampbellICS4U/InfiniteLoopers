@@ -35,10 +35,6 @@ public abstract class Hitbox {
 		chunker.addHitbox(this);
 	}
 
-	public void remove() {
-		chunker.removeHitbox(this);
-	}
-
 	// does this hitbox collide with another?
 	abstract public boolean collides(Hitbox h);
 

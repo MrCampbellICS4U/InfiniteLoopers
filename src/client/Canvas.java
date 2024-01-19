@@ -61,8 +61,8 @@ public class Canvas extends JPanel {
 		}
 
 		drawBorder(g); // draw border over players
-		drawUI(g, client.getMe());
-		drawDeath(g, client.getMe());
+		drawUI(g, me);
+		if (me.health == 0) drawDeath(g, me);
 	}
 
 	Random rand = new Random();
@@ -135,16 +135,14 @@ public class Canvas extends JPanel {
 		drawGrid(g);
 	}
 	public void drawDeath(Graphics g, PlayerInfo p){
-		if(p.health <= 0){
-			Color reddish = new Color(135, 0, 0, 50);
-			g.setColor(reddish);
-			g.fillRect(0, 0, W, H);
-			g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
-			g.setColor(Color.BLACK);
-			//Font f = new Font("Arial", Font.PLAIN, 70);
-			// g.setFont(f);
-			// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
-		}
+		Color reddish = new Color(135, 0, 0, 50);
+		g.setColor(reddish);
+		g.fillRect(0, 0, W, H);
+		g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
+		g.setColor(Color.BLACK);
+		//Font f = new Font("Arial", Font.PLAIN, 70);
+		// g.setFont(f);
+		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
 
 	}
 	private void drawGrid(Graphics g) { // deprecated (soon)

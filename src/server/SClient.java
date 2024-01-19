@@ -191,11 +191,12 @@ class SClient extends Circle implements Entity {
 		health--;
 	}
 
-	private final int speed = 5;
+	private final double targetSpeed = 2;
 
-  boolean checking = false;
-	public void update() {
+	boolean checking = false;
+	public void update(double deltaTime) {
 		double dx = 0, dy = 0;
+		double speed = targetSpeed * deltaTime;
 		if (up)
 			dy -= speed;
 		if (down)

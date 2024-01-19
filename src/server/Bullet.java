@@ -34,8 +34,9 @@ public class Bullet extends Circle implements Entity {
 		return new BulletInfo((int)getX(), (int)getY(), (int)getRadius());
 	}
 
-	public void update() {
-		setPosition(getX() + Math.cos(angle)*speed, getY() + Math.sin(angle)*speed);
+	public void update(double deltaTime) {
+		setPosition(getX() + Math.cos(angle)*speed*deltaTime,
+				getY() + Math.sin(angle)*speed*deltaTime);
 		if (System.currentTimeMillis() >= deathTime) remove();
 	}
 

@@ -24,9 +24,8 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 
-	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT,
-			GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
-
+	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT, GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+	private long lastTickTime = System.currentTimeMillis();
 	Server() {
 		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
 		tickTimer.setActionCommand("tick");
@@ -78,6 +77,10 @@ public class Server implements LastWish, ActionListener {
 	public void addEntity(Entity r) { entities.add(r); }
 
 	void tick() {
+		long currentTime = System.currentTimeMillis();
+		double deltaTime = (double)(currentTime - lastTickTime) / (1/(double)GlobalConstants.TPS * 1000);
+		lastTickTime = currentTime;
+
 		tick++;
 
 		for (int i = 0; i < entities.size(); i++) {
@@ -94,7 +97,7 @@ public class Server implements LastWish, ActionListener {
 				continue;
 			}
 
-			entities.get(i).update();
+			entities.get(i).update(deltaTime);
 		}
 
 		collisionChecks += chunker.checkCollisions();

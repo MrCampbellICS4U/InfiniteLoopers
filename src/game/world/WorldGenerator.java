@@ -150,12 +150,13 @@ public class WorldGenerator {
                             System.out.println("Error generating structure");
                             e.printStackTrace();
                         }
-                    } else if (rand.nextInt(100) < 5 && z == 1 && newMapTiles[x][y][0].getType().equals("null")) { // 5%
-                                                                                                                   // chance
-                                                                                                                   // of
-                                                                                                                   // generating
-                                                                                                                   // a
-                                                                                                                   // crate
+                    } else if (rand.nextInt(100) < 5 && z == 1 && (newMapTiles[x][y][0].getType().equals("null")
+                            || newMapTiles[x][y][0].getType().equals("grass"))) { // 5%
+                        // chance
+                        // of
+                        // generating
+                        // a
+                        // crate
                         newMapTiles[x][y][z] = new Tile(x, y, z, 0, "crate", "default");
                     } else if (z == 0) { // 85% chance of generating a tile
                         newMapTiles[x][y][z] = new Tile(x, y, z, 0, "grass", "default");

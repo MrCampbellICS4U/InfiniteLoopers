@@ -196,6 +196,8 @@ class SClient extends Circle implements Entity {
 
 	boolean checking = false;
 	public void update(double deltaTime) {
+		if (shouldRemove()) return;
+
 		double dx = 0, dy = 0;
 		double speed = targetSpeed * deltaTime;
 		if (up)
@@ -253,7 +255,7 @@ class SClient extends Circle implements Entity {
 		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
 	}
 	public void sendPackets() {
-		if (!ready)
+		if (!ready || shouldRemove())
 			return;
 
 		send(new EntitiesPacket(entities));

@@ -3,12 +3,16 @@ package game.world.Tiles;
 import java.io.File;
 import java.util.HashMap;
 
+import collision.Rectangle;
+
 public class Tile implements java.io.Serializable {
     private int x, y, z, orientation; // orientation: 0 = up, 1 = right, 2 = down, 3 = left
     private String type, state; // type: "grass", "wall", "door", etc... state: "open", "closed", etc...
     protected HashMap<String, String> statesMap = new HashMap<String, String>(); // "open" => image file location,
                                                                                  // "closed" => image file location,
                                                                                  // etc...
+
+	public Class<? extends Rectangle> getHitbox() { return null; }
 
     public Tile(int x, int y, int z, int orientation, String type, String state) {
         this.x = x;

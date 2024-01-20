@@ -40,6 +40,7 @@ public class Server implements LastWish, ActionListener {
 		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT,
 				GlobalConstants.SEED)
 				.generateWorld();
+		addHitboxesToMap();
 
 		System.out.println("Running server on port " + port);
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -52,6 +53,27 @@ public class Server implements LastWish, ActionListener {
 			}
 		} catch (IOException e) {
 			handleException("IOException when connecting client", e);
+		}
+	}
+
+	void addHitboxesToMap() {
+		for (Tile[][] slice : map) {
+			for (Tile[] column : slice) {
+				for (Tile t : column) {
+					Class<? extends Rectangle> hitboxClass = t.getHitbox();
+					if (hitboxClass == null) continue; // tile has no hitbox
+
+					int w = GlobalConstants.TILE_WIDTH, h = GlobalConstants.TILE_HEIGHT;
+					int x = t.getX() * w, y = t.getY() * h;
+					try {
+						hitboxClass.getConstructor(double.class, double.class, double.class, double.class, Chunker.class)
+						.newInstance(x, y, w, h, chunker);
+					} catch (Exception e) {
+						System.out.println("Exception when instantiation hitbox");
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 

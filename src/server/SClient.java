@@ -196,11 +196,13 @@ class SClient extends Circle implements Entity {
 	private final double targetSpeed = 2;
 
 	boolean checking = false;
+	boolean inWater = false;
 	public void update(double deltaTime) {
 		if (shouldRemove()) return;
 
 		double dx = 0, dy = 0;
 		double speed = targetSpeed * deltaTime;
+		if (inWater) speed *= 0.6;
 		if (up)
 			dy -= speed;
 		if (down)
@@ -236,6 +238,8 @@ class SClient extends Circle implements Entity {
 			lasty = newY;
 			handleVisibleTileUpdates(map);
 		}
+
+		inWater = false; // if we're still in water, will be set to true again
 	}
 	public void checkHealth(){
 		Timer timer = new Timer();
@@ -274,6 +278,9 @@ class SClient extends Circle implements Entity {
 	}
 
 	public void smashInto(Hitbox h) {
+		if (h instanceof WaterHitbox) {
+			inWater = true;
+		}
 		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
 	}
 

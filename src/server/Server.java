@@ -26,6 +26,7 @@ public class Server implements LastWish, ActionListener {
 
 	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT,
 			GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+	private long lastTickTime = System.currentTimeMillis();
 
 	Server() {
 		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
@@ -36,7 +37,8 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT, 4)
+		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT,
+				GlobalConstants.SEED)
 				.generateWorld();
 
 		System.out.println("Running server on port " + port);
@@ -44,8 +46,8 @@ public class Server implements LastWish, ActionListener {
 			while (true) {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map);
-				clients.put(id, client);
-				sendToClient(id, new StartPacket());
+				addClient(client);
+				client.send(new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
 		} catch (IOException e) {
@@ -75,18 +77,43 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	private ArrayList<Entity> entities = new ArrayList<>();
-	public void addEntity(Entity r) { entities.add(r); }
+
+	private ArrayList<Entity> entitiesToAdd = new ArrayList<>();
+	public void addEntity(Entity e) {
+		entitiesToAdd.add(e);
+	}
+
+	private ArrayList<SClient> clientsToAdd = new ArrayList<>();
+	public void addClient(SClient c) {
+		clientsToAdd.add(c);
+	}
 
 	void tick() {
+		long currentTime = System.currentTimeMillis();
+		double deltaTime = (double) (currentTime - lastTickTime) / (1 / (double) GlobalConstants.TPS * 1000);
+		lastTickTime = currentTime;
+
 		tick++;
 
+		// add all new entities and clients
+		for (int i = 0; i < clientsToAdd.size(); i++) {
+			SClient c = clientsToAdd.get(i);
+			clients.put(c.getID(), c);
+		}
+		clientsToAdd.clear();
+		for (int i = 0; i < entitiesToAdd.size(); i++) {
+			entities.add(entitiesToAdd.get(i));
+		}
+		entitiesToAdd.clear();
+
+		// update/remove entities and clients
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			if (e.shouldRemove()) {
 				entities.remove(i);
 				chunker.removeHitbox(e.getHitbox());
 				if (e instanceof SClient) {
-					SClient c = (SClient)e;
+					SClient c = (SClient) e;
 					clients.remove(c.getID());
 				}
 
@@ -94,11 +121,10 @@ public class Server implements LastWish, ActionListener {
 				continue;
 			}
 
-			entities.get(i).update();
+			entities.get(i).update(deltaTime);
 		}
 
 		collisionChecks += chunker.checkCollisions();
-
 
 		// send all entities to all clients
 		for (SClient c : clients.values()) {

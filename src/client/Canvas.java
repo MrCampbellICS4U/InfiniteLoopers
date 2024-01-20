@@ -47,6 +47,10 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g);
+		for (EntityInfo entity : client.getEntities()) {
+			entity.draw(g2, client, me.xGlobal, me.yGlobal);
+		}
+
 		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
@@ -54,11 +58,7 @@ public class Canvas extends JPanel {
 		g.drawString(client.getTPS() + " tps", 20, 120);
 		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
-		g.drawString("collision checks/tick: " + client.getCollisionChecksPerFrame(), 20, 240);
-
-		for (EntityInfo entity : client.getEntities()) {
-			entity.draw(g2, client, me.xGlobal, me.yGlobal);
-		}
+		g.drawString("collision checks/tick: " + String.format("%.2f", client.getCollisionChecksPerFrame()), 20, 240);
 
 		drawBorder(g); // draw border over players
 		drawUI(g, me);

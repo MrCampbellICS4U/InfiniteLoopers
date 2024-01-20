@@ -171,6 +171,7 @@ class SClient extends Circle implements Entity {
 		};
 	}
 
+
 	// todo implement
 	private void reload() {
 		System.out.printf("Client %d attempts to reload\n", id);
@@ -191,11 +192,14 @@ class SClient extends Circle implements Entity {
 		health--;
 	}
 
-	private final int speed = 5;
+	private final double targetSpeed = 2;
 
-  boolean checking = false;
-	public void update() {
+	boolean checking = false;
+	public void update(double deltaTime) {
+		if (shouldRemove()) return;
+
 		double dx = 0, dy = 0;
+		double speed = targetSpeed * deltaTime;
 		if (up)
 			dy -= speed;
 		if (down)
@@ -251,7 +255,7 @@ class SClient extends Circle implements Entity {
 		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
 	}
 	public void sendPackets() {
-		if (!ready)
+		if (!ready || shouldRemove())
 			return;
 
 		send(new EntitiesPacket(entities));

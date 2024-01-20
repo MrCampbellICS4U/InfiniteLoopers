@@ -2,9 +2,11 @@ package client;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.Timer;
+
 import java.net.Socket;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.io.*;
@@ -22,6 +24,7 @@ public class Client implements LastWish, ActionListener {
 	public static void main(String[] args) {
 		new Client();
 	}
+
 	JFrame window, mainMenu, settingsMenu;
 
 	DrawingPanel main;
@@ -39,7 +42,10 @@ public class Client implements LastWish, ActionListener {
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
 
 	Canvas canvas;
-	public Canvas getCanvas() { return canvas; }
+
+	public Canvas getCanvas() {
+		return canvas;
+	}
 
 	Client() {
 		window = new JFrame("Sarvivarz");
@@ -71,7 +77,7 @@ public class Client implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
-		//handleException("Could not connect to server", e);
+		// handleException("Could not connect to server", e);
 	}
 
 	private PacketLord<Client> pl;
@@ -79,12 +85,16 @@ public class Client implements LastWish, ActionListener {
 	boolean ready = false; // gets set to true when we get our id
 
 	public void send(PacketTo<Server> p) {
-		if (!ready) return; // not ready to send yet
-		if (me != null && me.health == 0) return; // don't send packets when you're dead (and the socket is closed)
+		if (!ready)
+			return; // not ready to send yet
+		if (me != null && me.health == 0)
+			return; // don't send packets when you're dead (and the socket is closed)
+
 		pl.send(p);
 	}
 
 	Timer tickTimer;
+
 	private void startGame(String ip, int port) {
 
 		try {
@@ -92,10 +102,9 @@ public class Client implements LastWish, ActionListener {
 			pl = new PacketLord<Client>(socket, this);
 		} catch (UnknownHostException e) {
 			handleException("Could not connect to server", e);
-		} catch (java.io.EOFException e){
+		} catch (java.io.EOFException e) {
 			System.out.println("GG");
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			handleException("Could not connect to server", e);
 		}
 
@@ -193,7 +202,8 @@ public class Client implements LastWish, ActionListener {
 		map.repaint();
 
 		PlayerInfo me = this.getMe();
-		if (me == null) return;
+		if (me == null)
+			return;
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
@@ -214,7 +224,10 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	private int id;
-	public int getID() { return id; }
+
+	public int getID() {
+		return id;
+	}
 
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
@@ -246,8 +259,9 @@ public class Client implements LastWish, ActionListener {
 		this.entities = entities;
 		for (EntityInfo e : entities) {
 			if (e instanceof PlayerInfo) {
-				PlayerInfo p = (PlayerInfo)e;
-				if (p.id == id) setMe((PlayerInfo)p);
+				PlayerInfo p = (PlayerInfo) e;
+				if (p.id == id)
+					setMe((PlayerInfo) p);
 			}
 		}
 	}
@@ -265,7 +279,6 @@ public class Client implements LastWish, ActionListener {
 		mapOpen = !mapOpen;
 		map.setVisible(mapOpen);
 	}
-
 
 	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
 		return this.visibleTiles = (ArrayList<Tile>) terrain.clone();
@@ -351,7 +364,8 @@ public class Client implements LastWish, ActionListener {
 
 		return tiles;
 	}
-	void setupMainMenu(){
+
+	void setupMainMenu() {
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainMenu.setResizable(false);
@@ -431,22 +445,25 @@ public class Client implements LastWish, ActionListener {
 		settingsMenu.setResizable(false);
 		settingsMenu.setLocationRelativeTo(null);
 	}
+
 	private class DrawingPanel2 extends JPanel {
 
 		DrawingPanel2() {
 			this.setPreferredSize(new Dimension(W, H));
 		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			//Draw game menu
+			// Draw game menu
 			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();
 		}
 	}
+
 	// Drawing panel for the home page
 	private class DrawingPanel extends JPanel {
 
@@ -465,6 +482,7 @@ public class Client implements LastWish, ActionListener {
 			H = this.getHeight();
 		}
 	}
+
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {

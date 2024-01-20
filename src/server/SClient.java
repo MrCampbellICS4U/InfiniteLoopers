@@ -198,7 +198,6 @@ class SClient extends Circle implements Entity {
 	private boolean checking = false; // for regen and health or something
 	private boolean inWater = false;
 	private double oldX, oldY;
-
 	public void update(double deltaTime) {
 		if (shouldRemove()) return;
 
@@ -288,19 +287,14 @@ class SClient extends Circle implements Entity {
 		if (h instanceof CrateHitbox) hitCrate((CrateHitbox)h);
 	}
 
+	// this assumes that we are newly intersecting the bounding box
 	private void hitCrate(CrateHitbox c) {
-		//double x1 = c.getX1(), x2 = c.getX2(), y1 = c.getY1(), y2 = c.getY2();
-		//double x = getX(), y = getY();
-		//// this assumes that we are newly intersecting the bounding box
-		//if (Rectangle.lineCollision(oldX, oldY, x, y, x1, y1, x2, y2)) {
-		//	return;
-		//}
 		double len = Math.hypot(getX()-oldX, getY()-oldY);
-		double xChange = (getX()-oldX)/len;
-		double yChange = (getY()-oldY)/len;
-		while (c.collides(this)) {
-			setPosition(getX()-xChange, getY()-yChange);
-		}
+ 		double xChange = (getX()-oldX)/len;
+ 		double yChange = (getY()-oldY)/len;
+ 		while (c.collides(this)) {
+ 			setPosition(getX()-xChange, getY()-yChange);
+ 		}
 	}
 
 	public Hitbox getHitbox() { return this; }

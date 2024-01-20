@@ -67,7 +67,7 @@ public class Server implements LastWish, ActionListener {
 					int x = t.getX() * w, y = t.getY() * h;
 					try {
 						hitboxClass.getConstructor(double.class, double.class, double.class, double.class, Chunker.class)
-						.newInstance(x, y, w, h, chunker);
+						.newInstance(x+w/2, y+h/2, w, h, chunker);
 					} catch (Exception e) {
 						System.out.println("Exception when instantiation hitbox");
 						e.printStackTrace();

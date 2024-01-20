@@ -72,7 +72,7 @@ public class WorldGenerator {
         for (int z = 0; z < depth; z++) { // for each layer
             for (int y = 0; y < height; y++) { // for each row
                 for (int x = 0; x < width; x++) { // for each column
-                    nullTileArray[x][y][z] = new Tile(x, y, z, 0, "null", "default");
+                    nullTileArray[x][y][z] = Tile.getTile(x, y, z, 0, "null", "default");
                 }
             }
         }
@@ -157,9 +157,9 @@ public class WorldGenerator {
                         // generating
                         // a
                         // crate
-                        newMapTiles[x][y][z] = new Tile(x, y, z, 0, "crate", "default");
+                        newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
                     } else if (z == 0) { // 85% chance of generating a tile
-                        newMapTiles[x][y][z] = new Tile(x, y, z, 0, "grass", "default");
+                        newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
                     }
                 }
             }
@@ -184,9 +184,9 @@ public class WorldGenerator {
                 for (int x = 0; x < width; x++) { // for each column
                     if (newMapTiles[x][y][z] == null || newMapTiles[x][y][z].getType().equals("null")) {
                         if (z == 0) {
-                            newMapTiles[x][y][z] = new Tile(x, y, z, 0, "grass", "default");
+                            newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
                         } else {
-                            newMapTiles[x][y][z] = new Tile(x, y, z, 0, "air", "default");
+                            newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "air", "default");
                         }
                     }
                 }

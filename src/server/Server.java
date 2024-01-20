@@ -60,7 +60,7 @@ public class Server implements LastWish, ActionListener {
 		for (Tile[][] slice : map) {
 			for (Tile[] column : slice) {
 				for (Tile t : column) {
-					Class<? extends Rectangle> hitboxClass = t.getHitbox();
+					Class<? extends Rectangle> hitboxClass = t.getHitboxType();
 					if (hitboxClass == null) continue; // tile has no hitbox
 
 					int w = GlobalConstants.TILE_WIDTH, h = GlobalConstants.TILE_HEIGHT;

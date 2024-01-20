@@ -12,12 +12,13 @@ public class GlobalConstants {
     public static final int DRAWING_AREA_WIDTH = 1300;
     public static final int DRAWING_AREA_HEIGHT = 800;
 
-    public static final int WORLD_TILE_WIDTH = 20; // in tiles
-    public static final int WORLD_TILE_HEIGHT = 20; // in tiles
+    public static final int WORLD_TILE_WIDTH = 50; // in tiles
+    public static final int WORLD_TILE_HEIGHT = 50; // in tiles
 
     public static final int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public static final int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels
 
+    public static final int CEILING_DISAPPEARING_DISTANCE = 300; // in pixels
     public static final int CHUNK_WIDTH = TILE_WIDTH * 4;
     public static final int CHUNK_HEIGHT = TILE_HEIGHT * 4;
 

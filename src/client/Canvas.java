@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import shared.GlobalConstants;
 import entities.*;
-import game.world.Tiles.Tile;
+import game.world.Tiles.*;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
@@ -47,9 +47,6 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g);
-		for (EntityInfo entity : client.getEntities()) {
-			entity.draw(g2, client, me.xGlobal, me.yGlobal);
-		}
 
 		g.setColor(Color.BLACK);
 		g.setFont(f);
@@ -117,6 +114,12 @@ public class Canvas extends JPanel {
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (int layer = 0; layer < 3; layer++) {
+			if (layer == 2) {
+				for (EntityInfo entity : client.getEntities()) {
+					entity.draw(g, client, me.xGlobal, me.yGlobal);
+				}
+			}
+
 			for (Tile currentTile : tiles) {
 				if (currentTile == null || currentTile.getType().equals("air") || currentTile.getZ() != layer)
 					continue;
@@ -130,6 +133,13 @@ public class Canvas extends JPanel {
 				int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
 						+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
+				// if the player is close enough, don't render the ceiling
+				if (layer == 2
+						&& Math.abs(groundRelX - GlobalConstants.DRAWING_AREA_WIDTH
+								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE
+						&& Math.abs(groundRelY - GlobalConstants.DRAWING_AREA_HEIGHT
+								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE)
+					continue;
 				BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
 						+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
 

@@ -20,6 +20,18 @@ public class Structure {
         this.orientation = orientation;
     }
 
+    public Structure(int x, int y, int z, int orientation, Tile[][][] tiles) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.tiles = tiles;
+        // rotate(tiles, orientation);
+        this.depth = tiles.length;
+        this.height = tiles[0].length;
+        this.width = tiles[0][0].length;
+        this.orientation = orientation;
+    }
+
     public int getX() {
         return x;
     }

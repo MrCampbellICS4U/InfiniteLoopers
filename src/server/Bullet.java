@@ -28,7 +28,7 @@ public class Bullet extends Circle implements Entity {
 			client.getShot();
 			this.remove();
 		}
-		if (h instanceof CrateHitbox) this.remove();
+		if (h instanceof WallHitbox) this.remove();
 	}
 
 	public EntityInfo getInfo() {

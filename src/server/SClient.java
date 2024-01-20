@@ -14,6 +14,7 @@ import collision.*;
 class SClient extends Circle implements Entity {
 	private double lastTileUpdateX, lastTileUpdateY;
 	private Tile[][][] visibleTiles;
+	private Tile[][][] oldVisibleTiles;
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -27,8 +28,8 @@ class SClient extends Circle implements Entity {
 		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
 				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
 						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
-		int x = (int)getX();
-		int y = (int)getY();
+		int x = (int) getX();
+		int y = (int) getY();
 
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
@@ -50,8 +51,8 @@ class SClient extends Circle implements Entity {
 							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
 						// tile is out of bounds of the world, send an air tile
 						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
-					}
-					else visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+					} else
+						visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
 				}
 			}
 		}
@@ -83,8 +84,9 @@ class SClient extends Circle implements Entity {
 
 	private double angle;
 
-	public double setAngle(double angle) { return this.angle = angle; }
-	public double getAngle() { return angle; }
+	public double setAngle(double angle) {
+		return this.angle = angle;
+	}
 
 	public PlayerInfo getInfo() {
 		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
@@ -285,10 +287,10 @@ class SClient extends Circle implements Entity {
 		if (h instanceof WaterHitbox) {
 			inWater = true;
 		}
-		if (h instanceof CrateHitbox) hitCrate((CrateHitbox)h);
+		if (h instanceof WallHitbox) hitCrate((WallHitbox)h);
 	}
 
-	private void hitCrate(CrateHitbox c) {
+	private void hitCrate(WallHitbox c) {
 		// "pop the player out" of the crate
 		// find the closest point on the border of the crate, and move them there
 		double x1 = c.getX1() - getRadius(), x2 = c.getX2() + getRadius(),

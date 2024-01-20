@@ -166,8 +166,8 @@ class SClient extends Circle implements Entity {
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
-			new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
-			nextShot = time + 200; // 200 ms delay
+			new Bullet(getX() + (Math.cos(angle)*20), getY() + (Math.cos(angle)*20), 6, angle, 10, id, chunker, server);
+			nextShot = time + 300; // 200 ms delay
 		};
 	}
 

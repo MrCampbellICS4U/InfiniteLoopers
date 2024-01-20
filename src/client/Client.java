@@ -27,7 +27,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
-	BufferedImage menuPNG, settingsPNG;
+	BufferedImage menuPNG, settingsPNG, akImage;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
@@ -55,6 +55,7 @@ public class Client implements LastWish, ActionListener {
 
 		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
 		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
+		akImage = Canvas.loadImage("res/game/Guns/ak.png");
 		setupSettingsMenu();
 		setupMainMenu();
 	}
@@ -310,7 +311,9 @@ public class Client implements LastWish, ActionListener {
 			updateTile(tile);
 		}
 	}
-
+	public BufferedImage getImage(){
+		return akImage;
+	}
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 

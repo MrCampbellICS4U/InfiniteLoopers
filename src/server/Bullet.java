@@ -18,7 +18,7 @@ public class Bullet extends Circle implements Entity {
 		this.angle = angle;
 		this.senderID = senderID;
 		server.addEntity(this);
-		deathTime = System.currentTimeMillis() + 2000; // despawn after 2 seconds
+		deathTime = System.currentTimeMillis() + 800; // despawn after 0.8 seconds
 	}
 
 	public void smashInto(Hitbox h) {

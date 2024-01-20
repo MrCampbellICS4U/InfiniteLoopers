@@ -83,9 +83,9 @@ public class Canvas extends JPanel {
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
 
-		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-		g.setColor(new Color(50, 50, 50, 100));
-		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		// g.setColor(new Color(50, 50, 50, 100));
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 	}
 
 	final private int gridWidth = 100;

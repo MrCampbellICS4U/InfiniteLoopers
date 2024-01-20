@@ -12,7 +12,7 @@ import entities.*;
 import collision.*;
 // clients from the server's perspective
 class SClient extends Circle implements Entity {
-	private double lastx, lasty;
+	private double lastTileUpdateX, lastTileUpdateY;
 	private Tile[][][] visibleTiles;
 
 	public Tile[][][] getVisibleTiles() {
@@ -195,8 +195,10 @@ class SClient extends Circle implements Entity {
 
 	private final double targetSpeed = 2;
 
-	boolean checking = false;
-	boolean inWater = false;
+	private boolean checking = false; // for regen and health or something
+	private boolean inWater = false;
+	private double oldX, oldY;
+
 	public void update(double deltaTime) {
 		if (shouldRemove()) return;
 
@@ -229,13 +231,15 @@ class SClient extends Circle implements Entity {
 		newX = Math.max(0, Math.min(newX, GlobalConstants.WORLD_WIDTH));
 		newY = Math.max(0, Math.min(newY, GlobalConstants.WORLD_HEIGHT));
 
+		oldX = getX();
+		oldY = getY();
 		setPosition(newX, newY);
 
-		if (Math.abs(newX - lastx) >= GlobalConstants.TILE_WIDTH
-				|| Math.abs(newY - lasty) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
+		if (Math.abs(newX - lastTileUpdateX) >= GlobalConstants.TILE_WIDTH
+				|| Math.abs(newY - lastTileUpdateY) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
 																			// away from the last update
-			lastx = newX;
-			lasty = newY;
+			lastTileUpdateX = newX;
+			lastTileUpdateY = newY;
 			handleVisibleTileUpdates(map);
 		}
 
@@ -281,7 +285,22 @@ class SClient extends Circle implements Entity {
 		if (h instanceof WaterHitbox) {
 			inWater = true;
 		}
-		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
+		if (h instanceof CrateHitbox) hitCrate((CrateHitbox)h);
+	}
+
+	private void hitCrate(CrateHitbox c) {
+		//double x1 = c.getX1(), x2 = c.getX2(), y1 = c.getY1(), y2 = c.getY2();
+		//double x = getX(), y = getY();
+		//// this assumes that we are newly intersecting the bounding box
+		//if (Rectangle.lineCollision(oldX, oldY, x, y, x1, y1, x2, y2)) {
+		//	return;
+		//}
+		double len = Math.hypot(getX()-oldX, getY()-oldY);
+		double xChange = (getX()-oldX)/len;
+		double yChange = (getY()-oldY)/len;
+		while (c.collides(this)) {
+			setPosition(getX()-xChange, getY()-yChange);
+		}
 	}
 
 	public Hitbox getHitbox() { return this; }

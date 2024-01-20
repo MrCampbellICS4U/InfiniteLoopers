@@ -155,7 +155,16 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public SClient getClient(int id) {
-		return clients.get(id);
+		SClient c = clients.get(id);
+		if (c != null) return c;
+
+		// the case where the client hasn't been added yet
+		for (SClient unaddedClient : clientsToAdd) {
+			if (unaddedClient.getID() == id) return unaddedClient;
+		}
+
+
+		throw new RuntimeException("Could not find client with id " + id);
 	}
 
 	public void sendToClient(int id, PacketTo<Client> p) {

@@ -104,6 +104,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 		} catch (SocketException e) {
 			// sometimes when disconnecting it throws this for some reason, with the message
 			// "Connection reset"
+			// also see https://stackoverflow.com/a/10241044 ... this is a nightmare
 			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
 			dest.handleException("IOException while reading packet", e);

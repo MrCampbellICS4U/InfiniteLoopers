@@ -292,27 +292,28 @@ class SClient extends Circle implements Entity {
 	private void hitCrate(CrateHitbox c) {
 		double x1 = c.getX1(), x2 = c.getX2(), y1 = c.getY1(), y2 = c.getY2();
 
-		boolean canCollideWithLeft = getX() - oldX > 0;
-		boolean canCollideWithRight = getX() - oldX < 0;
-		boolean canCollideWithTop = getY() - oldY > 0;
-		boolean canCollideWithBottom = getY() - oldY < 0;
+		boolean movingRight = getX() - oldX > 0;
+		boolean movingLeft = getX() - oldX < 0;
+		boolean movingDown = getY() - oldY > 0;
+		boolean movingUp = getY() - oldY < 0;
 
+		double r = getRadius() + 1; // 1 px leeway
 		double dx = 0, dy = 0;
-		if (canCollideWithTop && lineCollision(x1, y1, x2, y1)) {
+		if (movingDown && lineCollision(x1, y1, x2, y1)) {
 			// hit the top side
-			dy = (y1 - getRadius()) - getY();
+			dy = (y1 - r) - getY();
 		}
-		if (canCollideWithBottom && lineCollision(x1, y2, x2, y2)) {
+		if (movingUp && lineCollision(x1, y2, x2, y2)) {
 			// hit the bottom side
-			dy = (y2 + getRadius()) - getY();
+			dy = (y2 + r) - getY();
 		}
-		if (canCollideWithLeft && lineCollision(x1, y1, x1, y2)) {
+		if (movingRight && lineCollision(x1, y1, x1, y2)) {
 			// hit the left side
-			dx = (x1 - getRadius()) - getX();
+			dx = (x1 - r) - getX();
 		}
-		if (canCollideWithRight && lineCollision(x2, y1, x2, y2)) {
+		if (movingLeft && lineCollision(x2, y1, x2, y2)) {
 			// hit the right side
-			dx = (x2 + getRadius()) - getX();
+			dx = (x2 + r) - getX();
 		}
 		setPosition(getX() + dx, getY() + dy);
 	}

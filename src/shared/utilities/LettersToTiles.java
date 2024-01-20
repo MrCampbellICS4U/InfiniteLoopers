@@ -8,7 +8,7 @@ public class LettersToTiles {
     // hashmap of letters to tiles objects, not initialized yet
     public static HashMap<String, Class> tilesMap = new HashMap<String, Class>();
 
-    public LettersToTiles() {
+    static {
         tilesMap.put("N", NullTile.class);
         tilesMap.put("A", AirTile.class);
         tilesMap.put("W", WaterTile.class);
@@ -18,13 +18,6 @@ public class LettersToTiles {
     }
 
     public static Tile[][][] converToTiles(String[][][] letterMap, int x, int y, int z) {
-        tilesMap.put("N", NullTile.class);
-        tilesMap.put("A", AirTile.class);
-        tilesMap.put("W", WaterTile.class);
-        tilesMap.put("S", SandTile.class);
-        tilesMap.put("G", GrassTile.class);
-        tilesMap.put("C", CrateTile.class);
-
         Tile[][][] tiles = new Tile[letterMap.length][letterMap[0].length][letterMap[0][0].length];
         for (int z1 = 0; z1 < letterMap.length; z1++) {
             for (int y1 = 0; y1 < letterMap[0].length; y1++) {

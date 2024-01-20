@@ -15,7 +15,6 @@
 		   (term "/bin/bash")
 		   (rename-buffer "term-server")
 		   (execute-kbd-macro "make server\n")
-		   (sleep-for 0 500)
 
 		   (run-client)
 		   (run-client)

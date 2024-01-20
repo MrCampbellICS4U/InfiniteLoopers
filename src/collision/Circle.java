@@ -18,4 +18,8 @@ public abstract class Circle extends Hitbox {
 		double dist = Math.hypot(c.getX() - getX(), c.getY() - getY());
 		return dist <= radius + c.getRadius();
 	}
+
+	public boolean contains(double x, double y) {
+		return Math.hypot(x - getX(), y - getY()) <= radius;
+	}
 }

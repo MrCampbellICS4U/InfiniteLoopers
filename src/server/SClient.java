@@ -162,11 +162,12 @@ class SClient extends Circle implements Entity {
 			pl.close();
 		}
 	}
-	// todo implement
+
+	final int gunLength = 35;
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
-			new Bullet(getX() + (Math.cos(angle)*20), getY() + (Math.cos(angle)*20), 6, angle, 10, id, chunker, server);
+			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, 10, id, chunker, server);
 			nextShot = time + 300; // 200 ms delay
 		};
 	}

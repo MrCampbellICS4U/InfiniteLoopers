@@ -102,7 +102,7 @@ public class WorldGenerator {
     }
 
     private Class[] getStructureTypes() {
-        return new Class[] { BasicPondStructure.class };
+        return new Class[] { BasicPondStructure.class, BasicHouseStructure.class };
     }
 
     public Tile[][][] generateWorld() {
@@ -120,7 +120,7 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(1000) < 20 && z == 0) { // 2% chance of generating a structure
+                    if (rand.nextInt(1000) < 2 && z == 0) { // 2% chance of generating a structure
                         // generate a random structure
                         int structureTypeIndex = rand.nextInt(structureTypes.length);
                         Class structureType = structureTypes[structureTypeIndex];
@@ -150,7 +150,7 @@ public class WorldGenerator {
                             System.out.println("Error generating structure");
                             e.printStackTrace();
                         }
-                    } else if (rand.nextInt(100) < 5 && z == 1 && (newMapTiles[x][y][0].getType().equals("null")
+                    } else if (rand.nextInt(500) < 5 && z == 1 && (newMapTiles[x][y][0].getType().equals("null")
                             || newMapTiles[x][y][0].getType().equals("grass"))) { // 5%
                         // chance
                         // of

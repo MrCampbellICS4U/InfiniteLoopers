@@ -46,8 +46,8 @@ public class Server implements LastWish, ActionListener {
 			while (true) {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map);
-				clients.put(id, client);
-				sendToClient(id, new StartPacket());
+				addClient(client);
+				client.send(new StartPacket());
 				System.out.printf("Client with id %d connected\n", id);
 			}
 		} catch (IOException e) {
@@ -78,8 +78,14 @@ public class Server implements LastWish, ActionListener {
 
 	private ArrayList<Entity> entities = new ArrayList<>();
 
-	public void addEntity(Entity r) {
-		entities.add(r);
+	private ArrayList<Entity> entitiesToAdd = new ArrayList<>();
+	public void addEntity(Entity e) {
+		entitiesToAdd.add(e);
+	}
+
+	private ArrayList<SClient> clientsToAdd = new ArrayList<>();
+	public void addClient(SClient c) {
+		clientsToAdd.add(c);
 	}
 
 	void tick() {
@@ -89,6 +95,18 @@ public class Server implements LastWish, ActionListener {
 
 		tick++;
 
+		// add all new entities and clients
+		for (int i = 0; i < clientsToAdd.size(); i++) {
+			SClient c = clientsToAdd.get(i);
+			clients.put(c.getID(), c);
+		}
+		clientsToAdd.clear();
+		for (int i = 0; i < entitiesToAdd.size(); i++) {
+			entities.add(entitiesToAdd.get(i));
+		}
+		entitiesToAdd.clear();
+
+		// update/remove entities and clients
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			if (e.shouldRemove()) {

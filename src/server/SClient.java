@@ -198,6 +198,7 @@ class SClient extends Circle implements Entity {
 	private boolean checking = false; // for regen and health or something
 	private boolean inWater = false;
 	private double oldX, oldY;
+
 	public void update(double deltaTime) {
 		if (shouldRemove()) return;
 
@@ -289,12 +290,31 @@ class SClient extends Circle implements Entity {
 
 	// this assumes that we are newly intersecting the bounding box
 	private void hitCrate(CrateHitbox c) {
-		double len = Math.hypot(getX()-oldX, getY()-oldY);
- 		double xChange = (getX()-oldX)/len;
- 		double yChange = (getY()-oldY)/len;
- 		while (c.collides(this)) {
- 			setPosition(getX()-xChange, getY()-yChange);
- 		}
+		double x1 = c.getX1(), x2 = c.getX2(), y1 = c.getY1(), y2 = c.getY2();
+
+		boolean canCollideWithLeft = getX() - oldX > 0;
+		boolean canCollideWithRight = getX() - oldX < 0;
+		boolean canCollideWithTop = getY() - oldY > 0;
+		boolean canCollideWithBottom = getY() - oldY < 0;
+
+		double dx = 0, dy = 0;
+		if (canCollideWithTop && lineCollision(x1, y1, x2, y1)) {
+			// hit the top side
+			dy = (y1 - getRadius()) - getY();
+		}
+		if (canCollideWithBottom && lineCollision(x1, y2, x2, y2)) {
+			// hit the bottom side
+			dy = (y2 + getRadius()) - getY();
+		}
+		if (canCollideWithLeft && lineCollision(x1, y1, x1, y2)) {
+			// hit the left side
+			dx = (x1 - getRadius()) - getX();
+		}
+		if (canCollideWithRight && lineCollision(x2, y1, x2, y2)) {
+			// hit the right side
+			dx = (x2 + getRadius()) - getX();
+		}
+		setPosition(getX() + dx, getY() + dy);
 	}
 
 	public Hitbox getHitbox() { return this; }

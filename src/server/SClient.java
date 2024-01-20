@@ -288,34 +288,18 @@ class SClient extends Circle implements Entity {
 		if (h instanceof CrateHitbox) hitCrate((CrateHitbox)h);
 	}
 
-	// this assumes that we are newly intersecting the bounding box
 	private void hitCrate(CrateHitbox c) {
-		double x1 = c.getX1(), x2 = c.getX2(), y1 = c.getY1(), y2 = c.getY2();
-
-		boolean movingRight = getX() - oldX > 0;
-		boolean movingLeft = getX() - oldX < 0;
-		boolean movingDown = getY() - oldY > 0;
-		boolean movingUp = getY() - oldY < 0;
-
-		double r = getRadius() + 1; // 1 px leeway
-		double dx = 0, dy = 0;
-		if (movingDown && lineCollision(x1, y1, x2, y1)) {
-			// hit the top side
-			dy = (y1 - r) - getY();
-		}
-		if (movingUp && lineCollision(x1, y2, x2, y2)) {
-			// hit the bottom side
-			dy = (y2 + r) - getY();
-		}
-		if (movingRight && lineCollision(x1, y1, x1, y2)) {
-			// hit the left side
-			dx = (x1 - r) - getX();
-		}
-		if (movingLeft && lineCollision(x2, y1, x2, y2)) {
-			// hit the right side
-			dx = (x2 + r) - getX();
-		}
-		setPosition(getX() + dx, getY() + dy);
+		// "pop the player out" of the crate
+		// find the closest point on the border of the crate, and move them there
+		double x1 = c.getX1() - getRadius(), x2 = c.getX2() + getRadius(),
+ 			y1 = c.getY1() - getRadius(), y2 = c.getY2() + getRadius();
+		double x1dist = Math.abs(getX() - x1), x2dist = Math.abs(getX() - x2),
+			y1dist = Math.abs(getY() - y1), y2dist = Math.abs(getY() - y2);
+		double closest = Math.min(x1dist, Math.min(x2dist, Math.min(y1dist, y2dist)));
+		if (closest == x1dist) setPosition(x1, getY());
+		else if (closest == x2dist) setPosition(x2, getY());
+		else if (closest == y1dist) setPosition(getX(), y1);
+		else if (closest == y2dist) setPosition(getX(), y2);
 	}
 
 	public Hitbox getHitbox() { return this; }

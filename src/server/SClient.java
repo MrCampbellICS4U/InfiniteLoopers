@@ -17,6 +17,7 @@ import collision.*;
 class SClient extends Circle {
 	private double lastx, lasty;
 	private Tile[][][] visibleTiles;
+	private Tile[][][] oldVisibleTiles;
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -30,8 +31,8 @@ class SClient extends Circle {
 		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
 				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
 						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
-		int x = (int)getX();
-		int y = (int)getY();
+		int x = (int) getX();
+		int y = (int) getY();
 
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
@@ -53,8 +54,8 @@ class SClient extends Circle {
 							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
 						// tile is out of bounds of the world, send an air tile
 						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
-					}
-					else visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+					} else
+						visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
 				}
 			}
 		}
@@ -86,10 +87,17 @@ class SClient extends Circle {
 
 	private double angle;
 
-	public double setAngle(double angle) { return this.angle = angle; }
-	public double getAngle() { return angle; }
+	public double setAngle(double angle) {
+		return this.angle = angle;
+	}
 
-	public PlayerEntity getInfo() { return new PlayerEntity((int)getX(), (int)getY(), angle, health, armor, new String[0]); }
+	public double getAngle() {
+		return angle;
+	}
+
+	public PlayerEntity getInfo() {
+		return new PlayerEntity((int) getX(), (int) getY(), angle, health, armor, new String[0]);
+	}
 
 	public String hotBar[] = new String[3];
 	private final int MAXHEALTH = 3;
@@ -100,11 +108,19 @@ class SClient extends Circle {
 
 	PacketLord<Server> pl;
 	private final int id;
-	public void send(PacketTo<Client> p) { pl.send(p); }
-	public void remove() { pl.close(); super.remove(); }
+
+	public void send(PacketTo<Client> p) {
+		pl.send(p);
+	}
+
+	public void remove() {
+		pl.close();
+		super.remove();
+	}
+
 	SClient(Socket socket, Server state, int id, Chunker c) {
-		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
-			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
+		super((int) (Math.random() * GlobalConstants.WORLD_WIDTH),
+				(int) (Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
 
 		this.id = id;
 		pl = new PacketLord<Server>(socket, state);
@@ -142,8 +158,8 @@ class SClient extends Circle {
 	// todo implement
 	private void attack() {
 		System.out.printf("Client %d unleashed a devastating attack!\n", id);
-		//health--;
-		//armor++;
+		// health--;
+		// armor++;
 	}
 
 	// todo implement

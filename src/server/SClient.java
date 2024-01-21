@@ -92,11 +92,9 @@ class SClient extends Circle implements Entity {
 		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
 	}
 
-	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
-	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
-	private int health = MAXHEALTH;
+	private int health = GlobalConstants.MAX_HEALTH;
 
-	public String hotBar[] = new String[MAXHOTBAR];
+	public String hotBar[] = new String[GlobalConstants.MAX_HOTBAR];
 	private int armor = 0;
 
 	PacketLord<Server> pl;
@@ -204,7 +202,7 @@ class SClient extends Circle implements Entity {
 
 	private final double targetSpeed = 2;
 
-	private boolean checking = false; // for regen and health or something
+	private boolean waitingToRegen = false;
 	private boolean inWater = false;
 	private double oldX, oldY;
 
@@ -229,9 +227,9 @@ class SClient extends Circle implements Entity {
 		if (health <= 0){
 			kysURSELF();
 		}
-		else if (health < 3 && health > 0 && !checking){
+		else if (health < GlobalConstants.MAX_HEALTH && health > 0 && !waitingToRegen){
 			checkHealth();
-			checking = true;
+			waitingToRegen = true;
 		}
 
 		double newX = getX() + dx;
@@ -261,7 +259,7 @@ class SClient extends Circle implements Entity {
 		timer.schedule(new TimerTask() {
 			public void run() {
 				health++;
-				checking = !checking;
+				waitingToRegen = false;
 			}
 		}, GlobalConstants.REGEN_TIME);
 	}

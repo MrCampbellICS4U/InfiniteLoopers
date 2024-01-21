@@ -12,8 +12,8 @@ public class GlobalConstants {
     public static final int DRAWING_AREA_WIDTH = 1300;
     public static final int DRAWING_AREA_HEIGHT = 800;
 
-    public static final int WORLD_TILE_WIDTH = 50; // in tiles
-    public static final int WORLD_TILE_HEIGHT = 50; // in tiles
+    public static final int WORLD_TILE_WIDTH = 23; // in tiles
+    public static final int WORLD_TILE_HEIGHT = 23; // in tiles
 
     public static final int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public static final int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels
@@ -28,20 +28,21 @@ public class GlobalConstants {
     public static final int TPS = 120; // ticks per second
     public static final int FPS = 120; // frames per second
 
-    public static final int SEED = new Random().nextInt();
+    public static final int SEED = 69;
 
     public static final int SERVER_PORT = 2000;
     public static final String SERVER_IP = "127.0.0.1";
 
     public static final int MAX_HOTBAR = 3;
-    public static final int MAX_HEALTH = 3; // 3 hearts
+    public static final int MAX_HEALTH = 4; // 4 hearts
 
-	public static final int REGEN_TIME = 10000; // ms
+    public static final int REGEN_TIME = 7000; // ms
 
-	public static final int BULLET_DESPAWN_TIME = 800; // ms
-	public static final int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions might start bugging
-	public static final int SHOT_DELAY = 500; // ms
+    public static final int BULLET_DESPAWN_TIME = 800; // ms
+    public static final int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
+                                               // might start bugging
+    public static final int SHOT_DELAY = 170; // ms
 
-	// can clients press P to kill themselves?
-	public static boolean CAN_SUICIDE = true;
+    // can clients press P to kill themselves?
+    public static boolean CAN_SUICIDE = true;
 }

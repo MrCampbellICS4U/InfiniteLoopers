@@ -10,6 +10,10 @@ public class RoundJTextField extends JTextField {
         super(size);
         setOpaque(false); // As suggested by @AVD in comment.
     }
+    public RoundJTextField(int size, String string) {
+        super(string, size);
+        setOpaque(false); // As suggested by @AVD in comment.
+    }
 
     protected void paintComponent(Graphics g) {
         g.setColor(getBackground());

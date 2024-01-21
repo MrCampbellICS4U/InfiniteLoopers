@@ -194,8 +194,8 @@ public class Server implements LastWish, ActionListener {
 		getClient(id).send(p);
 	}
 
-	public void setClientReady(int id) {
-		getClient(id).setReady();
+	public void setClientReady(int id, String name) {
+		getClient(id).setReady(name);
 	}
 
 	public void handleInput(int id, Input i, InputState is) {

@@ -149,7 +149,7 @@ class SClient extends Circle implements Entity {
 			case RELOAD -> reload();
 			case USE -> useItem();
 			case DROP -> dropItem();
-			case Dead -> kysURSELF();
+			case SUICIDE -> { if (GlobalConstants.CAN_SUICIDE) kysURSELF(); }
 
 		}
 	}

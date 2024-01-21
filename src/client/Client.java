@@ -28,7 +28,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
-	BufferedImage menuPNG, settingsPNG, akImage;
+	BufferedImage menuPNG, settingsPNG, akImage, bImage;
 	JButton play, settings, back, resetButton;
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
@@ -61,8 +61,14 @@ public class Client implements LastWish, ActionListener {
 		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
 		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
 		akImage = Canvas.loadImage("res/game/Guns/ak.png");
+		bImage = Canvas.loadImage("res/game/Guns/bullets.png");
+
 		setupSettingsMenu();
 		setupMainMenu();
+	}
+
+	public BufferedImage getBulletImage(){
+		return bImage;
 	}
 
 	public void handleException(String message, Exception e) {

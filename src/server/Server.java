@@ -23,13 +23,15 @@ public class Server implements LastWish, ActionListener {
 	private final int port = 2000;
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
+	public GlobalConstants gc;
 
-	private Chunker chunker = new Chunker(GlobalConstants.CHUNK_WIDTH, GlobalConstants.CHUNK_HEIGHT,
-			GlobalConstants.WORLD_WIDTH, GlobalConstants.WORLD_HEIGHT);
+	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
 	Server() {
-		Timer tickTimer = new Timer(1000 / GlobalConstants.TPS, this);
+		this.gc = new GlobalConstants();
+
+		Timer tickTimer = new Timer(1000 / gc.TPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -37,8 +39,11 @@ public class Server implements LastWish, ActionListener {
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 
-		map = new WorldGenerator(GlobalConstants.WORLD_TILE_WIDTH, GlobalConstants.WORLD_TILE_HEIGHT,
-				GlobalConstants.SEED)
+		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
+				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
+
+		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
+				gc.SEED)
 				.generateWorld();
 		addHitboxesToMap();
 
@@ -46,9 +51,12 @@ public class Server implements LastWish, ActionListener {
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			while (true) {
 				int id = nextID();
-				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map);
+				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map, this.gc);
 				addClient(client);
+				client.send(new GlobalConstantsPacket(
+						this.gc));
 				client.send(new StartPacket());
+
 				System.out.printf("Client with id %d connected\n", id);
 			}
 		} catch (IOException e) {
@@ -61,13 +69,15 @@ public class Server implements LastWish, ActionListener {
 			for (Tile[] column : slice) {
 				for (Tile t : column) {
 					Class<? extends Rectangle> hitboxClass = t.getHitboxType();
-					if (hitboxClass == null) continue; // tile has no hitbox
+					if (hitboxClass == null)
+						continue; // tile has no hitbox
 
-					int w = GlobalConstants.TILE_WIDTH, h = GlobalConstants.TILE_HEIGHT;
+					int w = gc.TILE_WIDTH, h = gc.TILE_HEIGHT;
 					int x = t.getX() * w, y = t.getY() * h;
 					try {
-						hitboxClass.getConstructor(double.class, double.class, double.class, double.class, Chunker.class)
-						.newInstance(x+w/2, y+h/2, w, h, chunker);
+						hitboxClass
+								.getConstructor(double.class, double.class, double.class, double.class, Chunker.class)
+								.newInstance(x + w / 2, y + h / 2, w, h, chunker);
 					} catch (Exception e) {
 						System.out.println("Exception when instantiation hitbox");
 						e.printStackTrace();
@@ -101,18 +111,20 @@ public class Server implements LastWish, ActionListener {
 	private ArrayList<Entity> entities = new ArrayList<>();
 
 	private ArrayList<Entity> entitiesToAdd = new ArrayList<>();
+
 	public void addEntity(Entity e) {
 		entitiesToAdd.add(e);
 	}
 
 	private ArrayList<SClient> clientsToAdd = new ArrayList<>();
+
 	public void addClient(SClient c) {
 		clientsToAdd.add(c);
 	}
 
 	void tick() {
 		long currentTime = System.currentTimeMillis();
-		double deltaTime = (double) (currentTime - lastTickTime) / (1 / (double) GlobalConstants.TPS * 1000);
+		double deltaTime = (double) (currentTime - lastTickTime) / (1 / (double) gc.TPS * 1000);
 		lastTickTime = currentTime;
 
 		tick++;
@@ -179,13 +191,14 @@ public class Server implements LastWish, ActionListener {
 
 	public SClient getClient(int id) {
 		SClient c = clients.get(id);
-		if (c != null) return c;
+		if (c != null)
+			return c;
 
 		// the case where the client hasn't been added yet
 		for (SClient unaddedClient : clientsToAdd) {
-			if (unaddedClient.getID() == id) return unaddedClient;
+			if (unaddedClient.getID() == id)
+				return unaddedClient;
 		}
-
 
 		throw new RuntimeException("Could not find client with id " + id);
 	}

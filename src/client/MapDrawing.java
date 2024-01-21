@@ -16,21 +16,24 @@ import server.Server;
 import entities.PlayerInfo;
 import game.world.Tiles.Tile;
 
-public class MapDrawing extends JFrame{
-    DrawingPanel panel;
-    int mapSizeW = 700;
-    int mapSizeH= 700;
-    Client c;
-    MapDrawing(Client c, PlayerInfo player) {
+public class MapDrawing extends JFrame {
+	DrawingPanel panel;
+	int mapSizeW = 700;
+	int mapSizeH = 700;
+	Client c;
+	GlobalConstants gc;
+
+	MapDrawing(Client c, PlayerInfo player) {
 		this.c = c;
-        DrawingPanel panel = new DrawingPanel();
+		this.gc = c.gc;
+		DrawingPanel panel = new DrawingPanel();
 		Color darkGreen = new Color(0, 102, 0);
 		panel.setBackground(darkGreen);
 		panel.repaint();
-        this.add(panel);
+		this.add(panel);
 		this.setUndecorated(true);
-        this.pack();		
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.pack();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setFocusTraversalKeysEnabled(false);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
@@ -39,14 +42,14 @@ public class MapDrawing extends JFrame{
 
 	private class DrawingPanel extends JPanel {
 		DrawingPanel() {
-		    this.setPreferredSize(new Dimension(mapSizeW, mapSizeH));
+			this.setPreferredSize(new Dimension(mapSizeW, mapSizeH));
 		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
-			int xMapCentre = mapSizeW/2;
-			int yMapCentre = mapSizeH/2;
+			int xMapCentre = mapSizeW / 2;
+			int yMapCentre = mapSizeH / 2;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			PlayerInfo me = c.getMe();	
@@ -65,9 +68,11 @@ public class MapDrawing extends JFrame{
 			g.drawString("collision checks/tick: " + String.format("%.2f", c.getCollisionChecksPerFrame()), 420, mapSizeW-20);
 
 			g.fillOval((int) (playerRelX*mapSizeW), (int) (playerRelY*mapSizeH), 10, 10);
+
 		}
 	}
-	void toggleMap(){
+
+	void toggleMap() {
 		this.setVisible(false);
 	}
 }

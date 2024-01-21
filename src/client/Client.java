@@ -7,8 +7,6 @@ import javax.swing.Timer;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.*;
-import java.util.HashSet;
-import java.util.Set;
 import java.io.*;
 import java.net.UnknownHostException;
 import javax.imageio.*;
@@ -27,6 +25,8 @@ public class Client implements LastWish, ActionListener {
 
 	JFrame window, mainMenu, settingsMenu;
 
+	GlobalConstants gc = new GlobalConstants();
+
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
@@ -35,10 +35,10 @@ public class Client implements LastWish, ActionListener {
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
 	String defaultName = "Enter Name Here";
-	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
-	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
-	static String ip = GlobalConstants.SERVER_IP;
-	static int port = GlobalConstants.SERVER_PORT;
+	int W = gc.DRAWING_AREA_WIDTH;
+	int H = gc.DRAWING_AREA_HEIGHT;
+	String ip = gc.SERVER_IP;
+	int port = gc.SERVER_PORT;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
@@ -70,7 +70,7 @@ public class Client implements LastWish, ActionListener {
 		setupMainMenu();
 	}
 
-	public BufferedImage getBulletImage(){
+	public BufferedImage getBulletImage() {
 		return bImage;
 	}
 
@@ -119,8 +119,8 @@ public class Client implements LastWish, ActionListener {
 		window.addKeyListener(new GameKeyListener(this));
 		window.addMouseListener(new GameMouseListener(this));
 		window.addMouseMotionListener(new GameMouseListener(this));
-		
-		tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
+
+		tickTimer = new Timer(1000 / gc.FPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
@@ -130,14 +130,17 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (playerName.equals(defaultName)) {playerName = "I Forgor";}
-		else {playerName = enterName.getText();}
+		if (playerName.equals(defaultName)) {
+			playerName = "I Forgor";
+		} else {
+			playerName = enterName.getText();
+		}
 		if (e.getActionCommand().equals("tick"))
 
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
 			secUpdate();
-		if (e.getActionCommand().equals("respawn")){
+		if (e.getActionCommand().equals("respawn")) {
 			window.setVisible(false);
 			me.health = 3;
 			mainMenu.setVisible(true);
@@ -232,7 +235,7 @@ public class Client implements LastWish, ActionListener {
 			resetButton.setOpaque(false);
 			resetButton.setContentAreaFilled(false);
 			resetButton.setBorderPainted(false);
-			resetButton.setBounds(GlobalConstants.DRAWING_AREA_WIDTH/2-200, GlobalConstants.DRAWING_AREA_HEIGHT-100, 400, 50);
+			resetButton.setBounds(gc.DRAWING_AREA_WIDTH / 2 - 200, gc.DRAWING_AREA_HEIGHT - 100, 400, 50);
 			canvas.add(resetButton);
 			return;
 		}
@@ -241,6 +244,11 @@ public class Client implements LastWish, ActionListener {
 		setVisibleTiles(getNextVisibleTiles());
 		canvas.repaint();
 		map.repaint();
+	}
+
+	public void setGlobalConstants(GlobalConstants gc) {
+		this.gc = gc;
+
 	}
 
 	// gets called once a second
@@ -255,10 +263,13 @@ public class Client implements LastWish, ActionListener {
 	public int getID() {
 		return id;
 	}
+
 	public boolean drawName = true;
-	public boolean toggleName(){
+
+	public boolean toggleName() {
 		return drawName = !drawName;
 	}
+
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
 	public void start(int id) {
@@ -268,10 +279,13 @@ public class Client implements LastWish, ActionListener {
 		send(new ReadyPacket(playerName)); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 	}
+
 	Font comic = new Font("Comic Sans MS", Font.PLAIN, 17);
-	public Font getFont(){
+
+	public Font getFont() {
 		return comic;
 	}
+
 	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
 	public ArrayList<EntityInfo> getEntities() {
@@ -351,15 +365,16 @@ public class Client implements LastWish, ActionListener {
 		nextVisibleTiles.add(newTile);
 	}
 
-
 	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
 		for (Tile tile : tiles) {
 			updateTile(tile);
 		}
 	}
-	public BufferedImage getImage(){
+
+	public BufferedImage getImage() {
 		return akImage;
 	}
+
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
@@ -373,20 +388,20 @@ public class Client implements LastWish, ActionListener {
 			if (currentTile == null || currentTile.getType().equals("air"))
 				continue;
 
-			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
-					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
-			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
-					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+			int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
+					+ gc.DRAWING_AREA_WIDTH / 2;
+			int groundRelY = currentTile.getY() * gc.TILE_HEIGHT - me.yGlobal
+					+ gc.DRAWING_AREA_HEIGHT / 2;
 
 			// if the tile is outside the screen and beyond the tile buffer size remove it
 			// from the visible tiles array
-			if (groundRelX < -GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER
-					|| groundRelX > GlobalConstants.DRAWING_AREA_WIDTH
-							+ GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER + GlobalConstants.TILE_WIDTH
-					|| groundRelY < -GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
-					|| groundRelY > GlobalConstants.DRAWING_AREA_HEIGHT
-							+ GlobalConstants.TILE_HEIGHT * GlobalConstants.TILE_Y_BUFFER
-							+ GlobalConstants.TILE_HEIGHT) {
+			if (groundRelX < -gc.TILE_WIDTH * gc.TILE_X_BUFFER
+					|| groundRelX > gc.DRAWING_AREA_WIDTH
+							+ gc.TILE_WIDTH * gc.TILE_X_BUFFER + gc.TILE_WIDTH
+					|| groundRelY < -gc.TILE_HEIGHT * gc.TILE_Y_BUFFER
+					|| groundRelY > gc.DRAWING_AREA_HEIGHT
+							+ gc.TILE_HEIGHT * gc.TILE_Y_BUFFER
+							+ gc.TILE_HEIGHT) {
 				tilesToPurge.add(currentTile);
 			}
 		}
@@ -438,7 +453,7 @@ public class Client implements LastWish, ActionListener {
 		enterName.setFont(field);
 		Color fieldColor = new Color(20, 171, 236);
 		enterName.setBackground(fieldColor);
-		
+
 		main.add(enterName);
 		main.add(play);
 		main.add(settings);

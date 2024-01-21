@@ -21,11 +21,13 @@ public class Canvas extends JPanel {
 	private int W, H; // width and height
 	BufferedImage healthImage, armorImage, gunImage, deathImage;
 	private Client client;
+	public GlobalConstants gc;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
 
 	public Canvas(Client c) {
 		client = c;
+		gc = c.gc;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
@@ -54,7 +56,6 @@ public class Canvas extends JPanel {
 		g.setColor(Color.BLACK);
 		g.setFont(f);
 
-
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
 		if (me.health == 0)
@@ -82,10 +83,10 @@ public class Canvas extends JPanel {
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f));
 
-		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100),
+		// for (int i = 0; i < gc.MAXHOTBAR;i++){g.drawOval((975 +i*100),
 		// 700, itemHotbarSize, itemHotbarSize);}
 		// g.setColor(new Color(50, 50, 50, 100));
-		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100),
+		// for (int i = 0; i < gc.MAXHOTBAR;i++){g.fillOval((975 +i*100),
 		// 700, itemHotbarSize, itemHotbarSize);}
 	}
 
@@ -157,17 +158,17 @@ public class Canvas extends JPanel {
 				// int offsetX = me.xGlobal % gridWidth;
 				// int offsetY = me.yGlobal % gridWidth;
 
-				int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
-						+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
-				int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
-						+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+				int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
+						+ gc.DRAWING_AREA_WIDTH / 2;
+				int groundRelY = currentTile.getY() * gc.TILE_HEIGHT - me.yGlobal
+						+ gc.DRAWING_AREA_HEIGHT / 2;
 
 				// if the player is close enough, don't render the ceiling
 				if (layer == 2
-						&& Math.abs(groundRelX + GlobalConstants.TILE_WIDTH / 2 - GlobalConstants.DRAWING_AREA_WIDTH
-								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE
-						&& Math.abs(groundRelY + GlobalConstants.TILE_HEIGHT / 2 - GlobalConstants.DRAWING_AREA_HEIGHT
-								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE)
+						&& Math.abs(groundRelX + gc.TILE_WIDTH / 2 - gc.DRAWING_AREA_WIDTH
+								/ 2) < gc.CEILING_DISAPPEARING_DISTANCE
+						&& Math.abs(groundRelY + gc.TILE_HEIGHT / 2 - gc.DRAWING_AREA_HEIGHT
+								/ 2) < gc.CEILING_DISAPPEARING_DISTANCE)
 					continue;
 
 				// rotatte the image based on the orientation of the tile
@@ -190,7 +191,7 @@ public class Canvas extends JPanel {
 		Color reddish = new Color(135, 0, 0, 50);
 		g.setColor(reddish);
 		g.fillRect(0, 0, W, H);
-		g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
+		g.drawImage(deathImage, 0, 0, gc.DRAWING_AREA_WIDTH, gc.DRAWING_AREA_HEIGHT, null);
 		g.setColor(Color.BLACK);
 		// Font f = new Font("Arial", Font.PLAIN, 70);
 		// g.setFont(f);
@@ -221,9 +222,9 @@ public class Canvas extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 
 		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
-		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH * GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
+		int borderX2 = gc.WORLD_TILE_WIDTH * gc.TILE_WIDTH - me.xGlobal + xCanvasCentre;
 		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
-		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT * GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
+		int borderY2 = gc.WORLD_TILE_HEIGHT * gc.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
 
 		g2.setStroke(new BasicStroke(20));
 		g2.setColor(Color.BLACK);

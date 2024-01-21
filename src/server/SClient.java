@@ -89,7 +89,7 @@ class SClient extends Circle implements Entity {
 	}
 
 	public PlayerInfo getInfo() {
-		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
+		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0], name);
 	}
 
 	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
@@ -133,9 +133,10 @@ class SClient extends Circle implements Entity {
 	// it would throw a `UTFDataFormatException` if i immediately started sending
 	// messages after opening the socket
 	private boolean ready = false;
-
-	public void setReady() {
+	String name = "";
+	public void setReady(String name) {
 		ready = true;
+		this.name = name;
 	}
 
 	private boolean up, down, left, right;

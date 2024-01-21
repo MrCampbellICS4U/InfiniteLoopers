@@ -30,7 +30,8 @@ public class Client implements LastWish, ActionListener {
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage;
 	JButton play, settings, back, resetButton;
-	RoundJTextField ipAddress, portNum;
+	RoundJTextField ipAddress, portNum, enterName;
+	String playerName = "I Forgor";
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
 	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
 	static String ip = GlobalConstants.SERVER_IP;
@@ -111,7 +112,7 @@ public class Client implements LastWish, ActionListener {
 		window.addKeyListener(new GameKeyListener(this));
 		window.addMouseListener(new GameMouseListener(this));
 		window.addMouseMotionListener(new GameMouseListener(this));
-
+		
 		tickTimer = new Timer(1000 / GlobalConstants.FPS, this);
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
@@ -122,12 +123,15 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		if (playerName.equals("Enter Name Here")) playerName = "I Forgor";
+		else playerName = enterName.getText();
 		if (e.getActionCommand().equals("tick"))
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
 			secUpdate();
 		if (e.getActionCommand().equals("respawn")){
 			window.setVisible(false);
+			me.health = 3;
 			mainMenu.setVisible(true);
 		}
 		if (settingsMenu.isVisible()) {
@@ -165,6 +169,7 @@ public class Client implements LastWish, ActionListener {
 			if (action.equals("play")) {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
+				window.requestFocus();
 				startGame(ip, port);
 			} else if (action.equals("settings")) {
 				mainMenu.setVisible(false);
@@ -241,17 +246,23 @@ public class Client implements LastWish, ActionListener {
 	public int getID() {
 		return id;
 	}
-
+	public boolean drawName = true;
+	public boolean toggleName(){
+		return drawName = !drawName;
+	}
 	// server acknowledged connection, we can start sending packets
 	// before this, we don't know our id
 	public void start(int id) {
 		pl.setID(id);
 		this.id = id;
 		ready = true;
-		send(new ReadyPacket()); // acknowledge that we're ready (see note in server/SClient.java)
+		send(new ReadyPacket(playerName)); // acknowledge that we're ready (see note in server/SClient.java)
 		System.out.println("Connected!");
 	}
-
+	Font comic = new Font("Comic Sans MS", Font.PLAIN, 17);
+	public Font getFont(){
+		return comic;
+	}
 	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
 	public ArrayList<EntityInfo> getEntities() {
@@ -412,6 +423,14 @@ public class Client implements LastWish, ActionListener {
 		settings.setBounds((int) settingsLocationWidth, (int) buttonLocationHeight, (int) settingsWidth,
 				(int) buttonHeight);
 
+		enterName = new RoundJTextField(15, "Enter Name Here");
+		enterName.setBounds(425, 670, 300, 60);
+		Font field = new Font("Arial", Font.BOLD, 30);
+		enterName.setFont(field);
+		Color fieldColor = new Color(20, 171, 236);
+		enterName.setBackground(fieldColor);
+		
+		main.add(enterName);
 		main.add(play);
 		main.add(settings);
 		main.add(temporary);

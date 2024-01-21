@@ -7,4 +7,6 @@ public class WallHitbox extends Rectangle {
 		super(x, y, width, height, c);
 	}
 	public void smashInto(Hitbox h) {}
+
+	public HitboxType getHitboxType() { return HitboxType.WALL; }
 }

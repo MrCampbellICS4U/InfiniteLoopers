@@ -22,6 +22,12 @@ public class PlayerInfo extends EntityInfo {
 		this.name = name;
 	}
 	public void customDraw(Graphics g, Client c, int centreRelX, int centreRelY) {
+		boolean drawingSelf = id == c.getID();
+
+		if (drawingSelf) {
+			centreRelX = GlobalConstants.DRAWING_AREA_WIDTH/2;
+			centreRelY = GlobalConstants.DRAWING_AREA_HEIGHT/2;
+		}
 
 		g.setColor(Color.RED);
 		Graphics2D g2 = (Graphics2D) g;
@@ -35,11 +41,9 @@ public class PlayerInfo extends EntityInfo {
 		if (c.drawName){
 			g2.drawString(name, centreRelX-(8*nameLength)/2, centreRelY-30);
 		}
-		if (id == c.getID()) {
-			centreRelX = GlobalConstants.DRAWING_AREA_WIDTH/2;
-			centreRelY = GlobalConstants.DRAWING_AREA_HEIGHT/2;
-			g.setColor(c.getCanvas().getPlayerColor());
-		} else g.setColor(Color.RED);
+
+		if (drawingSelf) g.setColor(c.getCanvas().getPlayerColor());
+		else g.setColor(Color.RED);
 		g.fillOval(centreRelX-radius, centreRelY-radius, radius*2, radius*2);
 	}
 }

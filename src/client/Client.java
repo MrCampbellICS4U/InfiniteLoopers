@@ -7,6 +7,8 @@ import javax.swing.Timer;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.*;
 import java.net.UnknownHostException;
 import javax.imageio.*;
@@ -93,10 +95,8 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && me.health == 0){
+		if (me != null && me.health == 0)
 			return; // don't send packets when you're dead (and the socket is closed)
-		}
-
 
 		pl.send(p);
 	}
@@ -216,24 +216,24 @@ public class Client implements LastWish, ActionListener {
 	void tick() {
 		frame++;
 		setVisibleTiles(getNextVisibleTiles());
-		PlayerInfo me = this.getMe();
 		canvas.repaint();
 		map.repaint();
 
+		PlayerInfo me = this.getMe();
 		if (me == null)
 			return;
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
 			secTimer.stop();
-			resetButton = new JButton();		
+			resetButton = new JButton();
 			resetButton.setActionCommand("respawn");
 			resetButton.addActionListener(this);
 			resetButton.setOpaque(false);
 			resetButton.setContentAreaFilled(false);
 			resetButton.setBorderPainted(false);
 			resetButton.setBounds(GlobalConstants.DRAWING_AREA_WIDTH/2-200, GlobalConstants.DRAWING_AREA_HEIGHT-100, 400, 50);
-			canvas.add(resetButton);	
+			canvas.add(resetButton);
 			return;
 		}
 

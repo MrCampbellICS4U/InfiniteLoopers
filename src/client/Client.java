@@ -7,8 +7,6 @@ import javax.swing.Timer;
 import java.net.Socket;
 import java.awt.event.*;
 import java.util.*;
-import java.util.HashSet;
-import java.util.Set;
 import java.io.*;
 import java.net.UnknownHostException;
 import javax.imageio.*;
@@ -31,7 +29,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage;
-	JButton play, settings, back;
+	JButton play, settings, back, resetButton;
 	RoundJTextField ipAddress, portNum;
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
 	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
@@ -87,13 +85,15 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && me.health == 0)
+		if (me != null && me.health == 0){
 			return; // don't send packets when you're dead (and the socket is closed)
+		}
+
 
 		pl.send(p);
 	}
 
-	Timer tickTimer;
+	Timer tickTimer, secTimer;
 
 	private void startGame(String ip, int port) {
 
@@ -116,7 +116,7 @@ public class Client implements LastWish, ActionListener {
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
-		Timer secTimer = new Timer(1000, this);
+		secTimer = new Timer(1000, this);
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 	}
@@ -126,6 +126,10 @@ public class Client implements LastWish, ActionListener {
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
 			secUpdate();
+		if (e.getActionCommand().equals("respawn")){
+			window.setVisible(false);
+			mainMenu.setVisible(true);
+		}
 		if (settingsMenu.isVisible()) {
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
@@ -198,15 +202,24 @@ public class Client implements LastWish, ActionListener {
 	void tick() {
 		frame++;
 		setVisibleTiles(getNextVisibleTiles());
+		PlayerInfo me = this.getMe();
 		canvas.repaint();
 		map.repaint();
 
-		PlayerInfo me = this.getMe();
 		if (me == null)
 			return;
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
+			secTimer.stop();
+			resetButton = new JButton();		
+			resetButton.setActionCommand("respawn");
+			resetButton.addActionListener(this);
+			resetButton.setOpaque(false);
+			resetButton.setContentAreaFilled(false);
+			resetButton.setBorderPainted(false);
+			resetButton.setBounds(GlobalConstants.DRAWING_AREA_WIDTH/2-200, GlobalConstants.DRAWING_AREA_HEIGHT-100, 400, 50);
+			canvas.add(resetButton);	
 			return;
 		}
 

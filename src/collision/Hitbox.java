@@ -40,4 +40,6 @@ public abstract class Hitbox {
 
 	// what to do on collision
 	abstract public void smashInto(Hitbox h);
+
+	abstract public HitboxType getHitboxType();
 }

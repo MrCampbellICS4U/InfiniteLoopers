@@ -120,7 +120,7 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(1000) < 5 && z == 0) { // 0.5% chance of generating a structure
+                    if (rand.nextInt(1000) < 50 && z == 0) { // 5% chance of generating a structure
                         // generate a random structure
                         int structureTypeIndex = rand.nextInt(structureTypes.length);
                         Class structureType = structureTypes[structureTypeIndex];

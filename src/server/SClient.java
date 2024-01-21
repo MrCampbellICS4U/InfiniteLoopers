@@ -92,12 +92,9 @@ class SClient extends Circle implements Entity {
 		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
 	}
 
-	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
-	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
-	private int health = MAXHEALTH; // 3 hearts
-	private final int MAXARMOR = 3;
+	private int health = GlobalConstants.MAX_HEALTH;
 
-	public String hotBar[] = new String[MAXHOTBAR];
+	public String hotBar[] = new String[GlobalConstants.MAX_HOTBAR];
 	private int armor = 0;
 
 	PacketLord<Server> pl;
@@ -152,7 +149,7 @@ class SClient extends Circle implements Entity {
 			case RELOAD -> reload();
 			case USE -> useItem();
 			case DROP -> dropItem();
-			case Dead -> kysURSELF();
+			case SUICIDE -> { if (GlobalConstants.CAN_SUICIDE) kysURSELF(); }
 
 		}
 	}
@@ -169,8 +166,8 @@ class SClient extends Circle implements Entity {
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
-			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, 10, id, chunker, server);
-			nextShot = time + 300; // 200 ms delay
+			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, GlobalConstants.BULLET_SPEED, id, chunker, server);
+			nextShot = time + GlobalConstants.SHOT_DELAY;
 		};
 	}
 
@@ -190,14 +187,22 @@ class SClient extends Circle implements Entity {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
-	
-	public void getShot() {
-		health--;
+
+	public void getShot(int shooterID) {
+		if (armor > 0) armor--;
+		else health--;
+
+		if (health == 0) server.getClient(shooterID).rewardForKill();
+	}
+
+	public void rewardForKill() {
+		// good job, you got a kill!
+		armor++;
 	}
 
 	private final double targetSpeed = 2;
 
-	private boolean checking = false; // for regen and health or something
+	private boolean waitingToRegen = false;
 	private boolean inWater = false;
 	private double oldX, oldY;
 
@@ -222,9 +227,9 @@ class SClient extends Circle implements Entity {
 		if (health <= 0){
 			kysURSELF();
 		}
-		else if (health < 3 && health > 0 && !checking){
+		else if (health < GlobalConstants.MAX_HEALTH && health > 0 && !waitingToRegen){
 			checkHealth();
-			checking = true;
+			waitingToRegen = true;
 		}
 
 		double newX = getX() + dx;
@@ -249,21 +254,14 @@ class SClient extends Circle implements Entity {
 	}
 	public void checkHealth(){
 		Timer timer = new Timer();
-		int seconds = 6;
 
+		// set a timer to wait REGEN_TIME, then regen
 		timer.schedule(new TimerTask() {
-			int count = seconds;
-
-			@Override
 			public void run() {
-				if (count == 0) {
-					health++;
-					checking = !checking;
-					timer.cancel(); // Stop the timer
-				}
-				count--;
+				health++;
+				waitingToRegen = false;
 			}
-		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
+		}, GlobalConstants.REGEN_TIME);
 	}
 	public void sendPackets() {
 		if (!ready || shouldRemove())
@@ -305,4 +303,5 @@ class SClient extends Circle implements Entity {
 	}
 
 	public Hitbox getHitbox() { return this; }
+	public HitboxType getHitboxType() { return HitboxType.PLAYER; }
 }

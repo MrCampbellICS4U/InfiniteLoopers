@@ -46,7 +46,7 @@ public class Canvas extends JPanel {
 		W = getWidth();
 		H = getHeight();
 
-		drawTerrain(g);
+		drawTerrain(g); // also draws entities and grid
 
 		g.setColor(Color.BLACK);
 		g.setFont(f);
@@ -57,7 +57,7 @@ public class Canvas extends JPanel {
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
 		g.drawString("collision checks/tick: " + String.format("%.2f", client.getCollisionChecksPerFrame()), 20, 240);
 
-		drawBorder(g); // draw border over players
+		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
 		if (me.health == 0) drawDeath(g, me);
 	}
@@ -115,6 +115,7 @@ public class Canvas extends JPanel {
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (int layer = 0; layer < 3; layer++) {
 			if (layer == 2) {
+				drawGrid(g);
 				for (EntityInfo entity : client.getEntities()) {
 					entity.draw(g, client, me.xGlobal, me.yGlobal);
 				}
@@ -146,8 +147,6 @@ public class Canvas extends JPanel {
 				g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
 			}
 		}
-
-		drawGrid(g);
 	}
 	public void drawDeath(Graphics g, PlayerInfo p){
 		Color reddish = new Color(135, 0, 0, 50);

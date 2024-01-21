@@ -36,4 +36,5 @@ public class PlayerInfo extends EntityInfo {
 		} else g.setColor(Color.RED);
 		g.fillOval(centreRelX-radius, centreRelY-radius, radius*2, radius*2);
 	}
+
 }

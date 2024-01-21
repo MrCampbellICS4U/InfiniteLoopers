@@ -16,7 +16,7 @@ public class BulletInfo extends EntityInfo {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.BLUE);
 		g2.rotate(angle, centreRelX, centreRelY);
-		g2.drawImage(c.getBulletImage(), centreRelX-(radius+20), centreRelY-(radius+20), null);
+		g2.drawImage(c.getBulletImage(), centreRelX-(radius), centreRelY-(radius), null);
 		g2.rotate(-angle, centreRelX, centreRelY);
 		//g.fillOval(centreRelX-radius, centreRelY-radius, radius*2, radius*2);
 	}

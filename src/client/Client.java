@@ -32,6 +32,7 @@ public class Client implements LastWish, ActionListener {
 	JButton play, settings, back, resetButton;
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
+	String defaultName = "Enter Name Here";
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
 	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
 	static String ip = GlobalConstants.SERVER_IP;
@@ -129,9 +130,10 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (playerName.equals("Enter Name Here")) playerName = "I Forgor";
-		else playerName = enterName.getText();
+		if (playerName.equals(defaultName)) {playerName = "I Forgor";}
+		else {playerName = enterName.getText();}
 		if (e.getActionCommand().equals("tick"))
+
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
 			secUpdate();
@@ -176,6 +178,7 @@ public class Client implements LastWish, ActionListener {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
 				window.requestFocus();
+				playerName = "I Forgor";
 				startGame(ip, port);
 			} else if (action.equals("settings")) {
 				mainMenu.setVisible(false);
@@ -429,7 +432,7 @@ public class Client implements LastWish, ActionListener {
 		settings.setBounds((int) settingsLocationWidth, (int) buttonLocationHeight, (int) settingsWidth,
 				(int) buttonHeight);
 
-		enterName = new RoundJTextField(15, "Enter Name Here");
+		enterName = new RoundJTextField(15, defaultName);
 		enterName.setBounds(425, 670, 300, 60);
 		Font field = new Font("Arial", Font.BOLD, 30);
 		enterName.setFont(field);

@@ -31,7 +31,7 @@ public class Bullet extends Circle implements Entity {
 	}
 
 	public EntityInfo getInfo() {
-		return new BulletInfo((int)getX(), (int)getY(), (int)getRadius());
+		return new BulletInfo((int)getX(), (int)getY(), (int)getRadius(), angle);
 	}
 
 	public void update(double deltaTime) {

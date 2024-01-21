@@ -43,5 +43,5 @@ public class GlobalConstants {
 	public static final int SHOT_DELAY = 500; // ms
 
 	// can clients press P to kill themselves?
-	public static boolean CAN_SUICIDE = false;
+	public static boolean CAN_SUICIDE = true;
 }

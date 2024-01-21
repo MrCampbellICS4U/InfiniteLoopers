@@ -94,7 +94,7 @@ public class Client implements LastWish, ActionListener {
 		pl.send(p);
 	}
 
-	Timer tickTimer;
+	Timer tickTimer, secTimer;
 
 	private void startGame(String ip, int port) {
 
@@ -117,7 +117,7 @@ public class Client implements LastWish, ActionListener {
 		tickTimer.setActionCommand("tick");
 		tickTimer.start();
 
-		Timer secTimer = new Timer(1000, this);
+		secTimer = new Timer(1000, this);
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
 	}
@@ -216,6 +216,15 @@ public class Client implements LastWish, ActionListener {
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
+			secTimer.stop();
+			resetButton = new JButton();
+			resetButton.setActionCommand("respawn");
+			resetButton.addActionListener(this);
+			resetButton.setOpaque(false);
+			resetButton.setContentAreaFilled(false);
+			resetButton.setBorderPainted(false);
+			resetButton.setBounds(GlobalConstants.DRAWING_AREA_WIDTH/2-200, GlobalConstants.DRAWING_AREA_HEIGHT-100, 400, 50);
+			canvas.add(resetButton);
 			return;
 		}
 

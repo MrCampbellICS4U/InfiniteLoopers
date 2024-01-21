@@ -111,7 +111,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
 			// this could mean that a client disconnected while sending a packet
-			if (e.getMessage().equals("Stream closed") {
+			if (e.getMessage().equals("Stream closed")) {
 				dest.handleDisconnection(id, e);
 			} else dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {

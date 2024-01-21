@@ -1,11 +1,10 @@
 package server;
 
-import collision.Chunker;
-import collision.Circle;
-import collision.Hitbox;
+import collision.*;
 import entities.BulletInfo;
 import entities.Entity;
 import entities.EntityInfo;
+import shared.GlobalConstants;
 
 public class Bullet extends Circle implements Entity {
 	final private double angle;
@@ -18,7 +17,7 @@ public class Bullet extends Circle implements Entity {
 		this.angle = angle;
 		this.shooterID = shooterID;
 		server.addEntity(this);
-		deathTime = System.currentTimeMillis() + 800; // despawn after 0.8 seconds
+		deathTime = System.currentTimeMillis() + GlobalConstants.BULLET_DESPAWN_TIME;
 	}
 
 	public void smashInto(Hitbox h) {
@@ -46,4 +45,6 @@ public class Bullet extends Circle implements Entity {
 	public boolean shouldRemove() { return shouldRemove; }
 
 	public Hitbox getHitbox() { return this; }
+
+	public HitboxType getHitboxType() { return HitboxType.BULLET; }
 }

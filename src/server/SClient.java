@@ -166,8 +166,8 @@ class SClient extends Circle implements Entity {
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
-			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, 10, id, chunker, server);
-			nextShot = time + 500; // 500 ms delay
+			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, GlobalConstants.BULLET_SPEED, id, chunker, server);
+			nextShot = time + GlobalConstants.SHOT_DELAY;
 		};
 	}
 
@@ -303,4 +303,5 @@ class SClient extends Circle implements Entity {
 	}
 
 	public Hitbox getHitbox() { return this; }
+	public HitboxType getHitboxType() { return HitboxType.PLAYER; }
 }

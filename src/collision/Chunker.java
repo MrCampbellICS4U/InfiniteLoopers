@@ -29,7 +29,6 @@ public class Chunker {
 			for (int y = toChunkX(e.getY1()); y <= toChunkY(e.getY2()); y++) {
 				if (x < 0 || width <= x || y < 0 || height <= y) continue;
 				chunks[x][y].add(e);
-				chunks[x][y].changed = true;
 			}
 		}
 	}
@@ -38,7 +37,6 @@ public class Chunker {
 		for (int x = x1; x <= x2; x++) {
 			for (int y = y1; y <= y2; y++) {
 				if (x < 0 || width <= x || y < 0 || height <= y) continue;
-				// don't count this as a change, since, if anything, it would just end a collision
 				chunks[x][y].remove(e);
 			}
 		}
@@ -61,7 +59,7 @@ public class Chunker {
 			for (int x = oldX1Chunk; x <= oldX2Chunk; x++) {
 				for (int y = oldY1Chunk; y <= oldY2Chunk; y++) {
 					if (x < 0 || width <= x || y < 0 || height <= y) continue;
-					chunks[x][y].changed = true;
+					chunks[x][y].update();
 				}
 			}
 			return;

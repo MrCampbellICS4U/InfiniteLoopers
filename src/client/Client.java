@@ -31,7 +31,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage;
-	JButton play, settings, back;
+	JButton play, settings, back, resetButton;
 	RoundJTextField ipAddress, portNum;
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
 	static int H = GlobalConstants.DRAWING_AREA_HEIGHT;
@@ -87,8 +87,10 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && me.health == 0)
+		if (me != null && me.health == 0){
 			return; // don't send packets when you're dead (and the socket is closed)
+		}
+
 
 		pl.send(p);
 	}
@@ -207,6 +209,11 @@ public class Client implements LastWish, ActionListener {
 		if (me.health == 0) {
 			// you died L
 			tickTimer.stop();
+			resetButton = new JButton();		
+			resetButton.setActionCommand("resetButton");
+			resetButton.addActionListener(this);
+			resetButton.setBounds(GlobalConstants.DRAWING_AREA_WIDTH/2-100, GlobalConstants.DRAWING_AREA_HEIGHT-100, 200, 50);
+			canvas.add(resetButton);
 			return;
 		}
 

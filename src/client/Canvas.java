@@ -147,7 +147,7 @@ public class Canvas extends JPanel {
 			}
 		}
 
-		drawGrid(g);
+		//drawGrid(g);
 	}
 	public void drawDeath(Graphics g, PlayerInfo p){
 		Color reddish = new Color(135, 0, 0, 50);

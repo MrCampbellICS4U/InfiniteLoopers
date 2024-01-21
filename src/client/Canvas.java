@@ -53,12 +53,7 @@ public class Canvas extends JPanel {
 
 		g.setColor(Color.BLACK);
 		g.setFont(f);
-		g.drawString(client.getFPS() + " fps", 20, 40);
-		g.drawString(client.getPing() + " ping", 20, 80);
-		g.drawString(client.getTPS() + " tps", 20, 120);
-		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
-		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
-		g.drawString("collision checks/tick: " + String.format("%.2f", client.getCollisionChecksPerFrame()), 20, 240);
+
 
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);

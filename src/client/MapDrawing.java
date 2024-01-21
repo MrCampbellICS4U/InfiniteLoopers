@@ -49,9 +49,21 @@ public class MapDrawing extends JFrame{
 			int yMapCentre = mapSizeH/2;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			PlayerInfo me = c.getMe();
-			double playerRelX = (((double)me.xGlobal)/GlobalConstants.WORLD_WIDTH);
+			PlayerInfo me = c.getMe();	
+			double playerRelX = (((double)me.xGlobal)/GlobalConstants.WORLD_WIDTH);	
 			double playerRelY = (((double)me.yGlobal)/GlobalConstants.WORLD_HEIGHT);
+			Font font = new Font("Arial", Font.BOLD, 40);
+			g.setFont(font);
+			g.drawString("x: " + c.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 50);
+			g.drawString("y: " + c.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20,100);
+			Font font1 = new Font("Arial", Font.PLAIN, 20);
+			g.setFont(font1);
+
+			g.drawString(c.getFPS() + " fps", 20, mapSizeW-20);
+			g.drawString(c.getPing() + " ping", 150, mapSizeW-20);
+			g.drawString(c.getTPS() + " tps", 320, mapSizeW-20);
+			g.drawString("collision checks/tick: " + String.format("%.2f", c.getCollisionChecksPerFrame()), 420, mapSizeW-20);
+
 			g.fillOval((int) (playerRelX*mapSizeW), (int) (playerRelY*mapSizeH), 10, 10);
 		}
 	}

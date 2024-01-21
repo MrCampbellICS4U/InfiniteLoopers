@@ -16,6 +16,7 @@ import game.world.Tiles.*;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
+	
 	private int W, H; // width and height
 	BufferedImage healthImage, armorImage, gunImage, deathImage;
 	private Client client;

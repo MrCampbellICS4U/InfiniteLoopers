@@ -120,7 +120,7 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(1000) < 50 && z == 0) { // 5% chance of generating a structure
+                    if (rand.nextInt(1000) < 3 && z == 0) { // 5% chance of generating a structure
                         // generate a random structure
                         int structureTypeIndex = rand.nextInt(structureTypes.length);
                         Class structureType = structureTypes[structureTypeIndex];
@@ -152,7 +152,7 @@ public class WorldGenerator {
                         }
                     } else if (rand.nextInt(100) < 2 && z == 1 && (newMapTiles[x][y][0].getType().equals("null")
                             || newMapTiles[x][y][0].getType().equals("grass"))) {
-						// 2% chance of generating a crate
+                        // 2% chance of generating a crate
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
                     } else if (z == 0) { // 85% chance of generating a tile
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
@@ -190,15 +190,15 @@ public class WorldGenerator {
         }
 
         /*
-        for (int y = 0; y < height; y++) { // for each row
-            for (int x = 0; x < width; x++) { // for each column
-                if (newMapTiles[x][y][0] == null)
-                    continue;
-                System.out.print(newMapTiles[x][y][1].getType() + " ");
-            }
-            System.out.println();
-        }
-        */
+         * for (int y = 0; y < height; y++) { // for each row
+         * for (int x = 0; x < width; x++) { // for each column
+         * if (newMapTiles[x][y][0] == null)
+         * continue;
+         * System.out.print(newMapTiles[x][y][1].getType() + " ");
+         * }
+         * System.out.println();
+         * }
+         */
 
         int numSandTiles = 0;
 
@@ -212,8 +212,8 @@ public class WorldGenerator {
             }
         }
 
-        //System.out.println("Number of null tiles: " + numSandTiles);
-        //System.out.println("Number of null tiles after: " + numSandTiles2);
+        // System.out.println("Number of null tiles: " + numSandTiles);
+        // System.out.println("Number of null tiles after: " + numSandTiles2);
 
         return newMapTiles;
     }

@@ -36,12 +36,13 @@ public class GlobalConstants {
     public static final int MAX_HOTBAR = 3;
     public static final int MAX_HEALTH = 3; // 3 hearts
 
-	public static final int REGEN_TIME = 10000; // ms
+    public static final int REGEN_TIME = 10000; // ms
 
-	public static final int BULLET_DESPAWN_TIME = 800; // ms
-	public static final int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions might start bugging
-	public static final int SHOT_DELAY = 500; // ms
+    public static final int BULLET_DESPAWN_TIME = 800; // ms
+    public static final int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
+                                               // might start bugging
+    public static final int SHOT_DELAY = 170; // ms
 
-	// can clients press P to kill themselves?
-	public static boolean CAN_SUICIDE = false;
+    // can clients press P to kill themselves?
+    public static boolean CAN_SUICIDE = false;
 }

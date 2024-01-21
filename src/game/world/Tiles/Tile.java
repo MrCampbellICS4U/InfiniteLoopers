@@ -12,7 +12,9 @@ public class Tile implements java.io.Serializable {
                                                                                  // "closed" => image file location,
                                                                                  // etc...
 
-	public Class<? extends Rectangle> getHitboxType() { return null; }
+    public Class<? extends Rectangle> getHitboxType() {
+        return null;
+    }
 
     public Tile(int x, int y, int z, int orientation, String type, String state) {
         this.x = x;

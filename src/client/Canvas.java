@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Canvas extends JPanel {
 	private Client client;
 	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
+
 	public Canvas(Client c) {
 		client = c;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
@@ -59,7 +61,8 @@ public class Canvas extends JPanel {
 
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
-		if (me.health == 0) drawDeath(g, me);
+		if (me.health == 0)
+			drawDeath(g, me);
 	}
 
 	Random rand = new Random();
@@ -67,8 +70,11 @@ public class Canvas extends JPanel {
 	int green = rand.nextInt(255) + 1;
 	int blue = rand.nextInt(255) + 1;
 	Color playerColor = new Color(red, green, blue);
-	public Color getPlayerColor() { return playerColor; }
-	
+
+	public Color getPlayerColor() {
+		return playerColor;
+	}
+
 	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
 		for (int i = 0; i < p.health; i++) {
@@ -78,11 +84,13 @@ public class Canvas extends JPanel {
 			g.drawImage(armorImage, (37 + i * 78), 650, 60, 55, null);
 		}
 		g.setColor(Color.BLACK);
-		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
+		((Graphics2D) g).setStroke(new BasicStroke(10.0f));
 
-		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100),
+		// 700, itemHotbarSize, itemHotbarSize);}
 		// g.setColor(new Color(50, 50, 50, 100));
-		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100),
+		// 700, itemHotbarSize, itemHotbarSize);}
 	}
 
 	final private int gridWidth = 100;
@@ -100,14 +108,39 @@ public class Canvas extends JPanel {
 						System.out.println("Error loading image: " + imageURL);
 						e.printStackTrace();
 					}
+					// rotate the image 90 degrees 3 times and put it in the hashmap with the
+					// rotation agle at the end of the key
+					for (int i = 1; i < 4; i++) {
+						images.put(type + "_" + state + "_" + i,
+								rotateImage(images.get(type + "_" + state), i * 90));
+					}
 				}
 			} catch (NullPointerException e) {
 				System.out.println("Error loading images for type: " + type);
 				e.printStackTrace();
 			}
 		}
+		System.out.println(images.keySet());
 		return images;
 	}
+
+	private BufferedImage rotateImage(BufferedImage originalImage, double degrees) {
+		int w = originalImage.getWidth();
+		int h = originalImage.getHeight();
+		BufferedImage rotatedImage = new BufferedImage(w, h, originalImage.getType());
+		Graphics2D g2 = rotatedImage.createGraphics();
+
+		// Calculate the center of the image
+		AffineTransform at = new AffineTransform();
+		at.rotate(Math.toRadians(degrees), w / 2, h / 2);
+
+		g2.setTransform(at);
+		g2.drawImage(originalImage, 0, 0, null);
+		g2.dispose();
+
+		return rotatedImage;
+	}
+
 	private void drawTerrain(Graphics g) {
 
 		PlayerInfo me = client.getMe();
@@ -136,29 +169,40 @@ public class Canvas extends JPanel {
 
 				// if the player is close enough, don't render the ceiling
 				if (layer == 2
-						&& Math.abs(groundRelX + GlobalConstants.TILE_WIDTH/2 - GlobalConstants.DRAWING_AREA_WIDTH
+						&& Math.abs(groundRelX + GlobalConstants.TILE_WIDTH / 2 - GlobalConstants.DRAWING_AREA_WIDTH
 								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE
-						&& Math.abs(groundRelY + GlobalConstants.TILE_HEIGHT/2 - GlobalConstants.DRAWING_AREA_HEIGHT
+						&& Math.abs(groundRelY + GlobalConstants.TILE_HEIGHT / 2 - GlobalConstants.DRAWING_AREA_HEIGHT
 								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE)
 					continue;
-				BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
-						+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
 
-				g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+				// rotatte the image based on the orientation of the tile
+				if (currentTile.getOrientation() != 0) {
+					g.drawImage(TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+							+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png" + "_"
+							+ currentTile.getOrientation()), groundRelX, groundRelY, gridWidth, gridWidth,
+							null);
+				} else {
+					BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+							+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+					g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+				}
+
 			}
 		}
 	}
-	public void drawDeath(Graphics g, PlayerInfo p){
+
+	public void drawDeath(Graphics g, PlayerInfo p) {
 		Color reddish = new Color(135, 0, 0, 50);
 		g.setColor(reddish);
 		g.fillRect(0, 0, W, H);
 		g.drawImage(deathImage, 0, 0, GlobalConstants.DRAWING_AREA_WIDTH, GlobalConstants.DRAWING_AREA_HEIGHT, null);
 		g.setColor(Color.BLACK);
-		//Font f = new Font("Arial", Font.PLAIN, 70);
+		// Font f = new Font("Arial", Font.PLAIN, 70);
 		// g.setFont(f);
 		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
 
 	}
+
 	private void drawGrid(Graphics g) { // deprecated (soon)
 		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;

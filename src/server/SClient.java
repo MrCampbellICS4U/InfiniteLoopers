@@ -94,8 +94,7 @@ class SClient extends Circle implements Entity {
 
 	private final int MAXHOTBAR = GlobalConstants.MAXHOTBAR;
 	private final int MAXHEALTH = GlobalConstants.MAXHEALTH;
-	private int health = MAXHEALTH; // 3 hearts
-	private final int MAXARMOR = 3;
+	private int health = MAXHEALTH;
 
 	public String hotBar[] = new String[MAXHOTBAR];
 	private int armor = 0;
@@ -170,7 +169,7 @@ class SClient extends Circle implements Entity {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
 			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, 10, id, chunker, server);
-			nextShot = time + 300; // 200 ms delay
+			nextShot = time + 500; // 500 ms delay
 		};
 	}
 
@@ -190,9 +189,17 @@ class SClient extends Circle implements Entity {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
-	
-	public void getShot() {
-		health--;
+
+	public void getShot(int shooterID) {
+		if (armor > 0) armor--;
+		else health--;
+
+		if (health == 0) server.getClient(shooterID).rewardForKill();
+	}
+
+	public void rewardForKill() {
+		// good job, you got a kill!
+		armor++;
 	}
 
 	private final double targetSpeed = 2;
@@ -249,21 +256,14 @@ class SClient extends Circle implements Entity {
 	}
 	public void checkHealth(){
 		Timer timer = new Timer();
-		int seconds = 6;
 
+		// set a timer to wait REGEN_TIME, then regen
 		timer.schedule(new TimerTask() {
-			int count = seconds;
-
-			@Override
 			public void run() {
-				if (count == 0) {
-					health++;
-					checking = !checking;
-					timer.cancel(); // Stop the timer
-				}
-				count--;
+				health++;
+				checking = !checking;
 			}
-		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
+		}, GlobalConstants.REGEN_TIME);
 	}
 	public void sendPackets() {
 		if (!ready || shouldRemove())

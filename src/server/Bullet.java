@@ -10,13 +10,13 @@ import entities.EntityInfo;
 public class Bullet extends Circle implements Entity {
 	final private double angle;
 	private double speed;
-	private int senderID;
+	private int shooterID;
 	private long deathTime;
-	public Bullet(double x, double y, double radius, double angle, double speed, int senderID, Chunker c, Server server) {
+	public Bullet(double x, double y, double radius, double angle, double speed, int shooterID, Chunker c, Server server) {
 		super(x, y, radius, c);
 		this.speed = speed;
 		this.angle = angle;
-		this.senderID = senderID;
+		this.shooterID = shooterID;
 		server.addEntity(this);
 		deathTime = System.currentTimeMillis() + 800; // despawn after 0.8 seconds
 	}
@@ -24,8 +24,8 @@ public class Bullet extends Circle implements Entity {
 	public void smashInto(Hitbox h) {
 		if (h instanceof SClient) {
 			SClient client = (SClient)h;
-			if (client.getID() == senderID) return; // hit self
-			client.getShot();
+			if (client.getID() == shooterID) return; // hit self
+			client.getShot(shooterID);
 			this.remove();
 		}
 		if (h instanceof WallHitbox) this.remove();

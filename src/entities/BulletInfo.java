@@ -6,6 +6,7 @@ import client.Client;
 public class BulletInfo extends EntityInfo {
 	private int radius;
 	private double angle;
+
 	public BulletInfo(int x, int y, int radius, double angle) {
 		super(x, y);
 		this.radius = radius;
@@ -16,8 +17,8 @@ public class BulletInfo extends EntityInfo {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.BLUE);
 		g2.rotate(angle, centreRelX, centreRelY);
-		g2.drawImage(c.getBulletImage(), centreRelX-(radius), centreRelY-(radius), null);
+		g2.drawImage(c.getBulletImage(), centreRelX - (radius), centreRelY - (radius), null);
 		g2.rotate(-angle, centreRelX, centreRelY);
-		//g.fillOval(centreRelX-radius, centreRelY-radius, radius*2, radius*2);
+		// g.fillOval(centreRelX-radius, centreRelY-radius, radius*2, radius*2);
 	}
 }

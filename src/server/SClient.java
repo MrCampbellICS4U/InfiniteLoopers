@@ -10,11 +10,13 @@ import packets.*;
 import client.*;
 import entities.*;
 import collision.*;
+
 // clients from the server's perspective
 class SClient extends Circle implements Entity {
 	private double lastTileUpdateX, lastTileUpdateY;
 	private Tile[][][] visibleTiles;
 	private Tile[][][] oldVisibleTiles;
+	private GlobalConstants gc;
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -25,9 +27,9 @@ class SClient extends Circle implements Entity {
 	}
 
 	public Tile[][][] calculateVisibleTiles(Tile[][][] map) {
-		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
-				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
-						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
+		Tile[][][] visibleTiles = new Tile[gc.DRAWING_AREA_WIDTH / gc.TILE_WIDTH
+				+ 2 * gc.TILE_X_BUFFER][gc.DRAWING_AREA_HEIGHT / gc.TILE_HEIGHT
+						+ 2 * gc.TILE_Y_BUFFER][3];
 		int x = (int) getX();
 		int y = (int) getY();
 
@@ -35,10 +37,10 @@ class SClient extends Circle implements Entity {
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
 		// direction
 		// converting the pixel location to tile location and round to nearest tile size
-		int topLeftX = (int) (x - GlobalConstants.DRAWING_AREA_WIDTH / 2) / GlobalConstants.TILE_WIDTH
-				- GlobalConstants.TILE_X_BUFFER;
-		int topLeftY = (int) (y - GlobalConstants.DRAWING_AREA_HEIGHT / 2) / GlobalConstants.TILE_HEIGHT
-				- GlobalConstants.TILE_Y_BUFFER;
+		int topLeftX = (int) (x - gc.DRAWING_AREA_WIDTH / 2) / gc.TILE_WIDTH
+				- gc.TILE_X_BUFFER;
+		int topLeftY = (int) (y - gc.DRAWING_AREA_HEIGHT / 2) / gc.TILE_HEIGHT
+				- gc.TILE_Y_BUFFER;
 
 		// loop through the visible tiles and set them to the corresponding tiles in the
 		// map
@@ -47,8 +49,8 @@ class SClient extends Circle implements Entity {
 				for (int z = 0; z < visibleTiles[0][0].length; z++) {
 					int xIndex = topLeftX + x1;
 					int yIndex = topLeftY + y1;
-					if (xIndex < 0 || GlobalConstants.WORLD_TILE_WIDTH <= xIndex || yIndex < 0
-							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
+					if (xIndex < 0 || gc.WORLD_TILE_WIDTH <= xIndex || yIndex < 0
+							|| gc.WORLD_TILE_HEIGHT <= yIndex) {
 						// tile is out of bounds of the world, send an air tile
 						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
 					} else
@@ -89,31 +91,50 @@ class SClient extends Circle implements Entity {
 	}
 
 	public PlayerInfo getInfo() {
-		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0], name);
+		return new PlayerInfo((int) getX(), (int) getY(), id, (int) getRadius(), angle, health, armor, new String[0],
+				name);
 	}
 
-	private int health = GlobalConstants.MAX_HEALTH;
+	private int health;
 
-	public String hotBar[] = new String[GlobalConstants.MAX_HOTBAR];
+	public String hotBar[];
 	private int armor = 0;
 
 	PacketLord<Server> pl;
 	private final int id;
-	public int getID() { return id; }
 
-	public void send(PacketTo<Client> p) { pl.send(p); }
+	public int getID() {
+		return id;
+	}
+
+	public void send(PacketTo<Client> p) {
+		pl.send(p);
+	}
 
 	private boolean shouldRemove = false;
-	public void remove() { pl.close(); shouldRemove = true; }
-	public boolean shouldRemove() { return shouldRemove; }
+
+	public void remove() {
+		pl.close();
+		shouldRemove = true;
+	}
+
+	public boolean shouldRemove() {
+		return shouldRemove;
+	}
 
 	Tile[][][] map;
 	private Server server;
 	private Chunker chunker;
 	private long nextShot; // the time of the soonest next shot
-	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map) {
-		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
-			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
+
+	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map, GlobalConstants gc) {
+		super((int) (Math.random() * gc.WORLD_WIDTH),
+				(int) (Math.random() * gc.WORLD_HEIGHT), 25, c);
+
+		this.gc = gc;
+
+		this.health = gc.MAX_HEALTH;
+		this.hotBar = new String[gc.MAX_HOTBAR];
 
 		this.id = id;
 		pl = new PacketLord<Server>(socket, server);
@@ -131,6 +152,7 @@ class SClient extends Circle implements Entity {
 	// messages after opening the socket
 	private boolean ready = false;
 	String name = "";
+
 	public void setReady(String name) {
 		ready = true;
 		this.name = name;
@@ -150,28 +172,35 @@ class SClient extends Circle implements Entity {
 			case RELOAD -> reload();
 			case USE -> useItem();
 			case DROP -> dropItem();
-			case SUICIDE -> { if (GlobalConstants.CAN_SUICIDE) kysURSELF(); }
+			case SUICIDE -> {
+				if (gc.CAN_SUICIDE)
+					kysURSELF();
+			}
 
 		}
 	}
+
 	int counter = 0;
-	private void kysURSELF(){
+
+	private void kysURSELF() {
 		health = 0;
 		counter++;
-		if(counter > 10){
+		if (counter > 10) {
 			pl.close();
 		}
 	}
 
 	final int gunLength = 35;
+
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
-			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, GlobalConstants.BULLET_SPEED, id, chunker, server);
-			nextShot = time + GlobalConstants.SHOT_DELAY;
-		};
+			new Bullet(getX() + (Math.cos(angle) * gunLength), getY() + (Math.sin(angle) * gunLength), 6, angle,
+					gc.BULLET_SPEED, id, chunker, server, this.gc);
+			nextShot = time + gc.SHOT_DELAY;
+		}
+		;
 	}
-
 
 	// todo implement
 	private void reload() {
@@ -188,12 +217,14 @@ class SClient extends Circle implements Entity {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
-
 	public void getShot(int shooterID) {
-		if (armor > 0) armor--;
-		else health--;
+		if (armor > 0)
+			armor--;
+		else
+			health--;
 
-		if (health == 0) server.getClient(shooterID).rewardForKill();
+		if (health == 0)
+			server.getClient(shooterID).rewardForKill();
 	}
 
 	public void rewardForKill() {
@@ -208,11 +239,13 @@ class SClient extends Circle implements Entity {
 	private double oldX, oldY;
 
 	public void update(double deltaTime) {
-		if (shouldRemove()) return;
+		if (shouldRemove())
+			return;
 
 		double dx = 0, dy = 0;
 		double speed = targetSpeed * deltaTime;
-		if (inWater) speed *= 0.6;
+		if (inWater)
+			speed *= 0.6;
 		if (up)
 			dy -= speed;
 		if (down)
@@ -225,10 +258,9 @@ class SClient extends Circle implements Entity {
 			dx /= Math.sqrt(2);
 			dy /= Math.sqrt(2);
 		}
-		if (health <= 0){
+		if (health <= 0) {
 			kysURSELF();
-		}
-		else if (health < GlobalConstants.MAX_HEALTH && health > 0 && !waitingToRegen){
+		} else if (health < gc.MAX_HEALTH && health > 0 && !waitingToRegen) {
 			checkHealth();
 			waitingToRegen = true;
 		}
@@ -236,16 +268,17 @@ class SClient extends Circle implements Entity {
 		double newX = getX() + dx;
 		double newY = getY() + dy;
 
-		newX = Math.max(0, Math.min(newX, GlobalConstants.WORLD_WIDTH));
-		newY = Math.max(0, Math.min(newY, GlobalConstants.WORLD_HEIGHT));
+		newX = Math.max(0, Math.min(newX, gc.WORLD_WIDTH));
+		newY = Math.max(0, Math.min(newY, gc.WORLD_HEIGHT));
 
 		oldX = getX();
 		oldY = getY();
 		setPosition(newX, newY);
 
-		if (Math.abs(newX - lastTileUpdateX) >= GlobalConstants.TILE_WIDTH
-				|| Math.abs(newY - lastTileUpdateY) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
-																			// away from the last update
+		if (Math.abs(newX - lastTileUpdateX) >= gc.TILE_WIDTH
+				|| Math.abs(newY - lastTileUpdateY) >= gc.TILE_HEIGHT) { // if the player has moved at
+																			// least 1 tile
+			// away from the last update
 			lastTileUpdateX = newX;
 			lastTileUpdateY = newY;
 			handleVisibleTileUpdates(map);
@@ -253,7 +286,8 @@ class SClient extends Circle implements Entity {
 
 		inWater = false; // if we're still in water, will be set to true again
 	}
-	public void checkHealth(){
+
+	public void checkHealth() {
 		Timer timer = new Timer();
 
 		// set a timer to wait REGEN_TIME, then regen
@@ -262,8 +296,9 @@ class SClient extends Circle implements Entity {
 				health++;
 				waitingToRegen = false;
 			}
-		}, GlobalConstants.REGEN_TIME);
+		}, gc.REGEN_TIME);
 	}
+
 	public void sendPackets() {
 		if (!ready || shouldRemove())
 			return;
@@ -286,23 +321,33 @@ class SClient extends Circle implements Entity {
 		if (h instanceof WaterHitbox) {
 			inWater = true;
 		}
-		if (h instanceof WallHitbox) hitCrate((WallHitbox)h);
+		if (h instanceof WallHitbox)
+			hitCrate((WallHitbox) h);
 	}
 
 	private void hitCrate(WallHitbox c) {
 		// "pop the player out" of the crate
 		// find the closest point on the border of the crate, and move them there
 		double x1 = c.getX1() - getRadius(), x2 = c.getX2() + getRadius(),
- 			y1 = c.getY1() - getRadius(), y2 = c.getY2() + getRadius();
+				y1 = c.getY1() - getRadius(), y2 = c.getY2() + getRadius();
 		double x1dist = Math.abs(getX() - x1), x2dist = Math.abs(getX() - x2),
-			y1dist = Math.abs(getY() - y1), y2dist = Math.abs(getY() - y2);
+				y1dist = Math.abs(getY() - y1), y2dist = Math.abs(getY() - y2);
 		double closest = Math.min(x1dist, Math.min(x2dist, Math.min(y1dist, y2dist)));
-		if (closest == x1dist) setPosition(x1, getY());
-		else if (closest == x2dist) setPosition(x2, getY());
-		else if (closest == y1dist) setPosition(getX(), y1);
-		else if (closest == y2dist) setPosition(getX(), y2);
+		if (closest == x1dist)
+			setPosition(x1, getY());
+		else if (closest == x2dist)
+			setPosition(x2, getY());
+		else if (closest == y1dist)
+			setPosition(getX(), y1);
+		else if (closest == y2dist)
+			setPosition(getX(), y2);
 	}
 
-	public Hitbox getHitbox() { return this; }
-	public HitboxType getHitboxType() { return HitboxType.PLAYER; }
+	public Hitbox getHitbox() {
+		return this;
+	}
+
+	public HitboxType getHitboxType() {
+		return HitboxType.PLAYER;
+	}
 }

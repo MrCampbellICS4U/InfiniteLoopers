@@ -31,7 +31,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage, bImage;
-	JButton play, settings, back, resetButton;
+	JButton play, settings, back, resetButton, showControls;
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
 	String defaultName = "Enter Name Here";
@@ -136,7 +136,6 @@ public class Client implements LastWish, ActionListener {
 			playerName = enterName.getText();
 		}
 		if (e.getActionCommand().equals("tick"))
-
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
 			secUpdate();
@@ -148,6 +147,12 @@ public class Client implements LastWish, ActionListener {
 		if (settingsMenu.isVisible()) {
 			String actionCom = e.getActionCommand();
 			String ipInput = ipAddress.getText();
+			if (actionCom.equals("controls")) {
+				JOptionPane.showInternalMessageDialog(null,
+						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our Game!!",
+						"Controls", JOptionPane.INFORMATION_MESSAGE);
+			}
+
 			try {
 				if (ipInput.equals("")) {
 					ip = "127.0.0.1";
@@ -181,7 +186,6 @@ public class Client implements LastWish, ActionListener {
 				mainMenu.setVisible(false);
 				window.setVisible(true);
 				window.requestFocus();
-				playerName = "I Forgor";
 				startGame(ip, port);
 			} else if (action.equals("settings")) {
 				mainMenu.setVisible(false);
@@ -493,6 +497,15 @@ public class Client implements LastWish, ActionListener {
 		back.setBorderPainted(false);
 		back.setBounds(530, 675, 225, 100);
 
+		showControls = new JButton();
+		showControls.setActionCommand("controls");
+		showControls.addActionListener(this);
+		showControls.setOpaque(false);
+		showControls.setContentAreaFilled(false);
+		showControls.setBorderPainted(false);
+		showControls.setBounds(0, 0, W, 400);
+
+		settingsPanel.add(showControls);
 		settingsPanel.add(back);
 		settingsPanel.add(ipAddress);
 		settingsPanel.add(portNum);

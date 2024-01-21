@@ -229,7 +229,9 @@ class SClient extends Circle implements Entity {
 
 	public void rewardForKill() {
 		// good job, you got a kill!
-		armor++;
+		if (armor < GlobalConstants.MAX_ARMOR){
+			armor++;
+		}
 	}
 
 	private final double targetSpeed = 2;

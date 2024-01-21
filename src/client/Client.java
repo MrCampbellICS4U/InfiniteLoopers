@@ -30,7 +30,7 @@ public class Client implements LastWish, ActionListener {
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
 	static MapDrawing map;
-	BufferedImage menuPNG, settingsPNG;
+	BufferedImage menuPNG, settingsPNG, akImage;
 	JButton play, settings, back;
 	RoundJTextField ipAddress, portNum;
 	static int W = GlobalConstants.DRAWING_AREA_WIDTH;
@@ -61,6 +61,7 @@ public class Client implements LastWish, ActionListener {
 
 		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
 		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
+		akImage = Canvas.loadImage("res/game/Guns/ak.png");
 		setupSettingsMenu();
 		setupMainMenu();
 	}
@@ -317,12 +318,15 @@ public class Client implements LastWish, ActionListener {
 		nextVisibleTiles.add(newTile);
 	}
 
+
 	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
 		for (Tile tile : tiles) {
 			updateTile(tile);
 		}
 	}
-
+	public BufferedImage getImage(){
+		return akImage;
+	}
 	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
 		// removes tiles from the tiles arraylist that are out of the buffer zone
 
@@ -342,7 +346,7 @@ public class Client implements LastWish, ActionListener {
 					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
 			// if the tile is outside the screen and beyond the tile buffer size remove it
-			// from the visible tiles arry
+			// from the visible tiles array
 			if (groundRelX < -GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER
 					|| groundRelX > GlobalConstants.DRAWING_AREA_WIDTH
 							+ GlobalConstants.TILE_WIDTH * GlobalConstants.TILE_X_BUFFER + GlobalConstants.TILE_WIDTH

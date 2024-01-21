@@ -12,8 +12,9 @@ import entities.*;
 import collision.*;
 // clients from the server's perspective
 class SClient extends Circle implements Entity {
-	private double lastx, lasty;
+	private double lastTileUpdateX, lastTileUpdateY;
 	private Tile[][][] visibleTiles;
+	private Tile[][][] oldVisibleTiles;
 
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
@@ -27,8 +28,8 @@ class SClient extends Circle implements Entity {
 		Tile[][][] visibleTiles = new Tile[GlobalConstants.DRAWING_AREA_WIDTH / GlobalConstants.TILE_WIDTH
 				+ 2 * GlobalConstants.TILE_X_BUFFER][GlobalConstants.DRAWING_AREA_HEIGHT / GlobalConstants.TILE_HEIGHT
 						+ 2 * GlobalConstants.TILE_Y_BUFFER][3];
-		int x = (int)getX();
-		int y = (int)getY();
+		int x = (int) getX();
+		int y = (int) getY();
 
 		// calculating the top left corner of the visible tiles base on the screen size
 		// 13 tiles wide and 8 tiles tall but we have a buffer of 1 tile in each
@@ -50,8 +51,8 @@ class SClient extends Circle implements Entity {
 							|| GlobalConstants.WORLD_TILE_HEIGHT <= yIndex) {
 						// tile is out of bounds of the world, send an air tile
 						visibleTiles[x1][y1][z] = new AirTile(xIndex, yIndex, z, 0, "default");
-					}
-					else visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
+					} else
+						visibleTiles[x1][y1][z] = map[xIndex][yIndex][z];
 				}
 			}
 		}
@@ -83,8 +84,9 @@ class SClient extends Circle implements Entity {
 
 	private double angle;
 
-	public double setAngle(double angle) { return this.angle = angle; }
-	public double getAngle() { return angle; }
+	public double setAngle(double angle) {
+		return this.angle = angle;
+	}
 
 	public PlayerInfo getInfo() {
 		return new PlayerInfo((int)getX(), (int)getY(), id, (int)getRadius(), angle, health, armor, new String[0]);
@@ -111,6 +113,7 @@ class SClient extends Circle implements Entity {
 	Tile[][][] map;
 	private Server server;
 	private Chunker chunker;
+	private long nextShot; // the time of the soonest next shot
 	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map) {
 		super((int)(Math.random() * GlobalConstants.WORLD_WIDTH),
 			(int)(Math.random() * GlobalConstants.WORLD_HEIGHT), 25, c);
@@ -161,9 +164,14 @@ class SClient extends Circle implements Entity {
 			pl.close();
 		}
 	}
-	// todo implement
+
+	final int gunLength = 35;
 	private void attack() {
-		new Bullet(getX(), getY(), 5, angle, 10, id, chunker, server);
+		long time = System.currentTimeMillis();
+		if (time > nextShot) {
+			new Bullet(getX() + (Math.cos(angle)*gunLength), getY() + (Math.sin(angle)*gunLength), 6, angle, 10, id, chunker, server);
+			nextShot = time + 300; // 200 ms delay
+		};
 	}
 
 
@@ -187,11 +195,18 @@ class SClient extends Circle implements Entity {
 		health--;
 	}
 
-	private final int speed = 5;
+	private final double targetSpeed = 2;
 
-  boolean checking = false;
-	public void update() {
+	private boolean checking = false; // for regen and health or something
+	private boolean inWater = false;
+	private double oldX, oldY;
+
+	public void update(double deltaTime) {
+		if (shouldRemove()) return;
+
 		double dx = 0, dy = 0;
+		double speed = targetSpeed * deltaTime;
+		if (inWater) speed *= 0.6;
 		if (up)
 			dy -= speed;
 		if (down)
@@ -218,15 +233,19 @@ class SClient extends Circle implements Entity {
 		newX = Math.max(0, Math.min(newX, GlobalConstants.WORLD_WIDTH));
 		newY = Math.max(0, Math.min(newY, GlobalConstants.WORLD_HEIGHT));
 
+		oldX = getX();
+		oldY = getY();
 		setPosition(newX, newY);
 
-		if (Math.abs(newX - lastx) >= GlobalConstants.TILE_WIDTH
-				|| Math.abs(newY - lasty) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
+		if (Math.abs(newX - lastTileUpdateX) >= GlobalConstants.TILE_WIDTH
+				|| Math.abs(newY - lastTileUpdateY) >= GlobalConstants.TILE_HEIGHT) { // if the player has moved at least 1 tile
 																			// away from the last update
-			lastx = newX;
-			lasty = newY;
+			lastTileUpdateX = newX;
+			lastTileUpdateY = newY;
 			handleVisibleTileUpdates(map);
 		}
+
+		inWater = false; // if we're still in water, will be set to true again
 	}
 	public void checkHealth(){
 		Timer timer = new Timer();
@@ -247,7 +266,7 @@ class SClient extends Circle implements Entity {
 		}, 0, 1000); // Run the task every 1000 milliseconds (1 second)
 	}
 	public void sendPackets() {
-		if (!ready)
+		if (!ready || shouldRemove())
 			return;
 
 		send(new EntitiesPacket(entities));
@@ -265,7 +284,24 @@ class SClient extends Circle implements Entity {
 	}
 
 	public void smashInto(Hitbox h) {
-		//System.out.println("client smashed into something at time " + System.currentTimeMillis());
+		if (h instanceof WaterHitbox) {
+			inWater = true;
+		}
+		if (h instanceof WallHitbox) hitCrate((WallHitbox)h);
+	}
+
+	private void hitCrate(WallHitbox c) {
+		// "pop the player out" of the crate
+		// find the closest point on the border of the crate, and move them there
+		double x1 = c.getX1() - getRadius(), x2 = c.getX2() + getRadius(),
+ 			y1 = c.getY1() - getRadius(), y2 = c.getY2() + getRadius();
+		double x1dist = Math.abs(getX() - x1), x2dist = Math.abs(getX() - x2),
+			y1dist = Math.abs(getY() - y1), y2dist = Math.abs(getY() - y2);
+		double closest = Math.min(x1dist, Math.min(x2dist, Math.min(y1dist, y2dist)));
+		if (closest == x1dist) setPosition(x1, getY());
+		else if (closest == x2dist) setPosition(x2, getY());
+		else if (closest == y1dist) setPosition(getX(), y1);
+		else if (closest == y2dist) setPosition(getX(), y2);
 	}
 
 	public Hitbox getHitbox() { return this; }

@@ -12,8 +12,10 @@ public abstract class Rectangle extends Hitbox {
 	}
 
 	public boolean collides(Circle c) {
-		// TODO implement
-		return false;
+		// clamp the circle into the rectangle, then see if that point's in the circle
+		double cX = Math.max(getX1(), Math.min(c.getX(), getX2()));
+		double cY = Math.max(getY1(), Math.min(c.getY(), getY2()));
+		return c.contains(cX, cY);
 	}
 
 	public boolean collides(Rectangle r) {

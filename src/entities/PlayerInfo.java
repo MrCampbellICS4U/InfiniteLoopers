@@ -3,7 +3,6 @@ package entities;
 import java.awt.*;
 import client.Client;
 import shared.GlobalConstants;
-
 public class PlayerInfo extends EntityInfo {
 	public double angle;
 	public int radius;
@@ -32,7 +31,10 @@ public class PlayerInfo extends EntityInfo {
 		// drawing red line for direction
 		int length = 100;
 		g.setColor(Color.RED);
-		g.drawLine(centreRelX, centreRelY, centreRelX + (int) (Math.cos(angle) * length),
-				centreRelY + (int) (Math.sin(angle) * length));
+		Graphics2D g2 = (Graphics2D) g;
+		g2.rotate(angle, centreRelX, centreRelY);
+		g.drawImage(c.getImage(), centreRelX-15, centreRelY-15, 80, 40, null);
+		g2.rotate(-angle, centreRelX, centreRelY);
+		//g.drawLine(centreRelX, centreRelY, centreRelX + (int) (Math.cos(angle) * length), centreRelY + (int) (Math.sin(angle) * length));
 	}
 }

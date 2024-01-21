@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import shared.GlobalConstants;
 import entities.*;
-import game.world.Tiles.Tile;
+import game.world.Tiles.*;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
@@ -47,6 +47,7 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g);
+
 		g.setColor(Color.BLACK);
 		g.setFont(f);
 		g.drawString(client.getFPS() + " fps", 20, 40);
@@ -54,11 +55,7 @@ public class Canvas extends JPanel {
 		g.drawString(client.getTPS() + " tps", 20, 120);
 		g.drawString("x: " + client.getMe().xGlobal / GlobalConstants.TILE_WIDTH, 20, 160);
 		g.drawString("y: " + client.getMe().yGlobal / GlobalConstants.TILE_HEIGHT, 20, 200);
-		g.drawString("collision checks/tick: " + client.getCollisionChecksPerFrame(), 20, 240);
-
-		for (EntityInfo entity : client.getEntities()) {
-			entity.draw(g2, client, me.xGlobal, me.yGlobal);
-		}
+		g.drawString("collision checks/tick: " + String.format("%.2f", client.getCollisionChecksPerFrame()), 20, 240);
 
 		drawBorder(g); // draw border over players
 		drawUI(g, me);
@@ -74,15 +71,18 @@ public class Canvas extends JPanel {
 	
 	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
-		for (int i = 0; i < p.health;i++){g.drawImage(healthImage, (-30 + i*75), 700, 200, 100, null);}
-		for (int i = 0; i < p.armor;i++){g.drawImage(armorImage, (37 + i*78), 650, 60, 55, null);}
+		for (int i = 0; i < p.health; i++) {
+			g.drawImage(healthImage, (-30 + i * 75), 700, 200, 100, null);
+		}
+		for (int i = 0; i < p.armor; i++) {
+			g.drawImage(armorImage, (37 + i * 78), 650, 60, 55, null);
+		}
 		g.setColor(Color.BLACK);
 		((Graphics2D) g).setStroke(new BasicStroke(10.0f)); 
 
-		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-		g.setColor(new Color(50, 50, 50, 100));
-		for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
-
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.drawOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
+		// g.setColor(new Color(50, 50, 50, 100));
+		// for (int i = 0; i < GlobalConstants.MAXHOTBAR;i++){g.fillOval((975 +i*100), 700, itemHotbarSize, itemHotbarSize);}
 	}
 
 	final private int gridWidth = 100;
@@ -113,23 +113,38 @@ public class Canvas extends JPanel {
 		PlayerInfo me = client.getMe();
 
 		ArrayList<Tile> tiles = client.getVisibleTiles();
-		for (Tile currentTile : tiles) {
-			if (currentTile == null || currentTile.getType().equals("air"))
-				continue;
-			// Tile currentTile = tiles[x][y][z];
+		for (int layer = 0; layer < 3; layer++) {
+			if (layer == 2) {
+				for (EntityInfo entity : client.getEntities()) {
+					entity.draw(g, client, me.xGlobal, me.yGlobal);
+				}
+			}
 
-			// int offsetX = me.xGlobal % gridWidth;
-			// int offsetY = me.yGlobal % gridWidth;
+			for (Tile currentTile : tiles) {
+				if (currentTile == null || currentTile.getType().equals("air") || currentTile.getZ() != layer)
+					continue;
+				// Tile currentTile = tiles[x][y][z];
 
-			int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
-					+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
-			int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
-					+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
+				// int offsetX = me.xGlobal % gridWidth;
+				// int offsetY = me.yGlobal % gridWidth;
 
-			BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
-					+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+				int groundRelX = currentTile.getX() * GlobalConstants.TILE_WIDTH - me.xGlobal
+						+ GlobalConstants.DRAWING_AREA_WIDTH / 2;
+				int groundRelY = currentTile.getY() * GlobalConstants.TILE_HEIGHT - me.yGlobal
+						+ GlobalConstants.DRAWING_AREA_HEIGHT / 2;
 
-			g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+				// if the player is close enough, don't render the ceiling
+				if (layer == 2
+						&& Math.abs(groundRelX + GlobalConstants.TILE_WIDTH/2 - GlobalConstants.DRAWING_AREA_WIDTH
+								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE
+						&& Math.abs(groundRelY + GlobalConstants.TILE_HEIGHT/2 - GlobalConstants.DRAWING_AREA_HEIGHT
+								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE)
+					continue;
+				BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()
+						+ currentTile.getType().substring(1) + "_" + currentTile.getState() + ".png");
+
+				g.drawImage(image, groundRelX, groundRelY, gridWidth, gridWidth, null);
+			}
 		}
 
 		drawGrid(g);
@@ -162,15 +177,15 @@ public class Canvas extends JPanel {
 	private void drawBorder(Graphics g) {
 		PlayerInfo me = client.getMe();
 
-		int xCanvasCentre = W/2;
-		int yCanvasCentre = H/2;
+		int xCanvasCentre = W / 2;
+		int yCanvasCentre = H / 2;
 
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 
 		int borderX1 = 0 - me.xGlobal + xCanvasCentre;
-		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH*GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
+		int borderX2 = GlobalConstants.WORLD_TILE_WIDTH * GlobalConstants.TILE_WIDTH - me.xGlobal + xCanvasCentre;
 		int borderY1 = 0 - me.yGlobal + yCanvasCentre;
-		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT*GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
+		int borderY2 = GlobalConstants.WORLD_TILE_HEIGHT * GlobalConstants.TILE_HEIGHT - me.yGlobal + yCanvasCentre;
 
 		g2.setStroke(new BasicStroke(20));
 		g2.setColor(Color.BLACK);

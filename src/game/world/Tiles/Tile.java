@@ -3,9 +3,7 @@ package game.world.Tiles;
 import java.io.File;
 import java.util.HashMap;
 
-import game.world.Tiles.GrassTile;
-import game.world.Tiles.AirTile;
-import game.world.Tiles.CrateTile;
+import collision.Rectangle;
 
 public class Tile implements java.io.Serializable {
     private int x, y, z, orientation; // orientation: 0 = up, 1 = right, 2 = down, 3 = left
@@ -14,10 +12,13 @@ public class Tile implements java.io.Serializable {
                                                                                  // "closed" => image file location,
                                                                                  // etc...
 
+	public Class<? extends Rectangle> getHitboxType() { return null; }
+
     public Tile(int x, int y, int z, int orientation, String type, String state) {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.orientation = orientation;
         this.type = type;
         this.state = state;
         this.statesMap = generateStatesMap();

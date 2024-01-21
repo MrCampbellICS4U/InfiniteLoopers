@@ -135,9 +135,9 @@ public class Canvas extends JPanel {
 
 				// if the player is close enough, don't render the ceiling
 				if (layer == 2
-						&& Math.abs(groundRelX - GlobalConstants.DRAWING_AREA_WIDTH
+						&& Math.abs(groundRelX + GlobalConstants.TILE_WIDTH/2 - GlobalConstants.DRAWING_AREA_WIDTH
 								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE
-						&& Math.abs(groundRelY - GlobalConstants.DRAWING_AREA_HEIGHT
+						&& Math.abs(groundRelY + GlobalConstants.TILE_HEIGHT/2 - GlobalConstants.DRAWING_AREA_HEIGHT
 								/ 2) < GlobalConstants.CEILING_DISAPPEARING_DISTANCE)
 					continue;
 				BufferedImage image = TileImages.get(currentTile.getType().substring(0, 1).toUpperCase()

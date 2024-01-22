@@ -235,7 +235,6 @@ public class Canvas extends JPanel {
 
 
 	public void drawStats(Client c, Graphics g){
-		System.out.println(c.showStats);
 		if (c.showStats){
 			Font font1 = new Font("Arial", Font.PLAIN, 40);
 			g.setFont(font1);

@@ -72,7 +72,10 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			out.writeObject(p);
 			out.flush();
 		} catch (SocketException e) {
-			dest.handleException("Socket exception when sending a packet", e);
+			// this could mean that a client disconnected
+			if (e.getMessage().equals("Socket closed")) {
+				dest.handleDisconnection(id, e);
+			} else dest.handleException("Socket exception when sending a packet", e);
 		} catch (IOException e) {
 			dest.handleException("IO exception when sending a packet", e);
 		}
@@ -107,7 +110,10 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			// also see https://stackoverflow.com/a/10241044 ... this is a nightmare
 			dest.handleDisconnection(id, e);
 		} catch (IOException e) {
-			dest.handleException("IOException while reading packet", e);
+			// this could mean that a client disconnected while sending a packet
+			if (e.getMessage().equals("Stream closed")) {
+				dest.handleDisconnection(id, e);
+			} else dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {
 			dest.handleException("Undefined packet type; something is very wrong with the packet system", e);
 		}

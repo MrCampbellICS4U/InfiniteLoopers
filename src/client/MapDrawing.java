@@ -55,6 +55,18 @@ public class MapDrawing extends JFrame {
 			PlayerInfo me = c.getMe();
 			double playerRelX = (((double) me.xGlobal) / gc.WORLD_WIDTH);
 			double playerRelY = (((double) me.yGlobal) / gc.WORLD_HEIGHT);
+						Font font = new Font("Arial", Font.BOLD, 40);
+			g.setFont(font);
+			g.setColor(Color.black);
+			g.drawString("x: " + c.getMe().xGlobal / gc.TILE_WIDTH, 20, 50);
+			g.drawString("y: " + c.getMe().yGlobal / gc.TILE_HEIGHT, 20,100);
+			Font font1 = new Font("Arial", Font.PLAIN, 20);
+			g.setFont(font1);
+
+			g.drawString(c.getFPS() + " fps", 20, mapSizeW-20);
+			g.drawString(c.getPing() + " ping", 150, mapSizeW-20);
+			g.drawString(c.getTPS() + " tps", 320, mapSizeW-20);
+			g.drawString("collision checks/tick: " + String.format("%.2f", c.getCollisionChecksPerFrame()), 420, mapSizeW-20);
 			g.fillOval((int) (playerRelX * mapSizeW), (int) (playerRelY * mapSizeH), 10, 10);
 		}
 	}

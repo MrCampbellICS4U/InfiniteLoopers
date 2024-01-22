@@ -32,6 +32,7 @@ public class Client implements LastWish, ActionListener {
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage, bImage;
 	JButton play, settings, back, resetButton, showControls;
+	JButton play, settings, back, resetButton, showControls;
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
 	String defaultName = "Enter Name Here";
@@ -497,6 +498,15 @@ public class Client implements LastWish, ActionListener {
 		back.setBorderPainted(false);
 		back.setBounds(530, 675, 225, 100);
 
+		showControls = new JButton();
+		showControls.setActionCommand("controls");
+		showControls.addActionListener(this);
+		showControls.setOpaque(false);
+		showControls.setContentAreaFilled(false);
+		showControls.setBorderPainted(false);
+		showControls.setBounds(0, 0, W, 400);
+
+		settingsPanel.add(showControls);
 		showControls = new JButton();
 		showControls.setActionCommand("controls");
 		showControls.addActionListener(this);

@@ -102,7 +102,7 @@ public class WorldGenerator {
     }
 
     private Class[] getStructureTypes() {
-        return new Class[] { BasicPondStructure.class, BasicHouseStructure.class };
+        return new Class[] { BasicPondStructure.class, BasicHouseStructure.class, CratePileStructure.class };
     }
 
     public Tile[][][] generateWorld() {

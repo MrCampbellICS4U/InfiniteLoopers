@@ -234,6 +234,7 @@ public class Client implements LastWish, ActionListener {
 			return;
 		if (me.health == 0) {
 			// you died L
+			ready = false; // don't send any packets
 			tickTimer.stop();
 			secTimer.stop();
 			resetButton = new JButton();
@@ -273,11 +274,17 @@ public class Client implements LastWish, ActionListener {
 	public int getID() {
 		return id;
 	}
-
 	public boolean drawName = true;
 
-	public boolean toggleName() {
+	public boolean toggleName() {		
+		System.out.println(drawName);
 		return drawName = !drawName;
+	}
+
+	public boolean showStats = false;
+	public void toggleStats(){
+		showStats = !showStats;
+		System.out.println(showStats);
 	}
 
 	// server acknowledged connection, we can start sending packets

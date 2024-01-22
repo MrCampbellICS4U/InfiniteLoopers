@@ -22,7 +22,7 @@ class GameKeyListener extends KeyAdapter {
 			case KeyEvent.VK_E     -> c.send(new InputPacket(Input.USE));
 			case KeyEvent.VK_Q     -> c.send(new InputPacket(Input.DROP));
 			case KeyEvent.VK_P     -> c.send(new InputPacket(Input.SUICIDE));
-			case KeyEvent.VK_C -> c.toggleStats();
+			case KeyEvent.VK_BACK_QUOTE -> c.toggleStats();
 			case KeyEvent.VK_M, KeyEvent.VK_TAB -> c.toggleMap();
 			case KeyEvent.VK_F -> c.toggleName();
 		}

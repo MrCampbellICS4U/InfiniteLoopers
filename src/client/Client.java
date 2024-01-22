@@ -51,6 +51,9 @@ public class Client implements LastWish, ActionListener {
 
 	Client() {
 		window = new JFrame("Sarvivarz");
+		window.addKeyListener(new GameKeyListener(this));
+		window.addMouseListener(new GameMouseListener(this));
+		window.addMouseMotionListener(new GameMouseListener(this));
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setFocusTraversalKeysEnabled(false); // allow us to detect tab
 		canvas = new Canvas(this);
@@ -79,7 +82,6 @@ public class Client implements LastWish, ActionListener {
 		e.printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
 
-		JOptionPane.showMessageDialog(window, stackTrace, message, JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
 
@@ -115,10 +117,6 @@ public class Client implements LastWish, ActionListener {
 		} catch (IOException e) {
 			handleException("Could not connect to server", e);
 		}
-
-		window.addKeyListener(new GameKeyListener(this));
-		window.addMouseListener(new GameMouseListener(this));
-		window.addMouseMotionListener(new GameMouseListener(this));
 
 		tickTimer = new Timer(1000 / gc.FPS, this);
 		tickTimer.setActionCommand("tick");
@@ -169,12 +167,9 @@ public class Client implements LastWish, ActionListener {
 				}
 
 				if (actionCom.equals("leave")) {
-					System.out.println(ip);
-					System.out.println(port);
 					mainMenu.setVisible(true);
 					mainMenu.setLocationRelativeTo(null);
 					settingsMenu.setVisible(false);
-
 				}
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(null,
@@ -277,14 +272,12 @@ public class Client implements LastWish, ActionListener {
 	public boolean drawName = true;
 
 	public boolean toggleName() {		
-		System.out.println(drawName);
 		return drawName = !drawName;
 	}
 
 	public boolean showStats = false;
 	public void toggleStats(){
 		showStats = !showStats;
-		System.out.println(showStats);
 	}
 
 	// server acknowledged connection, we can start sending packets

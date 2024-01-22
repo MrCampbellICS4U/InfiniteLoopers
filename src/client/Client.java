@@ -255,6 +255,7 @@ public class Client implements LastWish, ActionListener {
 	private final Color ROOF_COLOUR = Color.RED.darker();
 	private final Color SAND_COLOUR = new Color(255, 252, 158);
 	private final Color WATER_COLOUR = new Color(43, 149, 255);
+	private final Color BUSH_COLOUR = Color.GREEN.darker();
 	private Color[][] mapColours;
 	public Color[][] getMapColours() { return mapColours; }
 	public void setMapColour(Tile t) {
@@ -266,6 +267,7 @@ public class Client implements LastWish, ActionListener {
 			case "crate" -> CRATE_COLOUR;
 			case "grass" -> Color.GREEN;
 			case "sand" -> SAND_COLOUR;
+			case "bush" -> BUSH_COLOUR;
 			default -> UNEXPLORED_COLOUR;
 		};
 	}

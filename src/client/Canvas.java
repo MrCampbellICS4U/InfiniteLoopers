@@ -141,7 +141,7 @@ public class Canvas extends JPanel {
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (int layer = 0; layer < 3; layer++) {
 			if (layer == 2) {
-				drawGrid(g);
+				//drawGrid(g);
 				for (EntityInfo entity : client.getEntities()) {
 					entity.draw(g, client, me.xGlobal, me.yGlobal);
 				}

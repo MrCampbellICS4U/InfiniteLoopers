@@ -27,7 +27,7 @@ public class Canvas extends JPanel {
 
 	public Canvas(Client c) {
 		client = c;
-		gc = c.gc;
+		this.gc = c.gc;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
@@ -52,8 +52,6 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g); // also draws entities and grid
-
-
 
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);

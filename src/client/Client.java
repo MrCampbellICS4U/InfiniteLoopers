@@ -131,7 +131,7 @@ public class Client implements LastWish, ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (playerName.equals(defaultName)) {
-			playerName = "I Forgor";
+			playerName = "DUNCE";
 		} else {
 			playerName = enterName.getText();
 		}

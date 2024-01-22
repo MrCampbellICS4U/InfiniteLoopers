@@ -234,6 +234,7 @@ public class Client implements LastWish, ActionListener {
 			return;
 		if (me.health == 0) {
 			// you died L
+			ready = false; // don't send any packets
 			tickTimer.stop();
 			secTimer.stop();
 			resetButton = new JButton();

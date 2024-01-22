@@ -43,7 +43,7 @@ public class Server implements LastWish, ActionListener {
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
 		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
-				gc.SEED)
+				gc.RANDOM_SEED ? (int)(Math.random()*100000) : gc.SEED)
 				.generateWorld();
 		addHitboxesToMap();
 

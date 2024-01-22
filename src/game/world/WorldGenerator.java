@@ -21,7 +21,7 @@ public class WorldGenerator {
         this.height = height;
         this.seed = seed;
         mapTiles = new Tile[width][height][depth];
-    } // TODO MAKE ALTERNATE CONSTRUCTOR WITH NO SEED, it generates a random seed
+    }
 
     public Tile[][][] getMap() {
         return mapTiles;

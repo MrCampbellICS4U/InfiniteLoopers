@@ -28,6 +28,7 @@ public class GlobalConstants implements java.io.Serializable {
     public int TPS = 120; // ticks per second
     public int FPS = 60; // frames per second
 
+    public boolean RANDOM_SEED = true;
     public int SEED = 71;
 
     public int SERVER_PORT = 2000;

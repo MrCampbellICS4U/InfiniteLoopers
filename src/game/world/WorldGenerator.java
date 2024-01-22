@@ -160,7 +160,7 @@ public class WorldGenerator {
                         // 2% chance of generating a crate
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
                     } else if (rand.nextInt(100) < 2 && z == 2 && (newMapTiles[x][y][0].getType().equals("null")
-                            || newMapTiles[x][y][0].getType().equals("grass"))) {
+                            || newMapTiles[x][y][0].getType().equals("grass")) && newMapTiles[x][y][1].getType().equals("null")) {
                         // 2% chance of generating a bush
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "bush", "default");
                     } else if (z == 0) { // 85% chance of generating a tile

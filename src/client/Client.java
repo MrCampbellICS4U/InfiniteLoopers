@@ -131,8 +131,12 @@ public class Client implements LastWish, ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		playerName = enterName.getText();
-		if (playerName.equals("Enter Name Here") || playerName.equals("")) {playerName = "Dunce";}
-		else {playerName = enterName.getText(); defaultName = playerName;}
+		if (playerName.equals("Enter Name Here") || playerName.equals("")) {
+			playerName = "Dunce";
+		} else {
+			playerName = enterName.getText();
+			defaultName = playerName;
+		}
 
 		if (e.getActionCommand().equals("tick"))
 			tick();
@@ -253,8 +257,6 @@ public class Client implements LastWish, ActionListener {
 		this.gc = gc;
 		this.W = gc.DRAWING_AREA_WIDTH;
 		this.H = gc.DRAWING_AREA_HEIGHT;
-		this.ip = gc.SERVER_IP;
-		this.port = gc.SERVER_PORT;
 		this.canvas.gc = gc;
 
 	}

@@ -155,6 +155,8 @@ public class Canvas extends JPanel {
 
 				// int offsetX = me.xGlobal % gridWidth;
 				// int offsetY = me.yGlobal % gridWidth;
+				
+				client.setMapColour(currentTile);
 
 				int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
 						+ gc.DRAWING_AREA_WIDTH / 2;

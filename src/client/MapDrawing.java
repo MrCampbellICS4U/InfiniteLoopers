@@ -47,26 +47,29 @@ public class MapDrawing extends JFrame {
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			PlayerInfo me = c.getMe();
+			if (me == null) return;
+
 			Graphics2D g2 = (Graphics2D) g;
 			int xMapCentre = mapSizeW / 2;
 			int yMapCentre = mapSizeH / 2;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			PlayerInfo me = c.getMe();
+
+			Color[][] mapColours = c.getMapColours();
+			int mapTileWidth = (int)(1./gc.WORLD_TILE_WIDTH * mapSizeW);
+			int mapTileHeight = (int)(1./gc.WORLD_TILE_HEIGHT * mapSizeH);
+			for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {
+				for (int y = 0; y < gc.WORLD_TILE_HEIGHT; y++) {
+					g2.setColor(mapColours[x][y]);
+					g2.fillRect(x * mapTileWidth, y * mapTileHeight, mapTileWidth, mapTileHeight);
+				}
+			}
+
 			double playerRelX = (((double) me.xGlobal) / gc.WORLD_WIDTH);
 			double playerRelY = (((double) me.yGlobal) / gc.WORLD_HEIGHT);
 						Font font = new Font("Arial", Font.BOLD, 40);
-			g.setFont(font);
 			g.setColor(Color.black);
-			g.drawString("x: " + c.getMe().xGlobal / gc.TILE_WIDTH, 20, 50);
-			g.drawString("y: " + c.getMe().yGlobal / gc.TILE_HEIGHT, 20,100);
-			Font font1 = new Font("Arial", Font.PLAIN, 20);
-			g.setFont(font1);
-
-			g.drawString(c.getFPS() + " fps", 20, mapSizeW-20);
-			g.drawString(c.getPing() + " ping", 150, mapSizeW-20);
-			g.drawString(c.getTPS() + " tps", 320, mapSizeW-20);
-			g.drawString("collision checks/tick: " + String.format("%.2f", c.getCollisionChecksPerFrame()), 420, mapSizeW-20);
 			g.fillOval((int) (playerRelX * mapSizeW), (int) (playerRelY * mapSizeH), 10, 10);
 		}
 	}

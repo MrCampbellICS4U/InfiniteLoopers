@@ -130,11 +130,10 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (playerName.equals(defaultName)) {
-			playerName = "DUNCE";
-		} else {
-			playerName = enterName.getText();
-		}
+		playerName = enterName.getText();
+		if (playerName.equals("Enter Name Here") || playerName.equals("")) {playerName = "Dunce";}
+		else {playerName = enterName.getText(); defaultName = playerName;}
+
 		if (e.getActionCommand().equals("tick"))
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))

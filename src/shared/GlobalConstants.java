@@ -34,8 +34,8 @@ public class GlobalConstants implements java.io.Serializable {
     public String SERVER_IP = "127.0.0.1";
 
     public int MAX_HOTBAR = 3;
-    public int MAX_HEALTH = 5; // 4 hearts
-    public int MAX_ARMOR = Integer.MAX_VALUE;
+    public int MAX_HEALTH = 5; // 5 hearts
+    public int MAX_ARMOR = 5;
 
     public int REGEN_TIME = 7000; // ms
 

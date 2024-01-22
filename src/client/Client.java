@@ -32,7 +32,6 @@ public class Client implements LastWish, ActionListener {
 	static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage, bImage;
 	JButton play, settings, back, resetButton, showControls;
-	JButton play, settings, back, resetButton, showControls;
 	RoundJTextField ipAddress, portNum, enterName;
 	String playerName = "I Forgor";
 	String defaultName = "Enter Name Here";

@@ -53,8 +53,6 @@ public class Server implements LastWish, ActionListener {
 				int id = nextID();
 				SClient client = new SClient(serverSocket.accept(), this, id, chunker, map, this.gc);
 				addClient(client);
-				client.send(new GlobalConstantsPacket(
-						this.gc));
 				client.send(new StartPacket());
 
 				System.out.printf("Client with id %d connected\n", id);
@@ -209,6 +207,8 @@ public class Server implements LastWish, ActionListener {
 
 	public void setClientReady(int id, String name) {
 		getClient(id).setReady(name);
+		getClient(id).send(new GlobalConstantsPacket(
+				this.gc));
 	}
 
 	public void handleInput(int id, Input i, InputState is) {

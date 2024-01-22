@@ -130,11 +130,14 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (playerName.equals(defaultName)) {
-			playerName = "DUNCE";
+		playerName = enterName.getText();
+		if (playerName.equals("Enter Name Here") || playerName.equals("")) {
+			playerName = "Dunce";
 		} else {
 			playerName = enterName.getText();
+			defaultName = playerName;
 		}
+
 		if (e.getActionCommand().equals("tick"))
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
@@ -231,6 +234,7 @@ public class Client implements LastWish, ActionListener {
 			return;
 		if (me.health == 0) {
 			// you died L
+			ready = false; // don't send any packets
 			tickTimer.stop();
 			secTimer.stop();
 			resetButton = new JButton();
@@ -252,6 +256,9 @@ public class Client implements LastWish, ActionListener {
 
 	public void setGlobalConstants(GlobalConstants gc) {
 		this.gc = gc;
+		this.W = gc.DRAWING_AREA_WIDTH;
+		this.H = gc.DRAWING_AREA_HEIGHT;
+		this.canvas.gc = gc;
 
 	}
 
@@ -267,11 +274,17 @@ public class Client implements LastWish, ActionListener {
 	public int getID() {
 		return id;
 	}
-
 	public boolean drawName = true;
 
-	public boolean toggleName() {
+	public boolean toggleName() {		
+		System.out.println(drawName);
 		return drawName = !drawName;
+	}
+
+	public boolean showStats = false;
+	public void toggleStats(){
+		showStats = !showStats;
+		System.out.println(showStats);
 	}
 
 	// server acknowledged connection, we can start sending packets

@@ -27,7 +27,7 @@ public class Canvas extends JPanel {
 
 	public Canvas(Client c) {
 		client = c;
-		gc = c.gc;
+		this.gc = c.gc;
 		healthImage = Canvas.loadImage("res/game/UI/heart.png");
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
@@ -52,11 +52,10 @@ public class Canvas extends JPanel {
 		H = getHeight();
 
 		drawTerrain(g); // also draws entities and grid
-
-
-
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
+		drawStats(client, g);
+
 		if (me.health == 0)
 			drawDeath(g, me);
 	}
@@ -143,7 +142,7 @@ public class Canvas extends JPanel {
 		ArrayList<Tile> tiles = client.getVisibleTiles();
 		for (int layer = 0; layer < 3; layer++) {
 			if (layer == 2) {
-				drawGrid(g);
+				// drawGrid(g);
 				for (EntityInfo entity : client.getEntities()) {
 					entity.draw(g, client, me.xGlobal, me.yGlobal);
 				}
@@ -232,6 +231,20 @@ public class Canvas extends JPanel {
 		g.drawLine(borderX1, borderY1, borderX1, borderY2);
 		g.drawLine(borderX2, borderY1, borderX2, borderY2);
 		g2.setStroke(new BasicStroke(1));
+	}
+
+	public void drawStats(Client c, Graphics g) {
+		System.out.println(c.showStats);
+		if (c.showStats) {
+			Font font1 = new Font("Arial", Font.PLAIN, 40);
+			g.setFont(font1);
+			g.drawString("x: " + c.getMe().xGlobal / gc.TILE_WIDTH, 20, 50);
+			g.drawString("y: " + c.getMe().yGlobal / gc.TILE_HEIGHT, 20, 100);
+			g.drawString(c.getFPS() + " fps", 20, 150);
+			g.drawString(c.getPing() + " ping", 20, 200);
+			g.drawString(c.getTPS() + " tps", 20, 250);
+			g.drawString("collision checks/tick: " + String.format("%.2f", c.getCollisionChecksPerFrame()), 20, 300);
+		}
 	}
 
 	static BufferedImage loadImage(String filename) {

@@ -12,8 +12,8 @@ public class GlobalConstants implements java.io.Serializable {
     public int DRAWING_AREA_WIDTH = 1300;
     public int DRAWING_AREA_HEIGHT = 800;
 
-    public int WORLD_TILE_WIDTH = 23; // in tiles
-    public int WORLD_TILE_HEIGHT = 23; // in tiles
+    public int WORLD_TILE_WIDTH = 35; // in tiles
+    public int WORLD_TILE_HEIGHT = 35; // in tiles
 
     public int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels
@@ -26,16 +26,16 @@ public class GlobalConstants implements java.io.Serializable {
     public int PLAYER_HEIGHT = 50;
 
     public int TPS = 120; // ticks per second
-    public int FPS = 120; // frames per second
+    public int FPS = 60; // frames per second
 
-    public int SEED = 69;
+    public int SEED = 71;
 
     public int SERVER_PORT = 2000;
     public String SERVER_IP = "127.0.0.1";
 
     public int MAX_HOTBAR = 3;
-    public int MAX_HEALTH = 4; // 4 hearts
-    public int MAX_ARMOR = Integer.MAX_VALUE;
+    public int MAX_HEALTH = 5; // 5 hearts
+    public int MAX_ARMOR = 5;
 
     public int REGEN_TIME = 7000; // ms
 

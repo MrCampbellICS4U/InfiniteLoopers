@@ -12,8 +12,8 @@ public class GlobalConstants implements java.io.Serializable {
     public int DRAWING_AREA_WIDTH = 1300;
     public int DRAWING_AREA_HEIGHT = 800;
 
-    public int WORLD_TILE_WIDTH = 20; // in tiles
-    public int WORLD_TILE_HEIGHT = 20; // in tiles
+    public int WORLD_TILE_WIDTH = 35; // in tiles
+    public int WORLD_TILE_HEIGHT = 35; // in tiles
 
     public int WORLD_WIDTH = WORLD_TILE_WIDTH * TILE_WIDTH; // in pixels
     public int WORLD_HEIGHT = WORLD_TILE_HEIGHT * TILE_HEIGHT; // in pixels

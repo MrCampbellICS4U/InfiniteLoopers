@@ -1,7 +1,5 @@
 package game.world.Structures;
 
-import game.world.Tiles.Tile;
-import game.world.Tiles.WaterTile;
 import shared.utilities.LettersToTiles;
 
 public class BasicPondStructure extends Structure {

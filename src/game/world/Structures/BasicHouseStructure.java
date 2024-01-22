@@ -1,6 +1,5 @@
 package game.world.Structures;
 
-import game.world.Tiles.*;
 import shared.utilities.LettersToTiles;
 
 public class BasicHouseStructure extends Structure {

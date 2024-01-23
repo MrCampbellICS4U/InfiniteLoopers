@@ -76,7 +76,6 @@ public class Client implements LastWish, ActionListener {
 	public BufferedImage getBulletImage() {
 		return bImage;
 	}
-
 	public void handleException(String message, Exception e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));

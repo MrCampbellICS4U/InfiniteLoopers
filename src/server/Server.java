@@ -48,40 +48,42 @@ public class Server implements LastWish, ActionListener {
 		serverUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		serverDrawing = new JPanel();
 		serverDrawing.setPreferredSize(new Dimension(500, 500));
-		seedField = new JTextField("Enter Seed Here", 25);
-		wTextField = new JTextField("Enter Width Here", 25);
-		hTextField = new JTextField("Enter Height Here", 25);
-		healthTextField = new JTextField("Enter Starting Health", 25);
-		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)", 25);
-		bulletSpeed = new JTextField("Bullet Speed", 25);
-		regenTime = new JTextField("Regeneration Time (Seconds)", 25);
-		killsText = new JTextField("Kills in a row", 25);
-		structureDensityText = new JTextField("Structure Density", 25);
-		tpsText = new JTextField("Ticks Per Second", 25);
-		serverPortText = new JTextField("Server Port", 25);
-		bogSizeText = new JTextField("Bog Size", 25);
-		maxArmourText = new JTextField("Max Armour", 25);
-		bulletDespawnTimeText = new JTextField("Bullet Despawn Time", 25);
-		cansuicideText = new JTextField("Players can commit suicide (t/f or true/false)", 25);
+		seedField = new JTextField("Enter Seed Here" + " | Default: " + gc.SEED, 25);
+		wTextField = new JTextField("Enter Width Here" + " | Default: " + gc.WORLD_TILE_WIDTH, 25);
+		hTextField = new JTextField("Enter Height Here" + " | Default: " + gc.WORLD_TILE_HEIGHT, 25);
+		healthTextField = new JTextField("Enter Starting Health" + " | Default: " + gc.MAX_HEALTH, 25);
+		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)" + " | Default: " + gc.SHOT_DELAY, 25);
+		bulletSpeed = new JTextField("Bullet Speed" + " | Default: " + gc.BULLET_SPEED, 25);
+		regenTime = new JTextField("Regeneration Time (Seconds)" + " | Default: " + gc.REGEN_TIME, 25);
+		killsText = new JTextField("Kills in a row" + " | Default: " + gc.KILLS_TO_WIN, 25);
+		structureDensityText = new JTextField("Structure Density (1-100)" + " | Default: " + gc.STRUCTURE_DENSITY, 25);
+		tpsText = new JTextField("Ticks Per Second" + " | Default: " + gc.TPS, 25);
+		serverPortText = new JTextField("Server Port" + " | Default: " + gc.SERVER_PORT, 25);
+		bogSizeText = new JTextField("Bog Size" + " | Default: " + gc.BOG_SIZE, 25);
+		maxArmourText = new JTextField("Max Armour" + " | Default: " + gc.MAX_ARMOR, 25);
+		bulletDespawnTimeText = new JTextField("Bullet Despawn Time" + " | Default: " + gc.BULLET_DESPAWN_TIME, 25);
+		cansuicideText = new JTextField(
+				"Players can commit suicide (t/f | true/false)" + " | Default: " + gc.CAN_SUICIDE, 35);
 
 		startServer = new JButton("Start");
 		startServer.setActionCommand("start");
 		startServer.addActionListener(this);
+		serverDrawing.add(new JLabel("Unedited text fields will be set to their default value"));
+		serverDrawing.add(serverPortText);
 		serverDrawing.add(seedField);
+		serverDrawing.add(tpsText);
 		serverDrawing.add(wTextField);
 		serverDrawing.add(hTextField);
 		serverDrawing.add(healthTextField);
-		serverDrawing.add(bulletSpamText);
-		serverDrawing.add(bulletSpeed);
+		serverDrawing.add(maxArmourText);
 		serverDrawing.add(regenTime);
 		serverDrawing.add(killsText);
-		serverDrawing.add(structureDensityText);
-		serverDrawing.add(tpsText);
-		serverDrawing.add(serverPortText);
-		serverDrawing.add(bogSizeText);
-		serverDrawing.add(maxArmourText);
-		serverDrawing.add(bulletDespawnTimeText);
 		serverDrawing.add(cansuicideText);
+		serverDrawing.add(bulletSpamText);
+		serverDrawing.add(bulletSpeed);
+		serverDrawing.add(bulletDespawnTimeText);
+		serverDrawing.add(structureDensityText);
+		serverDrawing.add(bogSizeText);
 
 		serverDrawing.add(startServer);
 		serverUI.add(serverDrawing);
@@ -195,6 +197,7 @@ public class Server implements LastWish, ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("start")) {
+			serverUI.setVisible(false);
 			try {
 				seed = Integer.parseInt(seedField.getText());
 			} catch (Exception a) {
@@ -266,7 +269,13 @@ public class Server implements LastWish, ActionListener {
 				bulletDespawnTime = gc.BULLET_DESPAWN_TIME;
 			}
 			try {
-				cansuicide = Boolean.parseBoolean(cansuicideText.getText());
+				String text = cansuicideText.getText();
+				if (text.toLowerCase().equals("t") || text.toLowerCase().equals("true"))
+					cansuicide = true;
+				else if (text.toLowerCase().equals("f") || text.toLowerCase().equals("false"))
+					cansuicide = false;
+				else
+					cansuicide = gc.CAN_SUICIDE;
 			} catch (Exception a) {
 				cansuicide = gc.CAN_SUICIDE;
 			}

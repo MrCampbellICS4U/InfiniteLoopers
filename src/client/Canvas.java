@@ -343,7 +343,7 @@ public class Canvas extends JPanel {
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read(Canvas.class.getResource(filename));
+			img = ImageIO.read(Canvas.class.getResourceAsStream(filename));
 		} catch (IOException e) {
 			System.out.println(e.toString());
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",

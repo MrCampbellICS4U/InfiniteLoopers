@@ -21,6 +21,7 @@ public class Canvas extends JPanel {
 	public int W; // width and height
 	public int H;
 	public int mouseX, mouseY;
+	public int numKills;
 	BufferedImage healthImage, armorImage, gunImage, deathImage, winImage;
 
 	private Client client;
@@ -36,7 +37,7 @@ public class Canvas extends JPanel {
 		deathImage = Canvas.loadImage("res/Menus/Death.png");
 		winImage = Canvas.loadImage("res/Menus/Win.png");
 	}
-
+	public int currentKills = 0;
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -60,7 +61,11 @@ public class Canvas extends JPanel {
 
 		if (me.health == 0)
 			drawDeath(g, me);
-		if (me.kills >= 5)
+		if (me.kills > currentKills){
+			numKills++;
+			currentKills++;
+		}
+		if (numKills >= 5)
 			drawWin(g, me);
 	}
 

@@ -87,7 +87,6 @@ public class Client implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
-		me.kills = 5;
 		// handleException("Could not connect to server", e);
 	}
 
@@ -98,7 +97,7 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && (me.health == 0 || me.kills >=5))
+		if (me != null && (me.health == 0))
 			return; // don't send packets when you're dead (and the socket is closed)
 
 		pl.send(p);

@@ -382,9 +382,7 @@ public class Client implements LastWish, ActionListener {
 		};
 
 		mapGraphics.setColor(c);
-		int mapTileWidth = (int) (1. / gc.WORLD_TILE_WIDTH * map.getWidth());
-		int mapTileHeight = (int) (1. / gc.WORLD_TILE_HEIGHT * map.getHeight());
-		mapGraphics.fillRect(x * mapTileWidth, y * mapTileHeight, mapTileWidth, mapTileHeight);
+		mapGraphics.fillRect(x, y, 1, 1);
 	}
 
 	/**
@@ -400,7 +398,7 @@ public class Client implements LastWish, ActionListener {
 		this.canvas.gc = gc;
 		this.map.gc = gc;
 		exploredMap = new int[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
-		mapImage = new BufferedImage(map.getWidth(), map.getHeight(), BufferedImage.TYPE_INT_RGB);
+		mapImage = new BufferedImage(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		mapGraphics = mapImage.getGraphics();
 	}
 

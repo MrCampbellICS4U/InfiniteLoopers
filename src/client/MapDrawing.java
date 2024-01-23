@@ -62,7 +62,7 @@ public class MapDrawing extends JFrame {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 			// draw tiles on map
-			g2.drawImage(c.getMapImage(), 0, 0, null);
+			g2.drawImage(c.getMapImage(), 0, 0, getWidth(), getHeight(), null);
 
 			// draw player on map
 			double playerRelX = (((double) me.xGlobal) / gc.WORLD_WIDTH);

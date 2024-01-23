@@ -9,15 +9,13 @@ public class AllowedCollisions {
 	 *
 	 * The collision matrix is as follows:
 	 * - The first row represents the collision types for the entity type
-	 * HitboxType.BULLET.
-	 * - The second row represents the collision types for the entity type
-	 * HitboxType.WATER.
-	 * - The third row represents the collision types for the entity type
-	 * HitboxType.WALL.
-	 * - The fourth row represents the collision types for the entity type
 	 * HitboxType.PLAYER.
-	 *
-	 * For example, collisions[0] represents the collision types for
+	 * - The second row represents the collision types for the entity type
+	 * HitboxType.BULLET.
+	 * - The third row represents the collision types for the entity type
+	 * HitboxType.WATER.
+	 * - The fourth row represents the collision types for the entity type
+	 * HitboxType.WALL.
 	 */
 	public static HitboxType[][] collisions = {
 			// what players (the first hitbox type) can collide with)

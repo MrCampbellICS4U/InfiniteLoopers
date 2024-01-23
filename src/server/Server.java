@@ -98,6 +98,8 @@ public class Server implements LastWish, ActionListener {
 
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
+		gc.BOG_RADIUS = (worldWidth + worldHeight) / 2 / gc.BOG_SIZE;
+
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 

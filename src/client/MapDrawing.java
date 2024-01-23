@@ -55,19 +55,12 @@ public class MapDrawing extends JFrame {
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			Color[][] mapColours = c.getMapColours();
-			int mapTileWidth = (int) (1. / gc.WORLD_TILE_WIDTH * mapSizeW);
-			int mapTileHeight = (int) (1. / gc.WORLD_TILE_HEIGHT * mapSizeH);
-			for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {
-				for (int y = 0; y < gc.WORLD_TILE_HEIGHT; y++) {
-					g2.setColor(mapColours[x][y]);
-					g2.fillRect(x * mapTileWidth, y * mapTileHeight, mapTileWidth, mapTileHeight);
-				}
-			}
+			// draw tiles on map
+			g2.drawImage(c.getMapImage(), 0, 0, null);
 
+			// draw player on map
 			double playerRelX = (((double) me.xGlobal) / gc.WORLD_WIDTH);
 			double playerRelY = (((double) me.yGlobal) / gc.WORLD_HEIGHT);
-			Font font = new Font("Arial", Font.BOLD, 40);
 			g.setColor(Color.black);
 			g.fillOval((int) (playerRelX * mapSizeW), (int) (playerRelY * mapSizeH), 10, 10);
 		}

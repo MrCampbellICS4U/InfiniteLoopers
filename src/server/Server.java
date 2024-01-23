@@ -64,14 +64,6 @@ public class Server implements LastWish, ActionListener {
 	public void startServer() {
 		this.gc = new GlobalConstants();
 
-		Timer tickTimer = new Timer(1000 / gc.TPS, this);
-		tickTimer.setActionCommand("tick");
-		tickTimer.start();
-
-		Timer secTimer = new Timer(1000, this);
-		secTimer.setActionCommand("secUpdate");
-		secTimer.start();
-
 		gc.SEED = seed;
 		gc.WORLD_TILE_HEIGHT = worldHeight;
 		gc.WORLD_TILE_WIDTH = worldWidth;
@@ -85,6 +77,14 @@ public class Server implements LastWish, ActionListener {
 				gc.RANDOM_SEED ? (int) (Math.random() * 100000) : gc.SEED, gc.BOG_RADIUS)
 				.generateWorld();
 		addHitboxesToMap();
+
+		Timer tickTimer = new Timer(1000 / gc.TPS, this);
+		tickTimer.setActionCommand("tick");
+		tickTimer.start();
+
+		Timer secTimer = new Timer(1000, this);
+		secTimer.setActionCommand("secUpdate");
+		secTimer.start();
 
 		System.out.println("Running server on port " + port);
 		try (ServerSocket serverSocket = new ServerSocket(port)) {

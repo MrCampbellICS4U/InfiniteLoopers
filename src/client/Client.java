@@ -262,16 +262,20 @@ public class Client implements LastWish, ActionListener {
 	private final Color SAND_COLOUR = new Color(255, 252, 158);
 	private final Color WATER_COLOUR = new Color(43, 149, 255);
 	private final Color BUSH_COLOUR = Color.GREEN.darker();
-	private Color[][] mapColours;
+	private int[][] exploredMap;
 
-	public Color[][] getMapColours() {
-		return mapColours;
-	}
+	private BufferedImage mapImage;
+	public BufferedImage getMapImage() { return mapImage; }
+	private Graphics mapGraphics;
 
 	public void setMapColour(Tile t) {
 		int x = t.getX();
 		int y = t.getY();
-		mapColours[x][y] = switch (t.getType()) {
+		if (t.getZ() < exploredMap[x][y]) return;
+
+		exploredMap[x][y] = t.getZ();
+
+		Color c = switch (t.getType()) {
 			case "roof" -> ROOF_COLOUR;
 			case "water" -> WATER_COLOUR;
 			case "crate" -> CRATE_COLOUR;
@@ -280,6 +284,11 @@ public class Client implements LastWish, ActionListener {
 			case "bush" -> BUSH_COLOUR;
 			default -> UNEXPLORED_COLOUR;
 		};
+
+		mapGraphics.setColor(c);
+		int mapTileWidth = (int) (1. / gc.WORLD_TILE_WIDTH * map.getWidth());
+		int mapTileHeight = (int) (1. / gc.WORLD_TILE_HEIGHT * map.getHeight());
+		mapGraphics.fillRect(x * mapTileWidth, y * mapTileHeight, mapTileWidth, mapTileHeight);
 	}
 
 	public void setGlobalConstants(GlobalConstants gc) {
@@ -288,12 +297,9 @@ public class Client implements LastWish, ActionListener {
 		this.H = gc.DRAWING_AREA_HEIGHT;
 		this.canvas.gc = gc;
 		this.map.gc = gc;
-		mapColours = new Color[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
-		for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {
-			for (int y = 0; y < gc.WORLD_TILE_HEIGHT; y++) {
-				mapColours[x][y] = UNEXPLORED_COLOUR;
-			}
-		}
+		exploredMap = new int[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
+	   	mapImage = new BufferedImage(map.getWidth(), map.getHeight(), BufferedImage.TYPE_INT_RGB);
+ 		mapGraphics = mapImage.getGraphics();
 	}
 
 	// gets called once a second

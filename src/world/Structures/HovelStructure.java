@@ -3,7 +3,7 @@ package world.Structures;
 import shared.utilities.LettersToTiles;
 
 public class HovelStructure extends Structure {
-    public static int chance = 500;
+    public static int chance = 2;
     public HovelStructure(int x, int y, int z, int orientation) {
         super(x, y, z, orientation, LettersToTiles.converToTiles(new String[][][] {
                 {

@@ -3,7 +3,7 @@ package world.Structures;
 import shared.utilities.LettersToTiles;
 
 public class CratePileStructure extends Structure {
-    public static int chance = 500;
+    public static int chance = 1;
 
 	private static String[][][] phases = {
 		{

@@ -16,7 +16,7 @@ public class BasicPondStructure extends Structure {
          * 
          */
 
-        public static int chance = 500;
+        public static int chance = 1;
 
         public BasicPondStructure(int x, int y, int z, int orientation) {
                 super(x, y, z, LettersToTiles.converToTiles(new String[][][] {

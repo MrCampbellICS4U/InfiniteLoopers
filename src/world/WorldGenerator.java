@@ -139,6 +139,8 @@ public class WorldGenerator {
                 put(BasicPondStructure.class, BasicPondStructure.chance);
                 put(CratePileStructure.class, CratePileStructure.chance);
                 put(HovelStructure.class, HovelStructure.chance);
+                put(SingleCrate.class, SingleCrate.chance);
+                put(SingleBush.class, SingleBush.chance);
             }
         };
     }
@@ -157,7 +159,7 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(1000) < 35 && z == 0) { // 5% chance of generating a structure
+                    if (rand.nextInt(100) < 5 && z == 0) { // 5% chance of generating a structure
                         // generate a random structure
                         Class structureType = pickStructure(x, y, z, rand.nextInt(4)).getClass();
                         try {
@@ -186,14 +188,6 @@ public class WorldGenerator {
                             System.out.println("Error generating structure");
                             e.printStackTrace();
                         }
-                    } else if (rand.nextInt(100) < 2 && z == 1 && (newMapTiles[x][y][0].getType().equals("null")
-                            || newMapTiles[x][y][0].getType().equals("grass"))) {
-                        // 2% chance of generating a crate
-                        newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
-                    } else if (rand.nextInt(100) < 2 && z == 2 && (newMapTiles[x][y][0].getType().equals("null")
-                            || newMapTiles[x][y][0].isEmpty()) && newMapTiles[x][y][1].getType().equals("null")) {
-                        // 2% chance of generating a bush
-                        newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "bush", "default");
                     }
                 }
             }

@@ -75,10 +75,10 @@ public class Client implements LastWish, ActionListener {
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 
-		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
-		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
-		akImage = Canvas.loadImage("res/game/Guns/ak.png");
-		bImage = Canvas.loadImage("res/game/Guns/bullets.png");
+		menuPNG = Canvas.loadImage("/res/Menus/Main/image.png");
+		settingsPNG = Canvas.loadImage("/res/Menus/Settings/settingsImage.png");
+		akImage = Canvas.loadImage("/res/game/Guns/ak.png");
+		bImage = Canvas.loadImage("/res/game/Guns/bullets.png");
 
 		setupSettingsMenu();
 		setupMainMenu();

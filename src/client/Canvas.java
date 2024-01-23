@@ -3,7 +3,6 @@ package client;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,6 +13,7 @@ import java.util.HashMap;
 import shared.GlobalConstants;
 import entities.*;
 import world.Tiles.*;
+import shared.utilities.GetFilesInDir;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
@@ -36,11 +36,11 @@ public class Canvas extends JPanel {
 	public Canvas(Client c) {
 		client = c;
 		this.gc = c.gc;
-		healthImage = Canvas.loadImage("res/game/UI/heart.png");
-		armorImage = Canvas.loadImage("res/game/UI/armor.png");
-		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
-		deathImage = Canvas.loadImage("res/Menus/Death.png");
-		winImage = Canvas.loadImage("res/Menus/Win.png");
+		healthImage = Canvas.loadImage("/res/game/UI/heart.png");
+		armorImage = Canvas.loadImage("/res/game/UI/armor.png");
+		gunImage = Canvas.loadImage("/res/game/Guns/ak.png");
+		deathImage = Canvas.loadImage("/res/Menus/Death.png");
+		winImage = Canvas.loadImage("/res/Menus/Win.png");
 	}
 
 	public int currentKills = 0;
@@ -142,16 +142,13 @@ public class Canvas extends JPanel {
 	// method to load all images into a hashmap
 	private HashMap<String, BufferedImage> loadImages() {
 		HashMap<String, BufferedImage> images = new HashMap<>();
-		for (String type : new File("res/game/world/Tiles").list()) {
+		for (String type : GetFilesInDir.gimme("/res/game/world/Tiles")) {
 			try {
-				for (String state : new File("res/game/world/Tiles/" + type).list()) {
-					String imageURL = "res/game/world/Tiles/" + type + "/" + state;
-					try {
-						images.put(type + "_" + state, (BufferedImage) ImageIO.read(new File(imageURL)));
-					} catch (IOException e) {
-						System.out.println("Error loading image: " + imageURL);
-						e.printStackTrace();
-					}
+				for (String state : GetFilesInDir.gimme("/res/game/world/Tiles/" + type)) {
+					String imageURL = "/res/game/world/Tiles/" + type + "/" + state;
+					BufferedImage img = loadImage(imageURL);
+					images.put(type + "_" + state, img);
+
 					// rotate the image 90 degrees 3 times and put it in the hashmap with the
 					// rotation agle at the end of the key
 					for (int i = 1; i < 4; i++) {
@@ -346,7 +343,7 @@ public class Canvas extends JPanel {
 	static BufferedImage loadImage(String filename) {
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read(new File(filename));
+			img = ImageIO.read(Canvas.class.getResource(filename));
 		} catch (IOException e) {
 			System.out.println(e.toString());
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "Error",

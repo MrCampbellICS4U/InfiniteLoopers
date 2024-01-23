@@ -21,7 +21,7 @@ import entities.Entity;
 public class Server implements LastWish, ActionListener {
 	JFrame serverUI;
 	JPanel serverDrawing;
-	JTextField seedField, wTextField, hTextField;
+	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, regenTime;
 	JButton startServer;
 
 	public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 	public GlobalConstants gc;
-	public int seed, worldHeight, worldWidth;
+	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
@@ -44,14 +44,24 @@ public class Server implements LastWish, ActionListener {
 		seedField = new JTextField("Enter Seed Here", 25);
 		wTextField = new JTextField("Enter Width Here", 25);
 		hTextField = new JTextField("Enter Height Here", 25);
+		healthTextField = new JTextField("Enter Starting Health", 25);
+		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)", 25);
+		bulletSpeed = new JTextField("Bullet Speed", 25);
+		regenTime = new JTextField("Regeneration Time (Seconds)", 25);
+
+
 		startServer = new JButton("Start");
 		startServer.setActionCommand("start");
 		startServer.addActionListener(this);
 		serverDrawing.add(seedField);
 		serverDrawing.add(wTextField);
 		serverDrawing.add(hTextField);
-		serverDrawing.add(startServer);
+		serverDrawing.add(healthTextField);
+		serverDrawing.add(bulletSpamText);
+		serverDrawing.add(bulletSpeed);
+		serverDrawing.add(regenTime);
 
+		serverDrawing.add(startServer);
 		serverUI.add(serverDrawing);
 		serverUI.pack();
 		serverUI.setLocationRelativeTo(null);
@@ -67,6 +77,10 @@ public class Server implements LastWish, ActionListener {
 		gc.SEED = seed;
 		gc.WORLD_TILE_HEIGHT = worldHeight;
 		gc.WORLD_TILE_WIDTH = worldWidth;
+		gc.REGEN_TIME = regen * 1000;
+		gc.MAX_HEALTH = health;
+		gc.SHOT_DELAY = bulDelay;
+		gc.BULLET_SPEED = bulSpeed;
 
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
@@ -128,12 +142,39 @@ public class Server implements LastWish, ActionListener {
 		if (e.getActionCommand().equals("start")) {
 			try {
 				seed = Integer.parseInt(seedField.getText());
-				worldHeight = Integer.parseInt(hTextField.getText());
-				worldWidth = Integer.parseInt(wTextField.getText());
-			} catch (Exception error) {
+			} catch(Exception a){
 				seed = 2345;
+			}
+			try {
+				worldHeight = Integer.parseInt(hTextField.getText());
+			} catch(Exception a){
 				worldHeight = 35;
+			}
+			try {
+				worldWidth = Integer.parseInt(wTextField.getText());
+			} catch(Exception a){
 				worldWidth = 35;
+			}
+			try {
+				health = Integer.parseInt(healthTextField.getText());
+			} catch(Exception a){
+				health = 5;
+			}
+			try {
+				bulDelay = Integer.parseInt(bulletSpamText.getText());
+
+			} catch(Exception a){
+				bulDelay = 170;
+			}
+			try {
+				bulSpeed = Integer.parseInt(bulletSpeed.getText());
+			} catch(Exception a){
+				bulSpeed = 10;
+			}
+			try {
+				regen = Integer.parseInt(regenTime.getText());
+			} catch(Exception a){
+				regen = 7;
 			}
 
 			new Thread(() -> startServer()).start();

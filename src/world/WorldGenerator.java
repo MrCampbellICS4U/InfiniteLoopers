@@ -137,10 +137,9 @@ public class WorldGenerator {
             {
                 put(BasicHouseStructure.class, BasicHouseStructure.chance);
                 put(BasicPondStructure.class, BasicPondStructure.chance);
-                put(CratePile.class, CratePile.chance);
+                put(CratePileStructure.class, CratePileStructure.chance);
                 put(HovelStructure.class, HovelStructure.chance);
             }
->>>>>>> main:src/game/world/WorldGenerator.java
         };
     }
 

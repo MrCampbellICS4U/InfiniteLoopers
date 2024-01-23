@@ -3,6 +3,10 @@ package world.Tiles;
 import collision.Rectangle;
 import server.WaterHitbox;
 
+/**
+ * Represents a water tile in the game world.
+ * Extends the Tile class.
+ */
 public class WaterTile extends Tile {
 	public Class<? extends Rectangle> getHitboxType() { return WaterHitbox.class; }
 

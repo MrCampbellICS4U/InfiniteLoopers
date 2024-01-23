@@ -18,14 +18,31 @@ class SClient extends Circle implements Entity {
 	private Tile[][][] oldVisibleTiles;
 	private GlobalConstants gc;
 
+	/**
+	 * Returns the array of visible tiles.
+	 *
+	 * @return The array of visible tiles.
+	 */
 	public Tile[][][] getVisibleTiles() {
 		return this.visibleTiles;
 	}
 
+	/**
+	 * Sets the visible tiles for the current entity.
+	 *
+	 * @param tiles The 3D array of tiles to set as visible tiles
+	 * @return The updated visible tiles array
+	 */
 	public Tile[][][] setVisibleTiles(Tile[][][] tiles) {
 		return this.visibleTiles = tiles;
 	}
 
+	/**
+	 * Calculates the visible tiles based on the current position of the player.
+	 *
+	 * @param map The 3D array representing the entire map of tiles.
+	 * @return A 3D array of visible tiles.
+	 */
 	public Tile[][][] calculateVisibleTiles(Tile[][][] map) {
 		Tile[][][] visibleTiles = new Tile[gc.DRAWING_AREA_WIDTH / gc.TILE_WIDTH
 				+ 2 * gc.TILE_X_BUFFER][gc.DRAWING_AREA_HEIGHT / gc.TILE_HEIGHT
@@ -61,6 +78,11 @@ class SClient extends Circle implements Entity {
 		return visibleTiles;
 	}
 
+	/**
+	 * Handles updates to the visible tiles on the map.
+	 *
+	 * @param map The 3D array representing the map tiles.
+	 */
 	public void handleVisibleTileUpdates(Tile[][][] map) { // sends the client its new visible tiles if anything has
 															// changed, ie their location >= 1 tile away from the last
 															// update or if any tile needs updating
@@ -90,6 +112,11 @@ class SClient extends Circle implements Entity {
 		return this.angle = angle;
 	}
 
+	/**
+	 * Retrieves the information of the player.
+	 *
+	 * @return The PlayerInfo object containing the player's information.
+	 */
 	public PlayerInfo getInfo() {
 		return new PlayerInfo((int) getX(), (int) getY(), id, (int) getRadius(), angle, health, armor, new String[0],
 				name, kills);
@@ -107,12 +134,22 @@ class SClient extends Circle implements Entity {
 		return id;
 	}
 
+	/**
+	 * Sends a packet to the client.
+	 *
+	 * @param p The packet to send.
+	 */
 	public void send(PacketTo<Client> p) {
 		pl.send(p);
 	}
 
 	private boolean shouldRemove = false;
 
+	/**
+	 * Removes the entity by closing the associated resource and marking it for
+	 * removal.
+	 * Used for when a player loses/dies
+	 */
 	public void remove() {
 		pl.close();
 		shouldRemove = true;
@@ -127,6 +164,16 @@ class SClient extends Circle implements Entity {
 	private Chunker chunker;
 	private long nextShot; // the time of the soonest next shot
 
+	/**
+	 * Constructs a new SClient object with the given parameters.
+	 *
+	 * @param socket The socket associated with the client connection.
+	 * @param server The server instance.
+	 * @param id     The unique identifier for the client.
+	 * @param c      The Chunker object for handling chunks.
+	 * @param map    The 3D array representing the game map.
+	 * @param gc     The GlobalConstants object containing global game constants.
+	 */
 	SClient(Socket socket, Server server, int id, Chunker c, Tile[][][] map, GlobalConstants gc) {
 		super((int) (Math.random() * gc.WORLD_WIDTH),
 				(int) (Math.random() * gc.WORLD_HEIGHT), 25, c);
@@ -160,6 +207,12 @@ class SClient extends Circle implements Entity {
 
 	private boolean up, down, left, right;
 
+	/**
+	 * Handles the input based on the given input and input state.
+	 *
+	 * @param i  The input to handle.
+	 * @param is The state of the input (DOWN or UP).
+	 */
 	public void handleInput(Input i, InputState is) {
 		boolean isDown = is == InputState.DOWN;
 		switch (i) {
@@ -182,6 +235,9 @@ class SClient extends Circle implements Entity {
 
 	int counter = 0;
 
+	/**
+	 * Suicide Button
+	 */
 	private void kysURSELF() {
 		health = 0;
 		counter++;
@@ -192,6 +248,13 @@ class SClient extends Circle implements Entity {
 
 	final int gunLength = 35;
 
+	/**
+	 * Initiates an attack by creating a new bullet if the specified time has
+	 * elapsed since the last shot. The bullet is created at the calculated position
+	 * based on the current angle and gun length
+	 * 
+	 * @param gc The game controller object
+	 */
 	private void attack() {
 		long time = System.currentTimeMillis();
 		if (time > nextShot) {
@@ -201,6 +264,15 @@ class SClient extends Circle implements Entity {
 		}
 	}
 
+	/**
+	 * Reloads the client.
+	 * 
+	 * This method is called when the client with the specified ID attempts to
+	 * reload.
+	 * It prints a message indicating the client ID that is attempting to reload.
+	 *
+	 * @param id The ID of the client attempting to reload.
+	 */
 	private void reload() {
 		System.out.printf("Client %d attempts to reload\n", id);
 	}
@@ -213,6 +285,18 @@ class SClient extends Circle implements Entity {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
 
+	/**
+	 * Handles a shot event for a player.
+	 *
+	 * If the player has armor, their armor is reduced by 1. If the player does not
+	 * have armor,
+	 * their health is reduced by 1. If the player's health reaches 0, they are
+	 * considered dead.
+	 * If the shooter is a valid client in the server, they are rewarded for the
+	 * kill.
+	 *
+	 * @param shooterID The ID of the player who shot the current player
+	 */
 	public void getShot(int shooterID) {
 		if (armor > 0)
 			armor--;
@@ -228,6 +312,11 @@ class SClient extends Circle implements Entity {
 		}
 	}
 
+	/**
+	 * Rewards the player for a kill by increasing their armor and kill count.
+	 * If the player's armor is less than the maximum armor, it is increased by 1.
+	 * The kill count is incremented by 1.
+	 */
 	public void rewardForKill() {
 		// good job, you got a kill!
 		if (armor < gc.MAX_ARMOR) {
@@ -242,6 +331,11 @@ class SClient extends Circle implements Entity {
 	private boolean inWater = false;
 	private double oldX, oldY;
 
+	/**
+	 * Updates the state of the entity based on the elapsed time.
+	 *
+	 * @param deltaTime The time elapsed since the last update.
+	 */
 	public void update(double deltaTime) {
 		if (shouldRemove())
 			return;
@@ -291,6 +385,11 @@ class SClient extends Circle implements Entity {
 		inWater = false; // if we're still in water, will be set to true again
 	}
 
+	/**
+	 * Checks the health of an entity and schedules a timer task to increment the
+	 * health value.
+	 * The timer task runs after a specified regeneration time.
+	 */
 	public void checkHealth() {
 		Timer timer = new Timer();
 
@@ -313,6 +412,9 @@ class SClient extends Circle implements Entity {
 	// all the entities, including self, you can see
 	private ArrayList<EntityInfo> entities = new ArrayList<>();
 
+	/**
+	 * Clears the list of entities.
+	 */
 	public void clearEntities() {
 		entities = new ArrayList<>(); // DO NOT CHANGE THIS TO CLEAR, IT BREAKS AND I DO NOT KNOW WHY
 	}
@@ -321,6 +423,14 @@ class SClient extends Circle implements Entity {
 		entities.add(e);
 	}
 
+	/**
+	 * Performs a collision with the given hitbox.
+	 * If the hitbox is a WaterHitbox, sets the inWater flag to true.
+	 * If the hitbox is a WallHitbox, calls the hitCrate method with the WallHitbox
+	 * as parameter.
+	 *
+	 * @param h The hitbox to collide with
+	 */
 	public void smashInto(Hitbox h) {
 		if (h instanceof WaterHitbox) {
 			inWater = true;
@@ -329,6 +439,11 @@ class SClient extends Circle implements Entity {
 			hitCrate((WallHitbox) h);
 	}
 
+	/**
+	 * Moves the player to the closest position on the wall hitbox.
+	 *
+	 * @param c The wall hitbox to collide with.
+	 */
 	private void hitCrate(WallHitbox c) {
 		// "pop the player out" of the crate
 		// find the closest point on the border of the crate, and move them there

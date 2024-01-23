@@ -13,6 +13,20 @@ public class PlayerInfo extends EntityInfo {
 	public String hotBar[] = new String[3];
 	public String name;
 	public int kills;
+ /**
+  * Constructs a new PlayerInfo object with the specified parameters.
+  *
+  * @param x The x-coordinate of the player's position
+  * @param y The y-coordinate of the player's position
+  * @param id The ID of the player
+  * @param radius The radius of the player
+  * @param angle The angle of the player
+  * @param health The health of the player
+  * @param armor The armor of the player
+  * @param hotBar The hotbar items of the player
+  * @param name The name of the player
+  * @param kills The number of kills of the player
+  */
 	public PlayerInfo(int x, int y, int id, int radius, double angle, int health, int armor, String[] hotBar,
 			String name, int kills) {
 		super(x, y);
@@ -26,6 +40,14 @@ public class PlayerInfo extends EntityInfo {
 		this.kills = kills;
 	}
 
+	/**
+	 * Custom draw method to render a player on the graphics object.
+	*
+	* @param g The graphics object to draw on.
+	* @param c The client object representing the player.
+	* @param centreRelX The relative x-coordinate of the center of the player.
+	* @param centreRelY The relative y-coordinate of the center of the player.
+	*/
 	public void customDraw(Graphics g, Client c, int centreRelX, int centreRelY) {
 		boolean drawingSelf = id == c.getID();
 

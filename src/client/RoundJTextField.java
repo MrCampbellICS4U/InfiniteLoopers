@@ -3,6 +3,11 @@ package client;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.geom.*;
+
+
+/**
+ * A custom JTextField component with rounded corners.
+ */
 public class RoundJTextField extends JTextField {
     private Shape shape;
 

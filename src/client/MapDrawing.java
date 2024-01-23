@@ -21,6 +21,12 @@ public class MapDrawing extends JFrame {
 	Client c;
 	public GlobalConstants gc;
 
+	/**
+	 * Constructs a MapDrawing object with the specified Client and PlayerInfo.
+	 *
+	 * @param c      The Client object associated with the map drawing
+	 * @param player The PlayerInfo object associated with the map drawing
+	 */
 	MapDrawing(Client c, PlayerInfo player) {
 		this.c = c;
 		this.gc = c.gc;
@@ -66,6 +72,10 @@ public class MapDrawing extends JFrame {
 		}
 	}
 
+	/**
+	 * Toggles the visibility of the map.
+	 * Sets the visibility of the map to false.
+	 */
 	void toggleMap() {
 		this.setVisible(false);
 	}

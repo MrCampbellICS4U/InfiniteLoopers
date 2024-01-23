@@ -36,6 +36,9 @@ public class Server implements LastWish, ActionListener {
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
+	/**
+	 * Initializes the server user interface and sets up the necessary components.
+	 */
 	Server() {
 		serverUI = new JFrame("Server UI");
 		serverUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,6 +75,17 @@ public class Server implements LastWish, ActionListener {
 
 	}
 
+	/**
+	 * Starts the server with the specified configurations and waits for client
+	 * connections.
+	 * 
+	 * The server initializes the game settings based on the provided parameters,
+	 * generates the game world,
+	 * sets up timers for game ticks and second updates, and listens for client
+	 * connections on the specified port.
+	 * 
+	 * @throws IOException if an I/O error occurs when connecting a client
+	 */
 	public void startServer() {
 		gc.SEED = seed;
 		gc.WORLD_TILE_HEIGHT = worldHeight;
@@ -81,7 +95,7 @@ public class Server implements LastWish, ActionListener {
 		gc.SHOT_DELAY = bulDelay;
 		gc.BULLET_SPEED = bulSpeed;
 		gc.KILLS_TO_WIN = killsWin;
-		
+
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
@@ -115,6 +129,15 @@ public class Server implements LastWish, ActionListener {
 		}
 	}
 
+	/**
+	 * Adds hitboxes to the map based on the tiles in the map.
+	 * Each tile in the map is checked for a hitbox type. If a hitbox type is found,
+	 * a hitbox object is instantiated and added to the map.
+	 * The hitbox object is created using the hitbox class's constructor, passing in
+	 * the appropriate parameters.
+	 * If an exception occurs during the instantiation of the hitbox object, an
+	 * error message is printed.
+	 */
 	void addHitboxesToMap() {
 		for (Tile[][] slice : map) {
 			for (Tile[] column : slice) {
@@ -138,45 +161,51 @@ public class Server implements LastWish, ActionListener {
 		}
 	}
 
+	/**
+	 * Performs an action based on the event triggered.
+	 *
+	 * @param e The ActionEvent object representing the event triggered.
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("start")) {
 			try {
 				seed = Integer.parseInt(seedField.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				seed = gc.SEED;
 			}
 			try {
 				worldHeight = Integer.parseInt(hTextField.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				worldHeight = gc.WORLD_TILE_HEIGHT;
 			}
 			try {
 				worldWidth = Integer.parseInt(wTextField.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				worldWidth = gc.WORLD_TILE_WIDTH;
 			}
 			try {
 				health = Integer.parseInt(healthTextField.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				health = gc.MAX_HEALTH;
 			}
 			try {
 				bulDelay = Integer.parseInt(bulletSpamText.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				bulDelay = gc.SHOT_DELAY;
 			}
 			try {
 				bulSpeed = Integer.parseInt(bulletSpeed.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				bulSpeed = gc.BULLET_SPEED;
 			}
 			try {
 				regen = Integer.parseInt(regenTime.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				regen = gc.REGEN_TIME / 1000;
-			}try {
+			}
+			try {
 				killsWin = Integer.parseInt(killsText.getText());
-			} catch(Exception a){
+			} catch (Exception a) {
 				killsWin = gc.KILLS_TO_WIN;
 			}
 
@@ -216,6 +245,12 @@ public class Server implements LastWish, ActionListener {
 		clientsToAdd.add(c);
 	}
 
+	/**
+	 * Performs a tick of the game loop, updating entities and sending packets to
+	 * clients.
+	 * This method is called at a regular interval to keep the game state
+	 * synchronized.
+	 */
 	void tick() {
 		long currentTime = System.currentTimeMillis();
 		double deltaTime = (double) (currentTime - lastTickTime) / (1 / (double) gc.TPS * 1000);
@@ -286,6 +321,13 @@ public class Server implements LastWish, ActionListener {
 		return clients.containsKey(id);
 	}
 
+	/**
+	 * Retrieves a client by their ID.
+	 *
+	 * @param id The ID of the client to retrieve.
+	 * @return The client with the specified ID.
+	 * @throws RuntimeException if no client with the specified ID is found.
+	 */
 	public SClient getClient(int id) {
 		SClient c = clients.get(id);
 		if (c != null)
@@ -300,16 +342,36 @@ public class Server implements LastWish, ActionListener {
 		throw new RuntimeException("Could not find client with id " + id);
 	}
 
+	/**
+	 * Sends a packet to the client with the specified ID.
+	 *
+	 * @param id The ID of the client to send the packet to.
+	 * @param p  The packet to send.
+	 */
 	public void sendToClient(int id, PacketTo<Client> p) {
 		getClient(id).send(p);
 	}
 
+	/**
+	 * Sets the client with the specified ID as ready and sends a
+	 * GlobalConstantsPacket to the client.
+	 *
+	 * @param id   The ID of the client
+	 * @param name The name of the client
+	 */
 	public void setClientReady(int id, String name) {
 		getClient(id).setReady(name);
 		getClient(id).send(new GlobalConstantsPacket(
 				this.gc));
 	}
 
+	/**
+	 * Handles the input for a specific client identified by their ID.
+	 *
+	 * @param id The ID of the client
+	 * @param i  The input to handle
+	 * @param is The state of the input
+	 */
 	public void handleInput(int id, Input i, InputState is) {
 		getClient(id).handleInput(i, is);
 	}
@@ -323,6 +385,12 @@ public class Server implements LastWish, ActionListener {
 		e.printStackTrace();
 	}
 
+	/**
+	 * Handles the disconnection of a client with the given id.
+	 *
+	 * @param id The id of the disconnected client
+	 * @param e  The exception that caused the disconnection, if any
+	 */
 	public void handleDisconnection(int id, Exception e) {
 		System.out.printf("Client with id %d disconnected\n", id);
 		SClient c = getClient(id);

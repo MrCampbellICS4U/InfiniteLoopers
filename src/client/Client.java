@@ -19,6 +19,11 @@ import world.Tiles.Tile;
 import entities.*;
 
 public class Client implements LastWish, ActionListener {
+	/**
+	 * The entry point of the application.
+	 *
+	 * @param args The command line arguments
+	 */
 	public static void main(String[] args) {
 		new Client();
 	}
@@ -49,6 +54,12 @@ public class Client implements LastWish, ActionListener {
 		return canvas;
 	}
 
+	/**
+	 * Initializes the client and sets up the game window, canvas, map, and menu
+	 * images.
+	 * Also sets up the key and mouse listeners, window properties, and loads
+	 * necessary images.
+	 */
 	Client() {
 		window = new JFrame("Sarvivarz");
 		window.addKeyListener(new GameKeyListener(this));
@@ -73,9 +84,21 @@ public class Client implements LastWish, ActionListener {
 		setupMainMenu();
 	}
 
+	/**
+	 * Retrieves the image of the bullet.
+	 *
+	 * @return The BufferedImage object representing the bullet image.
+	 */
 	public BufferedImage getBulletImage() {
 		return bImage;
 	}
+
+	/**
+	 * Handles an exception by printing the stack trace and exiting the program.
+	 *
+	 * @param message A message describing the exception.
+	 * @param e       The exception that occurred.
+	 */
 	public void handleException(String message, Exception e) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
@@ -84,6 +107,12 @@ public class Client implements LastWish, ActionListener {
 		System.exit(1);
 	}
 
+	/**
+	 * Handles the disconnection of a player.
+	 *
+	 * @param id The ID of the player
+	 * @param e  The exception that caused the disconnection
+	 */
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
 		// handleException("Could not connect to server", e);
@@ -93,6 +122,11 @@ public class Client implements LastWish, ActionListener {
 
 	boolean ready = false; // gets set to true when we get our id
 
+	/**
+	 * Sends a packet to the server if the client is ready and the player is alive.
+	 *
+	 * @param p The packet to send
+	 */
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
@@ -104,6 +138,14 @@ public class Client implements LastWish, ActionListener {
 
 	Timer tickTimer, secTimer;
 
+	/**
+	 * Starts a game by establishing a connection to the server using the provided
+	 * IP address and port.
+	 * Initializes the necessary timers for game updates.
+	 *
+	 * @param ip   The IP address of the server to connect to.
+	 * @param port The port number of the server to connect to.
+	 */
 	private void startGame(String ip, int port) {
 
 		try {
@@ -126,6 +168,11 @@ public class Client implements LastWish, ActionListener {
 		secTimer.start();
 	}
 
+	/**
+	 * Performs various actions based on the event triggered.
+	 *
+	 * @param e The ActionEvent object representing the event triggered.
+	 */
 	public void actionPerformed(ActionEvent e) {
 		playerName = enterName.getText();
 		if (playerName.equals("Enter Name Here") || playerName.equals("")) {
@@ -194,6 +241,11 @@ public class Client implements LastWish, ActionListener {
 
 	private PlayerInfo me;
 
+	/**
+	 * Retrieves the information of the current player.
+	 *
+	 * @return The PlayerInfo object representing the current player.
+	 */
 	public PlayerInfo getMe() {
 		return me;
 	}
@@ -201,22 +253,52 @@ public class Client implements LastWish, ActionListener {
 	private int fps, frame, ping, tps;
 	private double collisionChecksPerFrame;
 
+	/**
+	 * Returns the frames per second (FPS) value.
+	 *
+	 * @return The frames per second value.
+	 */
 	public int getFPS() {
 		return fps;
 	}
 
+	/**
+	 * Returns the current ping value.
+	 *
+	 * @return The ping value.
+	 */
 	public int getPing() {
 		return ping;
 	}
 
+	/**
+	 * Returns the current TPS (Ticks Per Second) value.
+	 *
+	 * @return The TPS value.
+	 */
 	public int getTPS() {
 		return tps;
 	}
 
+	/**
+	 * Returns the number of collision checks performed per frame.
+	 *
+	 * @return The number of collision checks per frame.
+	 */
 	public double getCollisionChecksPerFrame() {
 		return collisionChecksPerFrame;
 	}
 
+	/**
+	 * Updates the game state and performs necessary actions for each tick.
+	 * This method increments the frame count, updates the visible tiles, and
+	 * repaints the canvas and map.
+	 * If the player's health is 0, it stops the tick timer and the second timer,
+	 * sets the game state to not ready,
+	 * and adds a reset button for respawning. If the player's kills reach the
+	 * winning threshold, it stops the tick timer
+	 * and the second timer, and sets the game state to not ready.
+	 */
 	void tick() {
 		frame++;
 		setVisibleTiles(getNextVisibleTiles());
@@ -264,13 +346,28 @@ public class Client implements LastWish, ActionListener {
 	private int[][] exploredMap;
 
 	private BufferedImage mapImage;
-	public BufferedImage getMapImage() { return mapImage; }
+
+	/**
+	 * Retrieves the image of the map.
+	 * 
+	 * @return The BufferedImage representing the map image.
+	 */
+	public BufferedImage getMapImage() {
+		return mapImage;
+	}
+
 	private Graphics mapGraphics;
 
+	/**
+	 * Sets the color of a tile on the map based on its type.
+	 * 
+	 * @param t The tile to set the color for.
+	 */
 	public void setMapColour(Tile t) {
 		int x = t.getX();
 		int y = t.getY();
-		if (t.getZ() < exploredMap[x][y]) return;
+		if (t.getZ() < exploredMap[x][y])
+			return;
 
 		exploredMap[x][y] = t.getZ();
 
@@ -290,15 +387,21 @@ public class Client implements LastWish, ActionListener {
 		mapGraphics.fillRect(x * mapTileWidth, y * mapTileHeight, mapTileWidth, mapTileHeight);
 	}
 
+	/**
+	 * Sets the global constants and initializes the necessary variables and
+	 * objects.
+	 *
+	 * @param gc The GlobalConstants object containing the global constants
+	 */
 	public void setGlobalConstants(GlobalConstants gc) {
 		this.gc = gc;
 		this.W = gc.DRAWING_AREA_WIDTH;
 		this.H = gc.DRAWING_AREA_HEIGHT;
-		this.canvas.gc = gc;		
+		this.canvas.gc = gc;
 		this.map.gc = gc;
 		exploredMap = new int[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
-	   	mapImage = new BufferedImage(map.getWidth(), map.getHeight(), BufferedImage.TYPE_INT_RGB);
- 		mapGraphics = mapImage.getGraphics();
+		mapImage = new BufferedImage(map.getWidth(), map.getHeight(), BufferedImage.TYPE_INT_RGB);
+		mapGraphics = mapImage.getGraphics();
 	}
 
 	// gets called once a second
@@ -310,18 +413,33 @@ public class Client implements LastWish, ActionListener {
 
 	private int id;
 
+	/**
+	 * Returns the ID of the object.
+	 *
+	 * @return The ID of the object.
+	 */
 	public int getID() {
 		return id;
 	}
 
 	public boolean drawName = true;
 
+	/**
+	 * Toggles the state of the drawName variable.
+	 *
+	 * @return The new value of the drawName variable after toggling.
+	 */
 	public boolean toggleName() {
 		return drawName = !drawName;
 	}
 
 	public boolean showStats = false;
 
+	/**
+	 * Toggles the display of statistics.
+	 * If the statistics are currently shown, they will be hidden.
+	 * If the statistics are currently hidden, they will be shown.
+	 */
 	public void toggleStats() {
 		showStats = !showStats;
 	}
@@ -348,16 +466,35 @@ public class Client implements LastWish, ActionListener {
 		return entities;
 	}
 
+	/**
+	 * Sets the server information including ping, TPS (Ticks Per Second), and
+	 * collision checks per frame.
+	 *
+	 * @param ping                    The ping value of the server
+	 * @param tps                     The TPS (Ticks Per Second) value of the server
+	 * @param collisionChecksPerFrame The number of collision checks per frame
+	 */
 	public void setServerInfo(int ping, int tps, double collisionChecksPerFrame) {
 		this.ping = ping;
 		this.tps = tps;
 		this.collisionChecksPerFrame = collisionChecksPerFrame;
 	}
 
+	/**
+	 * Sets the player information for the current instance.
+	 *
+	 * @param me The player information to set
+	 */
 	public void setMe(PlayerInfo me) {
 		this.me = me;
 	}
 
+	/**
+	 * Sets the list of entities for this object and updates the "me" player if
+	 * found.
+	 *
+	 * @param entities The list of entities to set
+	 */
 	public void setEntities(ArrayList<EntityInfo> entities) {
 		this.entities = entities;
 		for (EntityInfo e : entities) {
@@ -369,6 +506,14 @@ public class Client implements LastWish, ActionListener {
 		}
 	}
 
+	/**
+	 * Handles the mouse movement event by calculating the relative mouse position,
+	 * determining the angle of rotation, and sending a client player rotation
+	 * packet.
+	 *
+	 * @param mouseX The x-coordinate of the mouse position
+	 * @param mouseY The y-coordinate of the mouse position
+	 */
 	void handleMouseMovement(int mouseX, int mouseY) {
 		// don't let the mouse go outside the window
 		mouseX = Math.max(0, Math.min(mouseX, window.getWidth()));
@@ -381,35 +526,85 @@ public class Client implements LastWish, ActionListener {
 
 	public static boolean mapOpen = false;
 
+	/**
+	 * Toggles the visibility of the map.
+	 * If the map is currently open, it will be closed. If it is closed, it will be
+	 * opened.
+	 * The visibility of the map is controlled by the "mapOpen" boolean variable.
+	 * When the map is open, it will be set to visible. When the map is closed, it
+	 * will be set to invisible.
+	 */
 	public void toggleMap() {
 		mapOpen = !mapOpen;
 		map.setVisible(mapOpen);
 	}
 
+	/**
+	 * Sets the visible tiles to the given terrain.
+	 *
+	 * @param terrain The list of tiles representing the terrain
+	 * @return The updated list of visible tiles
+	 */
 	public ArrayList<Tile> setVisibleTiles(ArrayList<Tile> terrain) {
 		return this.visibleTiles = (ArrayList<Tile>) terrain.clone();
 	}
 
+	/**
+	 * Sets the visible tiles based on the given terrain.
+	 *
+	 * @param terrain The 3D array of tiles representing the terrain.
+	 * @return The list of visible tiles.
+	 */
 	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
 		return this.visibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
 	}
 
+	/**
+	 * Sets the next visible tiles based on the given terrain.
+	 *
+	 * @param terrain The list of tiles representing the terrain.
+	 * @return The updated list of next visible tiles.
+	 */
 	public ArrayList<Tile> setNextVisibleTiles(ArrayList<Tile> terrain) {
 		return this.nextVisibleTiles = (ArrayList<Tile>) terrain.clone();
 	}
 
+	/**
+	 * Sets the next visible tiles based on the given terrain.
+	 *
+	 * @param terrain The 3D array representing the terrain.
+	 * @return The list of next visible tiles.
+	 */
 	public ArrayList<Tile> setNextVisibleTiles(Tile[][][] terrain) {
 		return this.nextVisibleTiles = (ArrayList<Tile>) ConvertToArrayList.convert(terrain).clone();
 	}
 
+	/**
+	 * Returns the list of visible tiles.
+	 *
+	 * @return The list of visible tiles.
+	 */
 	public ArrayList<Tile> getVisibleTiles() {
 		return this.visibleTiles;
 	}
 
+	/**
+	 * Returns the list of next visible tiles.
+	 *
+	 * @return The list of next visible tiles.
+	 */
 	public ArrayList<Tile> getNextVisibleTiles() {
 		return this.nextVisibleTiles;
 	}
 
+	/**
+	 * Updates the tile with the given new tile information.
+	 * If the tile already exists in the list of next visible tiles, it will be
+	 * replaced with the new tile.
+	 * If the tile does not exist in the list, it will be added to the list.
+	 *
+	 * @param newTile The new tile information to update.
+	 */
 	public void updateTile(Tile newTile) {
 		// find the coords of the tile in the visibleTiles arraylist and replace it
 		// if the tile is not in the arraylist, add it
@@ -424,6 +619,12 @@ public class Client implements LastWish, ActionListener {
 		nextVisibleTiles.add(newTile);
 	}
 
+	/**
+	 * Handles a partial field of view (FOV) update by updating the given list of
+	 * tiles.
+	 *
+	 * @param tiles The list of tiles to update
+	 */
 	public void handlePartialFOVUpdate(ArrayList<Tile> tiles) {
 		for (Tile tile : tiles) {
 			updateTile(tile);
@@ -434,6 +635,11 @@ public class Client implements LastWish, ActionListener {
 		return akImage;
 	}
 
+	/**
+	 * Sets up the main menu GUI for the Sarvivarz game.
+	 * The main menu consists of a JFrame window with buttons for play and settings,
+	 * as well as a text field for entering a name.
+	 */
 	void setupMainMenu() {
 		mainMenu = new JFrame("Sarvivarz");
 		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -486,6 +692,9 @@ public class Client implements LastWish, ActionListener {
 		mainMenu.setVisible(true);
 	}
 
+	/**
+	 * Sets up the settings menu GUI.
+	 */
 	void setupSettingsMenu() {
 		settingsMenu = new JFrame("Sarvivarz");
 		settingsMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

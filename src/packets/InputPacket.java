@@ -3,6 +3,13 @@ package packets;
 import shared.*;
 import server.Server;
 
+/**
+ * Represents an input packet that is sent to the server.
+ * This packet contains information about the input and its state.
+ * It is used to handle input on the server side.
+ *
+ * @param <Server> The type of server that will handle this input packet.
+ */
 public class InputPacket extends PacketTo<Server> {
 	private Input i;
 	// things like pressing a movement key need a state (for if the key was pressed or released)

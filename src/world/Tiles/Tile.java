@@ -12,10 +12,27 @@ public class Tile implements java.io.Serializable {
                                                                                  // "closed" => image file location,
                                                                                  // etc...
 
+    /**
+     * Returns the type of hitbox associated with this object.
+     *
+     * @return The class representing the type of hitbox, or null if there is no
+     *         hitbox.
+     */
     public Class<? extends Rectangle> getHitboxType() {
         return null;
     }
 
+    /**
+     * Constructs a new Tile object with the specified coordinates, orientation,
+     * type, and state.
+     *
+     * @param x           The x-coordinate of the tile
+     * @param y           The y-coordinate of the tile
+     * @param z           The z-coordinate of the tile
+     * @param orientation The orientation of the tile
+     * @param type        The type of the tile
+     * @param state       The state of the tile
+     */
     public Tile(int x, int y, int z, int orientation, String type, String state) {
         this.x = x;
         this.y = y;
@@ -26,8 +43,16 @@ public class Tile implements java.io.Serializable {
         this.statesMap = generateStatesMap();
     }
 
-	public boolean isEmpty() { return type.equals("grass") || type.equals("water"); }
+    public boolean isEmpty() {
+        return type.equals("grass") || type.equals("water");
+    }
 
+    /**
+     * Generates a map of states for a specific type of game world tiles.
+     *
+     * @return A HashMap containing the states as keys and their corresponding file
+     *         paths as values.
+     */
     public HashMap<String, String> generateStatesMap() {
         return this.statesMap = new HashMap<String, String>() {
             {
@@ -41,6 +66,17 @@ public class Tile implements java.io.Serializable {
     }
 
     // returns a tile based on the type string
+    /**
+     * Retrieves a Tile object based on the provided parameters.
+     *
+     * @param x           The x-coordinate of the tile
+     * @param y           The y-coordinate of the tile
+     * @param z           The z-coordinate of the tile
+     * @param orientation The orientation of the tile
+     * @param type        The type of the tile
+     * @param state       The state of the tile
+     * @return The Tile object created based on the provided parameters
+     */
     public static Tile getTile(int x, int y, int z, int orientation, String type, String state) {
         Tile tile = null;
         try {
@@ -58,6 +94,12 @@ public class Tile implements java.io.Serializable {
         return tile;
     }
 
+    /**
+     * Checks if this Tile object is equal to another object.
+     *
+     * @param obj The object to compare with.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Tile) {
@@ -69,6 +111,12 @@ public class Tile implements java.io.Serializable {
         return false;
     }
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return A string representation of the object in the format: type_state at x,
+     *         y, z
+     */
     @Override
     public String toString() {
         return type + "_" + state + " at " + x + ", " + y + ", " + z;
@@ -134,6 +182,12 @@ public class Tile implements java.io.Serializable {
         this.statesMap.put(state, imageFileLocation);
     }
 
+    /**
+     * Writes the state of the object to the ObjectOutputStream.
+     *
+     * @param out The ObjectOutputStream to write the object state to
+     * @throws IOException If an I/O error occurs while writing the object state
+     */
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
         out.writeInt(x);
         out.writeInt(y);
@@ -143,6 +197,16 @@ public class Tile implements java.io.Serializable {
         out.writeObject(state);
     }
 
+    /**
+     * Custom deserialization method for reading the object from an
+     * ObjectInputStream.
+     *
+     * @param in The ObjectInputStream used for reading the object.
+     * @throws IOException            If there is an error reading from the input
+     *                                stream.
+     * @throws ClassNotFoundException If the class of the serialized object cannot
+     *                                be found.
+     */
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
         x = in.readInt();
         y = in.readInt();

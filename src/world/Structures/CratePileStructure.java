@@ -2,6 +2,20 @@ package world.Structures;
 
 import shared.utilities.LettersToTiles;
 
+/**
+ * Represents a Crate Pile structure in the game.
+ * 
+ * The Crate Pile structure is a type of structure that consists of a 3x3 grid of tiles.
+ * Each tile can be either "N" (empty) or "C" (crate).
+ * The structure has two phases, which are randomly selected upon creation.
+ * 
+ * The structure has a chance value that determines the likelihood of it appearing in the game.
+ * 
+ * @param x The x-coordinate of the structure's position
+ * @param y The y-coordinate of the structure's position
+ * @param z The z-coordinate of the structure's position
+ * @param orientation The orientation of the structure
+ */
 public class CratePileStructure extends Structure {
     public static int chance = 1;
 

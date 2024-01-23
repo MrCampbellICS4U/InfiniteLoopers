@@ -2,6 +2,11 @@ package shared;
 
 import java.util.Random;
 
+/**
+ * A class that holds global constants used throughout the application.
+ * These constants define various properties such as tile dimensions, drawing area dimensions,
+ * world dimensions, player dimensions, server settings, game settings, and more.
+ */
 public class GlobalConstants implements java.io.Serializable {
     public int TILE_WIDTH = 100;
     public int TILE_HEIGHT = 100;

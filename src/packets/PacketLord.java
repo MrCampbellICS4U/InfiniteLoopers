@@ -24,14 +24,30 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 
 	private int id;
 
+	/**
+	 * Returns the ID of the object.
+	 *
+	 * @return The ID of the object.
+	 */
 	public int getID() {
 		return id;
 	}
 
+	/**
+	 * Sets the ID of the object.
+	 *
+	 * @param id The ID to set
+	 */
 	public void setID(int id) {
 		this.id = id;
 	}
 
+	/**
+	 * Constructs a new PacketLord object with the given socket and destination.
+	 *
+	 * @param socket The socket to communicate with
+	 * @param dest   The destination to handle exceptions
+	 */
 	public PacketLord(Socket socket, Dest dest) {
 		this.socket = socket;
 		this.dest = dest;
@@ -40,13 +56,7 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			socket.setTcpNoDelay(true);
 
 			// ** NEED TO CREATE OUT BEFORE YOU CREATE IN
-			// it appears that ObjectInputStreams are very social creatures
-			// who will throw hissy fits (block the thread) until they have their
-			// ObjectOutputStream
-			// so if both ObjectInputStreams are opened first, both the client and server
-			// will block
-			// and then neither can get around to opening an ObjectOutputStream to unblock
-			// the other
+			// it appears that ObjectInputStreams are very social creatures who will throw hissy fits (block the thread) until they have their ObjectOutputStream so if both ObjectInputStreams are opened first, both the client and server will block and then neither can get around to opening an ObjectOutputStream to unblock the other
 
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream())); // buffering might increase
@@ -75,12 +85,19 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			// this could mean that a client disconnected
 			if (e.getMessage().equals("Socket closed")) {
 				dest.handleDisconnection(id, e);
-			} else dest.handleException("Socket exception when sending a packet", e);
+			} else
+				dest.handleException("Socket exception when sending a packet", e);
 		} catch (IOException e) {
 			dest.handleException("IO exception when sending a packet", e);
 		}
 	}
 
+	/**
+	 * Closes the connection and releases any resources associated with it.
+	 * If the connection is already closed, this method has no effect.
+	 * 
+	 * @throws IOException if an I/O error occurs while closing the connection
+	 */
 	public void close() {
 		try {
 			// we need to check if it's already closed because of java's multiple ways of signalling that the socket has closed
@@ -113,7 +130,8 @@ public class PacketLord<Dest extends LastWish> extends Thread {
 			// this could mean that a client disconnected while sending a packet
 			if (e.getMessage().equals("Stream closed")) {
 				dest.handleDisconnection(id, e);
-			} else dest.handleException("IOException while reading packet", e);
+			} else
+				dest.handleException("IOException while reading packet", e);
 		} catch (ClassNotFoundException e) {
 			dest.handleException("Undefined packet type; something is very wrong with the packet system", e);
 		}

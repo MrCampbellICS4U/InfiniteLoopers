@@ -10,6 +10,11 @@ class GameKeyListener extends KeyAdapter {
 	Client c;
 	GameKeyListener(Client client) { this.c = client; }
 
+	/**
+	 * Handles key press events and sends corresponding input packets to the server.
+	*
+	* @param e The KeyEvent object representing the key press event.
+	*/
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_W -> c.send(new InputPacket(Input.UP,    InputState.DOWN));
@@ -28,6 +33,11 @@ class GameKeyListener extends KeyAdapter {
 		}
 	}
 
+	/**
+	 * Handles the key release event and sends the corresponding input packet to the server.
+	*
+	* @param e The KeyEvent object representing the key release event.
+	*/
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_W -> c.send(new InputPacket(Input.UP,    InputState.UP));

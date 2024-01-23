@@ -8,6 +8,15 @@ public class Structure {
     int width, height, depth; // dimensions of the bounding box
     int orientation; // 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
 
+    /**
+     * Constructs a Structure object with the given parameters.
+     *
+     * @param x The x-coordinate of the structure
+     * @param y The y-coordinate of the structure
+     * @param z The z-coordinate of the structure
+     * @param tiles A 3D array representing the tiles of the structure
+     * @param orientation The orientation of the structure
+     */
     public Structure(int x, int y, int z, Tile[][][] tiles, int orientation) {
         this.x = x;
         this.y = y;
@@ -20,6 +29,15 @@ public class Structure {
         this.orientation = orientation;
     }
 
+    /**
+     * Constructs a Structure object with the given parameters.
+     *
+     * @param x The x-coordinate of the structure's position
+     * @param y The y-coordinate of the structure's position
+     * @param z The z-coordinate of the structure's position
+     * @param orientation The orientation of the structure
+     * @param tiles The tiles that make up the structure
+     */
     public Structure(int x, int y, int z, int orientation, Tile[][][] tiles) {
         this.x = x;
         this.y = y;
@@ -60,6 +78,12 @@ public class Structure {
         return tiles[z][y][x];
     }
 
+    /**
+     * Rotates a 3D array of tiles by a given orientation.
+     *
+     * @param tiles The 3D array of tiles to rotate
+     * @param orientation The orientation to rotate the tiles by
+     */
     public void rotate(Tile[][][] tiles, int orientation) {
         // takes the array of tiles and rotates it clock-wise creating a new array with
         // maybe different dimensions
@@ -72,6 +96,13 @@ public class Structure {
 
     }
 
+    /**
+     * Rotates a layer of tiles by the specified orientation.
+     *
+     * @param layer The layer of tiles to rotate
+     * @param orientation The number of times to rotate the layer
+     * @return The rotated layer of tiles
+     */
     private Tile[][] rotateLayer(Tile[][] layer, int orientation) {
         for (int i = 0; i < orientation; i++) {
             layer = rotateOnce(layer);
@@ -79,6 +110,12 @@ public class Structure {
         return layer;
     }
 
+    /**
+     * Rotates a 2D array of tiles once clockwise.
+     *
+     * @param layer The 2D array of tiles to rotate
+     * @return The rotated 2D array of tiles
+     */
     private Tile[][] rotateOnce(Tile[][] layer) {
         int oldH = layer.length;
         int oldW = layer[0].length;

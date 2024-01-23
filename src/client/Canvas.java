@@ -28,6 +28,11 @@ public class Canvas extends JPanel {
 	public GlobalConstants gc;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
 
+	/**
+	 * Constructs a new Canvas object with the given Client.
+	 *
+	 * @param c The Client object associated with this Canvas.
+	 */
 	public Canvas(Client c) {
 		client = c;
 		this.gc = c.gc;
@@ -37,7 +42,9 @@ public class Canvas extends JPanel {
 		deathImage = Canvas.loadImage("res/Menus/Death.png");
 		winImage = Canvas.loadImage("res/Menus/Win.png");
 	}
+
 	public int currentKills = 0;
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -60,7 +67,7 @@ public class Canvas extends JPanel {
 		drawStats(client, g);
 		if (me.health == 0)
 			drawDeath(g, me);
-		if (me.kills > currentKills){
+		if (me.kills > currentKills) {
 			numKills++;
 			currentKills++;
 		}
@@ -78,6 +85,12 @@ public class Canvas extends JPanel {
 		return playerColor;
 	}
 
+	/**
+	 * Draws the user interface for the player.
+	 *
+	 * @param g The graphics object to draw on
+	 * @param p The player information object
+	 */
 	private void drawUI(Graphics g, PlayerInfo p) {
 		int itemHotbarSize = 80;
 		for (int i = 0; i < p.health; i++) {
@@ -96,6 +109,12 @@ public class Canvas extends JPanel {
 		// 700, itemHotbarSize, itemHotbarSize);}
 	}
 
+	/**
+	 * Repositions the mouse cursor to the specified coordinates on the screen.
+	 * 
+	 * @param mouseX The x-coordinate of the mouse cursor
+	 * @param mouseY The y-coordinate of the mouse cursor
+	 */
 	public void repositionMouse() {
 		// calculate the new position of the mouse relative to the canvas
 		int x = this.mouseX;
@@ -148,6 +167,13 @@ public class Canvas extends JPanel {
 		return images;
 	}
 
+	/**
+	 * Rotates the given image by the specified number of degrees.
+	 *
+	 * @param originalImage The original image to be rotated
+	 * @param degrees       The number of degrees to rotate the image by
+	 * @return The rotated image
+	 */
 	private BufferedImage rotateImage(BufferedImage originalImage, double degrees) {
 		int w = originalImage.getWidth();
 		int h = originalImage.getHeight();
@@ -165,6 +191,11 @@ public class Canvas extends JPanel {
 		return rotatedImage;
 	}
 
+	/**
+	 * Draws the terrain on the graphics object.
+	 *
+	 * @param g The graphics object to draw on
+	 */
 	private void drawTerrain(Graphics g) {
 
 		PlayerInfo me = client.getMe();
@@ -185,7 +216,7 @@ public class Canvas extends JPanel {
 
 				// int offsetX = me.xGlobal % gridWidth;
 				// int offsetY = me.yGlobal % gridWidth;
-				
+
 				client.setMapColour(currentTile);
 
 				int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
@@ -218,6 +249,12 @@ public class Canvas extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws the death screen for a player.
+	 *
+	 * @param g The graphics object to draw on
+	 * @param p The player information
+	 */
 	public void drawDeath(Graphics g, PlayerInfo p) {
 		Color reddish = new Color(135, 0, 0, 50);
 		g.setColor(reddish);
@@ -228,6 +265,13 @@ public class Canvas extends JPanel {
 		// g.setFont(f);
 		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
 	}
+
+	/**
+	 * Draws the win screen on the graphics object.
+	 *
+	 * @param g The graphics object to draw on
+	 * @param p The player information
+	 */
 	public void drawWin(Graphics g, PlayerInfo p) {
 		Color reddish = new Color(0, 135, 0, 50);
 		g.setColor(reddish);
@@ -238,6 +282,7 @@ public class Canvas extends JPanel {
 		// g.setFont(f);
 		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
 	}
+
 	private void drawGrid(Graphics g) { // deprecated (soon)
 		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;
@@ -252,6 +297,11 @@ public class Canvas extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws a border around the canvas using the given Graphics object.
+	 *
+	 * @param g The Graphics object to draw on
+	 */
 	private void drawBorder(Graphics g) {
 		PlayerInfo me = client.getMe();
 
@@ -274,6 +324,12 @@ public class Canvas extends JPanel {
 		g2.setStroke(new BasicStroke(1));
 	}
 
+	/**
+	 * Draws the statistics on the screen if the showStats flag is set to true.
+	 *
+	 * @param c The client object
+	 * @param g The graphics object used for drawing
+	 */
 	public void drawStats(Client c, Graphics g) {
 		if (c.showStats) {
 			Font font1 = new Font("Arial", Font.PLAIN, 40);

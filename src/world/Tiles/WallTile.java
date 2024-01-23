@@ -3,6 +3,10 @@ package world.Tiles;
 import server.WallHitbox;
 import collision.Rectangle;
 
+/**
+ * Represents a wall tile in a game.
+ * Extends the Tile class.
+ */
 public class WallTile extends Tile {
 	public Class<? extends Rectangle> getHitboxType() { return WallHitbox.class; }
 

@@ -8,6 +8,21 @@ public class LettersToTiles {
     // hashmap of letters to tiles objects, not initialized yet
     public static HashMap<String, Class> tilesMap = new HashMap<String, Class>();
 
+    /**
+     * Initializes the tiles map with the corresponding tile classes.
+     * The keys represent the tile codes, and the values represent the tile classes.
+     * The tile codes and classes are as follows:
+     * - "N": NullTile
+     * - "A": AirTile
+     * - "L": WaterTile
+     * - "S": SandTile
+     * - "G": GrassTile
+     * - "C": CrateTile
+     * - "F": FloorTile
+     * - "W": WallTile
+     * - "R": RoofTile
+     * - "B": BushTile
+     */
     static {
         tilesMap.put("N", NullTile.class);
         tilesMap.put("A", AirTile.class);
@@ -21,6 +36,15 @@ public class LettersToTiles {
         tilesMap.put("B", BushTile.class);
     }
 
+    /**
+     * Converts a 3D array of letter strings into a 3D array of Tile objects.
+     *
+     * @param letterMap The 3D array of letter strings representing the map
+     * @param x The starting x-coordinate for the tiles
+     * @param y The starting y-coordinate for the tiles
+     * @param z The starting z-coordinate for the tiles
+     * @return The 3D array of Tile objects representing the map
+     */
     public static Tile[][][] converToTiles(String[][][] letterMap, int x, int y, int z) {
         Tile[][][] tiles = new Tile[letterMap.length][letterMap[0].length][letterMap[0][0].length];
         for (int z1 = 0; z1 < letterMap.length; z1++) {

@@ -2,6 +2,15 @@ package world.Structures;
 
 import shared.utilities.LettersToTiles;
 
+/**
+ * Represents a basic house structure.
+ * Extends the Structure class.
+ * 
+ * @param x The x-coordinate of the structure.
+ * @param y The y-coordinate of the structure.
+ * @param z The z-coordinate of the structure.
+ * @param orientation The orientation of the structure.
+ */
 public class BasicHouseStructure extends Structure {
         public static int chance = 1;
 

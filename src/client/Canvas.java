@@ -18,7 +18,10 @@ import world.Tiles.*;
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 
-	private int W, H; // width and height
+	public int W; // width and height
+
+	public int H;
+	public int mouseX, mouseY;
 	BufferedImage healthImage, armorImage, gunImage, deathImage;
 	private Client client;
 	public GlobalConstants gc;
@@ -85,6 +88,28 @@ public class Canvas extends JPanel {
 		// g.setColor(new Color(50, 50, 50, 100));
 		// for (int i = 0; i < gc.MAXHOTBAR;i++){g.fillOval((975 +i*100),
 		// 700, itemHotbarSize, itemHotbarSize);}
+	}
+
+	public void repositionMouse() {
+		// calculate the new position of the mouse relative to the canvas
+		int x = this.mouseX;
+		int y = this.mouseY;
+
+		// convert the mouse position to the screen
+		Point p = new Point();
+		SwingUtilities.convertPointFromScreen(new Point(x, y), this);
+
+		// target mouse coords
+		int newMouseX = Math.max(-1, Math.min(this.W + 1, p.x));
+		int newMouseY = Math.max(28, Math.min(this.H + 1, p.y));
+
+		// Move the mouse back inside
+		try {
+			Robot robot = new Robot();
+			robot.mouseMove(newMouseX, newMouseY);
+		} catch (AWTException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	final private int gridWidth = 100;
@@ -236,7 +261,7 @@ public class Canvas extends JPanel {
 	}
 
 	public void drawStats(Client c, Graphics g) {
-		if (c.showStats){
+		if (c.showStats) {
 			Font font1 = new Font("Arial", Font.PLAIN, 40);
 			g.setFont(font1);
 			g.drawString("x: " + c.getMe().xGlobal / gc.TILE_WIDTH, 20, 50);

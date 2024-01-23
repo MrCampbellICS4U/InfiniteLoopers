@@ -1,5 +1,6 @@
 package world;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import world.Structures.*;
@@ -101,12 +102,45 @@ public class WorldGenerator {
         return true;
     }
 
-    private Class[] getStructureTypes() {
-        return new Class[] {
-        	BasicPondStructure.class,
-        	BasicHouseStructure.class,
-        	CratePileStructure.class,
-        	HovelStructure.class
+    public Structure pickStructure(int x, int y, int z, int orientation) {
+        Structure structure = null;
+        HashMap<Class, Integer> structureTypes = getStructureTypes();
+        int totalChances = 0;
+        for (int chance : structureTypes.values()) {
+            totalChances += chance;
+        }
+        int randomIndex = 0;
+
+        int randomNum = new Random().nextInt(totalChances);
+        for (Class structureType : structureTypes.keySet()) {
+            randomNum -= structureTypes.get(structureType);
+            if (randomNum <= 0) {
+                try {
+                    // get the constructor for the structure
+                    java.lang.reflect.Constructor constructor = structureType
+                            .getConstructor(int.class, int.class, int.class, int.class);
+                    // create a new instance of the structure
+                    structure = (Structure) constructor.newInstance(x, y, z, orientation);
+                } catch (Exception e) {
+                    System.out.println("Error generating structure");
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
+        return structure;
+    }
+
+    private HashMap<Class, Integer> getStructureTypes() {
+        return new HashMap<Class, Integer>() {
+            {
+                put(BasicHouseStructure.class, BasicHouseStructure.chance);
+                put(BasicPondStructure.class, BasicPondStructure.chance);
+                put(CratePile.class, CratePile.chance);
+                put(HovelStructure.class, HovelStructure.chance);
+            }
+>>>>>>> main:src/game/world/WorldGenerator.java
         };
     }
 
@@ -115,7 +149,6 @@ public class WorldGenerator {
         Random rand = new Random(this.seed);
 
         Tile[][][] newMapTiles = makeNullTileArray(width, height, depth);
-        Class[] structureTypes = getStructureTypes();
 
         // generate the map
         for (int z = 0; z < depth; z++) { // for each layer
@@ -125,10 +158,9 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(1000) < 50 && z == 0) { // 5% chance of generating a structure
+                    if (rand.nextInt(1000) < 35 && z == 0) { // 5% chance of generating a structure
                         // generate a random structure
-                        int structureTypeIndex = rand.nextInt(structureTypes.length);
-                        Class structureType = structureTypes[structureTypeIndex];
+                        Class structureType = pickStructure(x, y, z, rand.nextInt(4)).getClass();
                         try {
                             // get the constructor for the structure
                             java.lang.reflect.Constructor constructor = structureType

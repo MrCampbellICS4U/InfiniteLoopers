@@ -73,31 +73,31 @@ public class Structure {
     }
 
     private Tile[][] rotateLayer(Tile[][] layer, int orientation) {
-		for (int i = 0; i < orientation; i++) {
-			layer = rotateOnce(layer);
-		}
-		return layer;
+        for (int i = 0; i < orientation; i++) {
+            layer = rotateOnce(layer);
+        }
+        return layer;
     }
 
-	private Tile[][] rotateOnce(Tile[][] layer) {
-		int oldH = layer.length;
-		int oldW = layer[0].length;
+    private Tile[][] rotateOnce(Tile[][] layer) {
+        int oldH = layer.length;
+        int oldW = layer[0].length;
 
-		int newW = oldH;
-		int newH = oldW;
-		Tile[][] rotated = new Tile[newH][newW];
+        int newW = oldH;
+        int newH = oldW;
+        Tile[][] rotated = new Tile[newH][newW];
 
-		for (int x = 0; x < oldW; x++) {
-			for (int y = 0; y < oldH; y++) {
-				Tile t = layer[y][x];
-				int newY = x, newX = oldH-y-1;
-				rotated[x][oldH-y-1] = t;
-				t.setY(getY() + newY);
-				t.setX(getX() + newX);
-				t.setOrientation((t.getOrientation() + 1) % 4);
-			}
-		}
+        for (int x = 0; x < oldW; x++) {
+            for (int y = 0; y < oldH; y++) {
+                Tile t = layer[y][x];
+                int newY = x, newX = oldH - y - 1;
+                rotated[x][oldH - y - 1] = t;
+                t.setY(getY() + newY);
+                t.setX(getX() + newX);
+                t.setOrientation((t.getOrientation() + 1) % 4);
+            }
+        }
 
-		return rotated;
-	}
+        return rotated;
+    }
 }

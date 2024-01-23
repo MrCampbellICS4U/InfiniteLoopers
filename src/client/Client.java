@@ -297,14 +297,16 @@ public class Client implements LastWish, ActionListener {
 	public int getID() {
 		return id;
 	}
+
 	public boolean drawName = true;
 
-	public boolean toggleName() {		
+	public boolean toggleName() {
 		return drawName = !drawName;
 	}
 
 	public boolean showStats = false;
-	public void toggleStats(){
+
+	public void toggleStats() {
 		showStats = !showStats;
 	}
 
@@ -352,6 +354,9 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	void handleMouseMovement(int mouseX, int mouseY) {
+		// don't let the mouse go outside the window
+		mouseX = Math.max(0, Math.min(mouseX, window.getWidth()));
+		mouseY = Math.max(0, Math.min(mouseY, window.getHeight()));
 		int relMouseX = mouseX - window.getWidth() / 2;
 		int relMouseY = mouseY - window.getHeight() / 2;
 		double angle = Math.atan2(relMouseY, relMouseX);

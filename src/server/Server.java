@@ -25,7 +25,6 @@ public class Server implements LastWish, ActionListener {
 	JButton startServer; 
 	public static void main(String[] args) {
 		new Server();
-		
 	}
 
 	private final int port = 2000;
@@ -62,7 +61,6 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public void startServer(){
-
 		this.gc = new GlobalConstants();
 
 		Timer tickTimer = new Timer(1000 / gc.TPS, this);
@@ -72,10 +70,10 @@ public class Server implements LastWish, ActionListener {
 		Timer secTimer = new Timer(1000, this);
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
-		
-		seed = gc.SEED;
-		worldHeight = gc.WORLD_TILE_HEIGHT;
-		worldWidth = gc.WORLD_TILE_WIDTH;
+
+		gc.SEED = seed;
+		gc.WORLD_TILE_HEIGHT = worldHeight;
+		gc.WORLD_TILE_WIDTH = worldWidth;
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
@@ -123,11 +121,11 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		seed = Integer.parseInt(seedField.getText());
-		worldHeight = Integer.parseInt(hTextField.getText());
-		worldWidth = Integer.parseInt(wTextField.getText());
 		if (e.getActionCommand().equals("start")){
-			startServer();
+			seed = Integer.parseInt(seedField.getText());
+			worldHeight = Integer.parseInt(hTextField.getText());
+			worldWidth = Integer.parseInt(wTextField.getText());
+			new Thread(() -> startServer()).start();
 		}
 		if (e.getActionCommand().equals("tick"))
 			tick();

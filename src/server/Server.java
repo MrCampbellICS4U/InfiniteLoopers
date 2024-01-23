@@ -126,9 +126,16 @@ public class Server implements LastWish, ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("start")) {
-			seed = Integer.parseInt(seedField.getText());
-			worldHeight = Integer.parseInt(hTextField.getText());
-			worldWidth = Integer.parseInt(wTextField.getText());
+			try {
+				seed = Integer.parseInt(seedField.getText());
+				worldHeight = Integer.parseInt(hTextField.getText());
+				worldWidth = Integer.parseInt(wTextField.getText());
+			} catch (Exception error) {
+				seed = 2345;
+				worldHeight = 35;
+				worldWidth = 35;
+			}
+
 			new Thread(() -> startServer()).start();
 		}
 		if (e.getActionCommand().equals("tick"))

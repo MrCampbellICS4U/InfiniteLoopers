@@ -22,7 +22,8 @@ public class Server implements LastWish, ActionListener {
 	JFrame serverUI;
 	JPanel serverDrawing;
 	JTextField seedField, wTextField, hTextField;
-	JButton startServer; 
+	JButton startServer;
+
 	public static void main(String[] args) {
 		new Server();
 	}
@@ -31,7 +32,7 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 	public GlobalConstants gc;
-	public int seed, worldHeight, worldWidth; 
+	public int seed, worldHeight, worldWidth;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
@@ -60,7 +61,7 @@ public class Server implements LastWish, ActionListener {
 
 	}
 
-	public void startServer(){
+	public void startServer() {
 		this.gc = new GlobalConstants();
 
 		Timer tickTimer = new Timer(1000 / gc.TPS, this);
@@ -74,11 +75,14 @@ public class Server implements LastWish, ActionListener {
 		gc.SEED = seed;
 		gc.WORLD_TILE_HEIGHT = worldHeight;
 		gc.WORLD_TILE_WIDTH = worldWidth;
+
+		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
+		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
 		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
-				gc.RANDOM_SEED ? (int)(Math.random()*100000) : gc.SEED, gc.BOG_RADIUS)
+				gc.RANDOM_SEED ? (int) (Math.random() * 100000) : gc.SEED, gc.BOG_RADIUS)
 				.generateWorld();
 		addHitboxesToMap();
 
@@ -121,10 +125,17 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("start")){
-			seed = Integer.parseInt(seedField.getText());
-			worldHeight = Integer.parseInt(hTextField.getText());
-			worldWidth = Integer.parseInt(wTextField.getText());
+		if (e.getActionCommand().equals("start")) {
+			try {
+				seed = Integer.parseInt(seedField.getText());
+				worldHeight = Integer.parseInt(hTextField.getText());
+				worldWidth = Integer.parseInt(wTextField.getText());
+			} catch (Exception error) {
+				seed = 2345;
+				worldHeight = 35;
+				worldWidth = 35;
+			}
+
 			new Thread(() -> startServer()).start();
 		}
 		if (e.getActionCommand().equals("tick"))

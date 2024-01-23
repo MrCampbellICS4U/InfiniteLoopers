@@ -29,7 +29,7 @@ public class Client implements LastWish, ActionListener {
 
 	DrawingPanel main;
 	DrawingPanel2 settingsPanel;
-	static MapDrawing map;
+	public static MapDrawing map;
 	BufferedImage menuPNG, settingsPNG, akImage, bImage;
 	JButton play, settings, back, resetButton, showControls;
 	RoundJTextField ipAddress, portNum, enterName;
@@ -87,7 +87,6 @@ public class Client implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
-		me.kills = 5;
 		// handleException("Could not connect to server", e);
 	}
 
@@ -98,7 +97,7 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && (me.health == 0 || me.kills >=5))
+		if (me != null && (me.health == 0))
 			return; // don't send packets when you're dead (and the socket is closed)
 
 		pl.send(p);
@@ -243,7 +242,7 @@ public class Client implements LastWish, ActionListener {
 			canvas.add(resetButton);
 			return;
 		}
-		if (me.kills >= 5){
+		if (me.kills >= 5) {
 			ready = false; // don't send any packets
 			tickTimer.stop();
 			secTimer.stop();
@@ -264,7 +263,11 @@ public class Client implements LastWish, ActionListener {
 	private final Color WATER_COLOUR = new Color(43, 149, 255);
 	private final Color BUSH_COLOUR = Color.GREEN.darker();
 	private Color[][] mapColours;
-	public Color[][] getMapColours() { return mapColours; }
+
+	public Color[][] getMapColours() {
+		return mapColours;
+	}
+
 	public void setMapColour(Tile t) {
 		int x = t.getX();
 		int y = t.getY();
@@ -284,6 +287,7 @@ public class Client implements LastWish, ActionListener {
 		this.W = gc.DRAWING_AREA_WIDTH;
 		this.H = gc.DRAWING_AREA_HEIGHT;
 		this.canvas.gc = gc;
+		this.map.gc = gc;
 		mapColours = new Color[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
 		for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {
 			for (int y = 0; y < gc.WORLD_TILE_HEIGHT; y++) {

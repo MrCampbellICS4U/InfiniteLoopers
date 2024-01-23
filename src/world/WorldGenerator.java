@@ -16,14 +16,15 @@ public class WorldGenerator {
     private int width, height, depth = 3; // depth is the number of layers in the map, this should always be 3 (ground,
                                           // walls, and ceiling)
     private long seed;
-	private int bogRadius;
+    private int bogRadius, structureDensity;
 
-    public WorldGenerator(int width, int height, long seed, int bogRadius) {
+    public WorldGenerator(int width, int height, long seed, int bogRadius, int structureDensity) {
         this.width = width;
         this.height = height;
         this.seed = seed;
         mapTiles = new Tile[width][height][depth];
-		this.bogRadius = bogRadius;
+        this.bogRadius = bogRadius;
+        this.structureDensity = structureDensity;
     }
 
     public Tile[][][] getMap() {
@@ -162,7 +163,7 @@ public class WorldGenerator {
                     if (newMapTiles[x][y][z] != null && !newMapTiles[x][y][z].getType().equals("null")) {
                         continue;
                     }
-                    if (rand.nextInt(100) < 5 && z == 0) { // 5% chance of generating a structure
+                    if (rand.nextInt(100) < this.structureDensity && z == 0) { // 5% chance of generating a structure
                         // generate a random structure
                         Class structureType = pickStructure(x, y, z, rand.nextInt(4)).getClass();
                         try {
@@ -209,18 +210,18 @@ public class WorldGenerator {
             }
         }
 
-		int bogCentreX = rand.nextInt(width);
-		int bogCentreY = rand.nextInt(height);
+        int bogCentreX = rand.nextInt(width);
+        int bogCentreY = rand.nextInt(height);
         // replace nulls with grass if on layer 0 else air
         for (int z = 0; z < depth; z++) { // for each layer
             for (int y = 0; y < height; y++) { // for each row
                 for (int x = 0; x < width; x++) { // for each column
                     if (newMapTiles[x][y][z] == null || newMapTiles[x][y][z].getType().equals("null")) {
                         if (z == 0) {
-							double bogDist = Math.min(Math.hypot(x-bogCentreX, y-bogCentreY), bogRadius);
-							double bogPercent = 1-bogDist/bogRadius;
-							bogPercent = 1 - Math.pow(1 - bogPercent, 3); // https://easings.net/#easeOutCubic
-							String type = rand.nextInt(100) < bogPercent*100 ? "water" : "grass";
+                            double bogDist = Math.min(Math.hypot(x - bogCentreX, y - bogCentreY), bogRadius);
+                            double bogPercent = 1 - bogDist / bogRadius;
+                            bogPercent = 1 - Math.pow(1 - bogPercent, 3); // https://easings.net/#easeOutCubic
+                            String type = rand.nextInt(100) < bogPercent * 100 ? "water" : "grass";
                             newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, type, "default");
                         } else {
                             newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "air", "default");

@@ -4,8 +4,10 @@ import java.util.Random;
 
 /**
  * A class that holds global constants used throughout the application.
- * These constants define various properties such as tile dimensions, drawing area dimensions,
- * world dimensions, player dimensions, server settings, game settings, and more.
+ * These constants define various properties such as tile dimensions, drawing
+ * area dimensions,
+ * world dimensions, player dimensions, server settings, game settings, and
+ * more.
  */
 public class GlobalConstants implements java.io.Serializable {
     public int TILE_WIDTH = 100;
@@ -30,6 +32,8 @@ public class GlobalConstants implements java.io.Serializable {
     public int PLAYER_WIDTH = 50;
     public int PLAYER_HEIGHT = 50;
 
+    public int STRUCTURE_DENSITY = 5; // from 0 to 100 percent
+
     public int TPS = 120; // ticks per second
     public int FPS = 60; // frames per second
 
@@ -49,11 +53,11 @@ public class GlobalConstants implements java.io.Serializable {
     public int BULLET_DESPAWN_TIME = 800; // ms
     public int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
                                   // might start bugging
-    public int SHOT_DELAY = 400; // ms
+    public int SHOT_DELAY = 200; // ms
 
     // can clients press P to kill themselves?
     public boolean CAN_SUICIDE = true;
 
-	public int BOG_SIZE = 5; // use this to control the size of the bog
-	public int BOG_RADIUS = (WORLD_TILE_WIDTH + WORLD_TILE_HEIGHT) / 2 / BOG_SIZE;
+    public int BOG_SIZE = 5; // use this to control the size of the bog
+    public int BOG_RADIUS = (WORLD_TILE_WIDTH + WORLD_TILE_HEIGHT) / 2 / BOG_SIZE;
 }

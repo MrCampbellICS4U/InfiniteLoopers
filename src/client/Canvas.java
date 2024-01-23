@@ -29,7 +29,7 @@ public class Canvas extends JPanel {
 	private HashMap<String, BufferedImage> TileImages = loadImages();
 
 	/**
-	 * Constructs a new Canvas object with the given Client.
+	 * Canvas constructor
 	 *
 	 * @param c The Client object associated with this Canvas.
 	 */

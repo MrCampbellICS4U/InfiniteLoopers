@@ -21,7 +21,9 @@ import entities.Entity;
 public class Server implements LastWish, ActionListener {
 	JFrame serverUI;
 	JPanel serverDrawing;
-	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, killsText, regenTime;
+	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, killsText, regenTime,
+			structureDensityText, tpsText, serverPortText, bogSizeText, maxArmourText, bulletDespawnTimeText,
+			cansuicideText;
 	JButton startServer;
 
 	public static void main(String[] args) {
@@ -32,7 +34,9 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 	public GlobalConstants gc = new GlobalConstants();
-	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen, killsWin;
+	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen, killsWin, structureDensity, maxTPS,
+			serverPort, bogSize, maxArmour, bulletDespawnTime;
+	public boolean cansuicide;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
@@ -52,6 +56,13 @@ public class Server implements LastWish, ActionListener {
 		bulletSpeed = new JTextField("Bullet Speed", 25);
 		regenTime = new JTextField("Regeneration Time (Seconds)", 25);
 		killsText = new JTextField("Kills in a row", 25);
+		structureDensityText = new JTextField("Structure Density", 25);
+		tpsText = new JTextField("Ticks Per Second", 25);
+		serverPortText = new JTextField("Server Port", 25);
+		bogSizeText = new JTextField("Bog Size", 25);
+		maxArmourText = new JTextField("Max Armour", 25);
+		bulletDespawnTimeText = new JTextField("Bullet Despawn Time", 25);
+		cansuicideText = new JTextField("Players can commit suicide (t/f or true/false)", 25);
 
 		startServer = new JButton("Start");
 		startServer.setActionCommand("start");
@@ -64,6 +75,13 @@ public class Server implements LastWish, ActionListener {
 		serverDrawing.add(bulletSpeed);
 		serverDrawing.add(regenTime);
 		serverDrawing.add(killsText);
+		serverDrawing.add(structureDensityText);
+		serverDrawing.add(tpsText);
+		serverDrawing.add(serverPortText);
+		serverDrawing.add(bogSizeText);
+		serverDrawing.add(maxArmourText);
+		serverDrawing.add(bulletDespawnTimeText);
+		serverDrawing.add(cansuicideText);
 
 		serverDrawing.add(startServer);
 		serverUI.add(serverDrawing);
@@ -95,6 +113,13 @@ public class Server implements LastWish, ActionListener {
 		gc.SHOT_DELAY = bulDelay;
 		gc.BULLET_SPEED = bulSpeed;
 		gc.KILLS_TO_WIN = killsWin;
+		gc.STRUCTURE_DENSITY = structureDensity;
+		gc.TPS = maxTPS;
+		gc.SERVER_PORT = serverPort;
+		gc.BOG_SIZE = bogSize;
+		gc.MAX_ARMOR = maxArmour;
+		gc.BULLET_DESPAWN_TIME = bulletDespawnTime;
+		gc.CAN_SUICIDE = cansuicide;
 
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
@@ -104,7 +129,7 @@ public class Server implements LastWish, ActionListener {
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
 		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
-				gc.RANDOM_SEED ? (int) (Math.random() * 100000) : gc.SEED, gc.BOG_RADIUS)
+				gc.RANDOM_SEED ? (int) (Math.random() * 100000) : gc.SEED, gc.BOG_RADIUS, gc.STRUCTURE_DENSITY)
 				.generateWorld();
 		addHitboxesToMap();
 
@@ -209,6 +234,41 @@ public class Server implements LastWish, ActionListener {
 				killsWin = Integer.parseInt(killsText.getText());
 			} catch (Exception a) {
 				killsWin = gc.KILLS_TO_WIN;
+			}
+			try {
+				structureDensity = Integer.parseInt(structureDensityText.getText());
+			} catch (Exception a) {
+				structureDensity = gc.STRUCTURE_DENSITY;
+			}
+			try {
+				maxTPS = Integer.parseInt(tpsText.getText());
+			} catch (Exception a) {
+				maxTPS = gc.TPS;
+			}
+			try {
+				serverPort = Integer.parseInt(serverPortText.getText());
+			} catch (Exception a) {
+				serverPort = gc.SERVER_PORT;
+			}
+			try {
+				bogSize = Integer.parseInt(bogSizeText.getText());
+			} catch (Exception a) {
+				bogSize = gc.BOG_SIZE;
+			}
+			try {
+				maxArmour = Integer.parseInt(maxArmourText.getText());
+			} catch (Exception a) {
+				maxArmour = gc.MAX_ARMOR;
+			}
+			try {
+				bulletDespawnTime = Integer.parseInt(bulletDespawnTimeText.getText());
+			} catch (Exception a) {
+				bulletDespawnTime = gc.BULLET_DESPAWN_TIME;
+			}
+			try {
+				cansuicide = Boolean.parseBoolean(cansuicideText.getText());
+			} catch (Exception a) {
+				cansuicide = gc.CAN_SUICIDE;
 			}
 
 			new Thread(() -> startServer()).start();

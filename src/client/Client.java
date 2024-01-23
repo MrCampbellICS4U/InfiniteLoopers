@@ -550,7 +550,7 @@ public class Client implements LastWish, ActionListener {
 	/**
 	 * Sets the visible tiles based on the given terrain.
 	 *
-	 * @param terrain The 3D array of tiles representing the terrain.
+	 * @param terrain The 3D array of tiles that are the terrain.
 	 * @return The list of visible tiles.
 	 */
 	public ArrayList<Tile> setVisibleTiles(Tile[][][] terrain) {
@@ -560,7 +560,7 @@ public class Client implements LastWish, ActionListener {
 	/**
 	 * Sets the next visible tiles based on the given terrain.
 	 *
-	 * @param terrain The list of tiles representing the terrain.
+	 * @param terrain The 3D array of tiles that are the terrain.
 	 * @return The updated list of next visible tiles.
 	 */
 	public ArrayList<Tile> setNextVisibleTiles(ArrayList<Tile> terrain) {
@@ -570,7 +570,7 @@ public class Client implements LastWish, ActionListener {
 	/**
 	 * Sets the next visible tiles based on the given terrain.
 	 *
-	 * @param terrain The 3D array representing the terrain.
+	 * @param terrain The 3D array of tiles that are the terrain.
 	 * @return The list of next visible tiles.
 	 */
 	public ArrayList<Tile> setNextVisibleTiles(Tile[][][] terrain) {

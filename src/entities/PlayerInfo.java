@@ -12,9 +12,9 @@ public class PlayerInfo extends EntityInfo {
 	public int id;
 	public String hotBar[] = new String[3];
 	public String name;
-
+	public int kills;
 	public PlayerInfo(int x, int y, int id, int radius, double angle, int health, int armor, String[] hotBar,
-			String name) {
+			String name, int kills) {
 		super(x, y);
 		this.radius = radius;
 		this.angle = angle;
@@ -23,6 +23,7 @@ public class PlayerInfo extends EntityInfo {
 		this.hotBar = hotBar;
 		this.id = id;
 		this.name = name;
+		this.kills = kills;
 	}
 
 	public void customDraw(Graphics g, Client c, int centreRelX, int centreRelY) {

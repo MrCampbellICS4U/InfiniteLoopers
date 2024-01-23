@@ -11,8 +11,6 @@ import javax.imageio.*;
 import java.awt.image.*;
 
 import shared.*;
-import packets.*;
-import server.Server;
 import entities.PlayerInfo;
 import world.Tiles.Tile;
 

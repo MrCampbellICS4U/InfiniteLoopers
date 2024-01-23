@@ -92,11 +92,11 @@ class SClient extends Circle implements Entity {
 
 	public PlayerInfo getInfo() {
 		return new PlayerInfo((int) getX(), (int) getY(), id, (int) getRadius(), angle, health, armor, new String[0],
-				name);
+				name, kills);
 	}
 
 	private int health;
-
+	private int kills = 0;
 	public String hotBar[];
 	private int armor = 0;
 
@@ -232,6 +232,7 @@ class SClient extends Circle implements Entity {
 		if (armor < gc.MAX_ARMOR) {
 			armor++;
 		}
+		kills++;
 	}
 
 	private final double targetSpeed = 2;

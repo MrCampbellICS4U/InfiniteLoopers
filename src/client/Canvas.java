@@ -19,10 +19,10 @@ public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
 
 	public int W; // width and height
-
 	public int H;
 	public int mouseX, mouseY;
-	BufferedImage healthImage, armorImage, gunImage, deathImage;
+	BufferedImage healthImage, armorImage, gunImage, deathImage, winImage;
+
 	private Client client;
 	public GlobalConstants gc;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
@@ -34,7 +34,7 @@ public class Canvas extends JPanel {
 		armorImage = Canvas.loadImage("res/game/UI/armor.png");
 		gunImage = Canvas.loadImage("res/game/Guns/ak.png");
 		deathImage = Canvas.loadImage("res/Menus/Death.png");
-
+		winImage = Canvas.loadImage("res/Menus/Win.png");
 	}
 
 	public void paintComponent(Graphics g) {
@@ -60,6 +60,8 @@ public class Canvas extends JPanel {
 
 		if (me.health == 0)
 			drawDeath(g, me);
+		if (me.kills >= 5)
+			drawWin(g, me);
 	}
 
 	Random rand = new Random();
@@ -221,9 +223,17 @@ public class Canvas extends JPanel {
 		// Font f = new Font("Arial", Font.PLAIN, 70);
 		// g.setFont(f);
 		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
-
 	}
-
+	public void drawWin(Graphics g, PlayerInfo p) {
+		Color reddish = new Color(0, 135, 0, 50);
+		g.setColor(reddish);
+		g.fillRect(0, 0, W, H);
+		g.drawImage(winImage, 0, 0, gc.DRAWING_AREA_WIDTH, gc.DRAWING_AREA_HEIGHT, null);
+		g.setColor(Color.BLACK);
+		// Font f = new Font("Arial", Font.PLAIN, 70);
+		// g.setFont(f);
+		// g.drawString("Thanks for playing! Click enter to exit.", 50, 700);
+	}
 	private void drawGrid(Graphics g) { // deprecated (soon)
 		PlayerInfo me = client.getMe();
 		int xCentre = W / 2 - me.xGlobal % gridWidth;

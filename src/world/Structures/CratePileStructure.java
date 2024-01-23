@@ -18,9 +18,9 @@ public class CratePileStructure extends Structure {
     public CratePileStructure(int x, int y, int z, int orientation) {
         super(x, y, z, orientation, LettersToTiles.converToTiles(new String[][][] {
                 {
-                        { "G", "G", "G" },
-                        { "G", "G", "G" },
-                        { "G", "G", "G" }
+                        { "N", "N", "N" },
+                        { "N", "N", "N" },
+                        { "N", "N", "N" }
                 },
                 phases[(int)(Math.random() * 2)],
                 {

@@ -160,11 +160,9 @@ public class WorldGenerator {
                         // 2% chance of generating a crate
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "crate", "default");
                     } else if (rand.nextInt(100) < 2 && z == 2 && (newMapTiles[x][y][0].getType().equals("null")
-                            || newMapTiles[x][y][0].getType().equals("grass")) && newMapTiles[x][y][1].getType().equals("null")) {
+                            || newMapTiles[x][y][0].isEmpty()) && newMapTiles[x][y][1].getType().equals("null")) {
                         // 2% chance of generating a bush
                         newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "bush", "default");
-                    } else if (z == 0) { // 85% chance of generating a tile
-                        newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
                     }
                 }
             }
@@ -183,13 +181,20 @@ public class WorldGenerator {
             }
         }
 
+		int bogRadius = 10;
+		int bogCentreX = rand.nextInt(width);
+		int bogCentreY = rand.nextInt(height);
         // replace nulls with grass if on layer 0 else air
         for (int z = 0; z < depth; z++) { // for each layer
             for (int y = 0; y < height; y++) { // for each row
                 for (int x = 0; x < width; x++) { // for each column
                     if (newMapTiles[x][y][z] == null || newMapTiles[x][y][z].getType().equals("null")) {
                         if (z == 0) {
-                            newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "grass", "default");
+							double bogDist = Math.min(Math.hypot(x-bogCentreX, y-bogCentreY), bogRadius);
+							double bogPercent = 1-bogDist/bogRadius;
+							bogPercent = 1 - Math.pow(1 - bogPercent, 3); // https://easings.net/#easeOutCubic
+							String type = rand.nextInt(100) < bogPercent*100 ? "water" : "grass";
+                            newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, type, "default");
                         } else {
                             newMapTiles[x][y][z] = Tile.getTile(x, y, z, 0, "air", "default");
                         }
@@ -197,32 +202,6 @@ public class WorldGenerator {
                 }
             }
         }
-
-        /*
-         * for (int y = 0; y < height; y++) { // for each row
-         * for (int x = 0; x < width; x++) { // for each column
-         * if (newMapTiles[x][y][0] == null)
-         * continue;
-         * System.out.print(newMapTiles[x][y][1].getType() + " ");
-         * }
-         * System.out.println();
-         * }
-         */
-
-        int numSandTiles = 0;
-
-        for (int z = 0; z < depth; z++) { // for each layer
-            for (int y = 0; y < height; y++) { // for each row
-                for (int x = 0; x < width; x++) { // for each column
-                    if (newMapTiles[x][y][z].getType().equals("sand")) {
-                        numSandTiles++;
-                    }
-                }
-            }
-        }
-
-        // System.out.println("Number of null tiles: " + numSandTiles);
-        // System.out.println("Number of null tiles after: " + numSandTiles2);
 
         return newMapTiles;
     }

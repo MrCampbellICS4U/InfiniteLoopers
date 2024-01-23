@@ -26,6 +26,8 @@ public class Tile implements java.io.Serializable {
         this.statesMap = generateStatesMap();
     }
 
+	public boolean isEmpty() { return type.equals("grass") || type.equals("water"); }
+
     public HashMap<String, String> generateStatesMap() {
         return this.statesMap = new HashMap<String, String>() {
             {

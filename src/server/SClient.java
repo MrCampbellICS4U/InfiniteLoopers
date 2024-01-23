@@ -199,20 +199,16 @@ class SClient extends Circle implements Entity {
 					gc.BULLET_SPEED, id, chunker, server, this.gc);
 			nextShot = time + gc.SHOT_DELAY;
 		}
-		;
 	}
 
-	// todo implement
 	private void reload() {
 		System.out.printf("Client %d attempts to reload\n", id);
 	}
 
-	// todo implement
 	private void useItem() {
 		System.out.printf("Client %d tries to use an item\n", id);
 	}
 
-	// todo implement
 	private void dropItem() {
 		System.out.printf("Client %d drops something on the ground\n", id);
 	}
@@ -223,8 +219,13 @@ class SClient extends Circle implements Entity {
 		else
 			health--;
 
-		if (health == 0)
-			server.getClient(shooterID).rewardForKill();
+		if (health == 0) {
+			// make sure the client still exists
+			// they could have disconnected or died
+			if (server.existsClient(shooterID)) {
+				server.getClient(shooterID).rewardForKill();
+			}
+		}
 	}
 
 	public void rewardForKill() {

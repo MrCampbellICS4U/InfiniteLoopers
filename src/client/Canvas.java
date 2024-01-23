@@ -58,7 +58,6 @@ public class Canvas extends JPanel {
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
 		drawStats(client, g);
-		System.out.println(numKills);
 		if (me.health == 0)
 			drawDeath(g, me);
 		if (me.kills > currentKills){

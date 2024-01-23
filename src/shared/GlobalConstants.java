@@ -40,6 +40,7 @@ public class GlobalConstants implements java.io.Serializable {
 
     public int REGEN_TIME = 7000; // ms
 
+    public int KILLS_TO_WIN = 5;
     public int BULLET_DESPAWN_TIME = 800; // ms
     public int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
                                   // might start bugging

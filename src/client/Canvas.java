@@ -38,7 +38,7 @@ public class Canvas extends JPanel {
 		winImage = Canvas.loadImage("res/Menus/Win.png");
 	}
 	public int currentKills = 0;
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g, Client c) {
 		super.paintComponent(g);
 
 		PlayerInfo me = client.getMe();
@@ -58,14 +58,14 @@ public class Canvas extends JPanel {
 		drawBorder(g); // draw border over everything else
 		drawUI(g, me);
 		drawStats(client, g);
-
+		System.out.println(numKills);
 		if (me.health == 0)
 			drawDeath(g, me);
 		if (me.kills > currentKills){
 			numKills++;
 			currentKills++;
 		}
-		if (numKills >= 5)
+		if (numKills >= c.gc.KILLS_TO_WIN)
 			drawWin(g, me);
 	}
 

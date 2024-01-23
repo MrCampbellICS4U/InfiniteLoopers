@@ -21,7 +21,7 @@ import entities.Entity;
 public class Server implements LastWish, ActionListener {
 	JFrame serverUI;
 	JPanel serverDrawing;
-	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, regenTime;
+	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, killsText, regenTime;
 	JButton startServer;
 
 	public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class Server implements LastWish, ActionListener {
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 	public GlobalConstants gc;
-	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen;
+	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen, killsWin;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
@@ -48,7 +48,7 @@ public class Server implements LastWish, ActionListener {
 		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)", 25);
 		bulletSpeed = new JTextField("Bullet Speed", 25);
 		regenTime = new JTextField("Regeneration Time (Seconds)", 25);
-
+		killsText = new JTextField("Kills in a row", 25);
 
 		startServer = new JButton("Start");
 		startServer.setActionCommand("start");
@@ -60,6 +60,7 @@ public class Server implements LastWish, ActionListener {
 		serverDrawing.add(bulletSpamText);
 		serverDrawing.add(bulletSpeed);
 		serverDrawing.add(regenTime);
+		serverDrawing.add(killsText);
 
 		serverDrawing.add(startServer);
 		serverUI.add(serverDrawing);
@@ -89,7 +90,8 @@ public class Server implements LastWish, ActionListener {
 		gc.MAX_HEALTH = health;
 		gc.SHOT_DELAY = bulDelay;
 		gc.BULLET_SPEED = bulSpeed;
-
+		gc.KILLS_TO_WIN = killsWin;
+		
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
@@ -175,6 +177,10 @@ public class Server implements LastWish, ActionListener {
 				regen = Integer.parseInt(regenTime.getText());
 			} catch(Exception a){
 				regen = 7;
+			}try {
+				killsWin = Integer.parseInt(killsText.getText());
+			} catch(Exception a){
+				killsWin = 5;
 			}
 
 			new Thread(() -> startServer()).start();

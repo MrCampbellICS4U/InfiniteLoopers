@@ -286,7 +286,7 @@ public class Client implements LastWish, ActionListener {
 		this.gc = gc;
 		this.W = gc.DRAWING_AREA_WIDTH;
 		this.H = gc.DRAWING_AREA_HEIGHT;
-		this.canvas.gc = gc;
+		this.canvas.gc = gc;		
 		this.map.gc = gc;
 		mapColours = new Color[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
 		for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {

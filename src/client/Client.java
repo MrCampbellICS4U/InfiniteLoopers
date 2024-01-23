@@ -196,8 +196,8 @@ public class Client implements LastWish, ActionListener {
 			String ipInput = ipAddress.getText();
 			if (actionCom.equals("controls")) {
 				JOptionPane.showInternalMessageDialog(null,
-						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our !",
-						"Controls", JOptionPane.INFORMATION_MESSAGE);
+						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            If you get 5 kills in a row you win the game. Enjoy Our Game!",
+						"About The Game", JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			try {
@@ -385,6 +385,7 @@ public class Client implements LastWish, ActionListener {
 		mapGraphics.fillRect(x, y, 1, 1);
 	}
 
+	boolean receivedConstants = false;
 	/**
 	 * Sets the global constants and initializes the necessary variables and
 	 * objects.
@@ -397,9 +398,14 @@ public class Client implements LastWish, ActionListener {
 		this.H = gc.DRAWING_AREA_HEIGHT;
 		this.canvas.gc = gc;
 		this.map.gc = gc;
-		exploredMap = new int[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
-		mapImage = new BufferedImage(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-		mapGraphics = mapImage.getGraphics();
+
+		// don't reset the map if we already have one
+		if (!receivedConstants) {
+			exploredMap = new int[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
+			mapImage = new BufferedImage(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+			mapGraphics = mapImage.getGraphics();
+		}
+		receivedConstants = true;
 	}
 
 	// gets called once a second

@@ -2,7 +2,7 @@ package shared;
 
 import java.util.ArrayList;
 
-import game.world.Tiles.Tile;
+import world.Tiles.Tile;
 
 public class ConvertToArrayList {
     public static ArrayList<Tile> convert(Tile[] array) {

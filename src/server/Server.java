@@ -10,8 +10,8 @@ import java.net.ServerSocket;
 import shared.*;
 import packets.*;
 import client.Client;
-import game.world.WorldGenerator;
-import game.world.Tiles.Tile;
+import world.WorldGenerator;
+import world.Tiles.Tile;
 import collision.*;
 import entities.Entity;
 
@@ -43,7 +43,7 @@ public class Server implements LastWish, ActionListener {
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
 		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
-				gc.SEED)
+				gc.RANDOM_SEED ? (int)(Math.random()*100000) : gc.SEED)
 				.generateWorld();
 		addHitboxesToMap();
 

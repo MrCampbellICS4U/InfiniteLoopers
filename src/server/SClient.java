@@ -3,8 +3,8 @@ package server;
 import java.net.Socket;
 import java.util.*;
 
-import game.world.Tiles.Tile;
-import game.world.Tiles.AirTile;
+import world.Tiles.Tile;
+import world.Tiles.AirTile;
 import shared.*;
 import packets.*;
 import client.*;

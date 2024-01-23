@@ -2,7 +2,7 @@ package shared.utilities;
 
 import java.util.HashMap;
 
-import game.world.Tiles.*;
+import world.Tiles.*;
 
 public class LettersToTiles {
     // hashmap of letters to tiles objects, not initialized yet
@@ -18,6 +18,7 @@ public class LettersToTiles {
         tilesMap.put("F", FloorTile.class);
         tilesMap.put("W", WallTile.class);
         tilesMap.put("R", RoofTile.class);
+        tilesMap.put("B", BushTile.class);
     }
 
     public static Tile[][][] converToTiles(String[][][] letterMap, int x, int y, int z) {

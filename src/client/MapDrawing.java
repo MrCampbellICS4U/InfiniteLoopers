@@ -11,10 +11,7 @@ import javax.imageio.*;
 import java.awt.image.*;
 
 import shared.*;
-import packets.*;
-import server.Server;
 import entities.PlayerInfo;
-import game.world.Tiles.Tile;
 
 public class MapDrawing extends JFrame {
 	DrawingPanel panel;

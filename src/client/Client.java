@@ -87,6 +87,7 @@ public class Client implements LastWish, ActionListener {
 
 	public void handleDisconnection(int id, Exception e) {
 		me.health = 0;
+		me.kills = 5;
 		// handleException("Could not connect to server", e);
 	}
 
@@ -97,7 +98,7 @@ public class Client implements LastWish, ActionListener {
 	public void send(PacketTo<Server> p) {
 		if (!ready)
 			return; // not ready to send yet
-		if (me != null && me.health == 0)
+		if (me != null && (me.health == 0 || me.kills >=5))
 			return; // don't send packets when you're dead (and the socket is closed)
 
 		pl.send(p);
@@ -240,6 +241,12 @@ public class Client implements LastWish, ActionListener {
 			resetButton.setBorderPainted(false);
 			resetButton.setBounds(gc.DRAWING_AREA_WIDTH / 2 - 200, gc.DRAWING_AREA_HEIGHT - 100, 400, 50);
 			canvas.add(resetButton);
+			return;
+		}
+		if (me.kills >= 5){
+			ready = false; // don't send any packets
+			tickTimer.stop();
+			secTimer.stop();
 			return;
 		}
 

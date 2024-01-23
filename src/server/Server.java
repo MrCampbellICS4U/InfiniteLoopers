@@ -1,11 +1,14 @@
 package server;
 
+import java.awt.Dimension;
 import java.awt.event.*;
-import javax.swing.Timer;
+import java.awt.*;
+import collision.Rectangle;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.net.ServerSocket;
+import javax.swing.*;
 
 import shared.*;
 import packets.*;
@@ -16,19 +19,50 @@ import collision.*;
 import entities.Entity;
 
 public class Server implements LastWish, ActionListener {
+	JFrame serverUI;
+	JPanel serverDrawing;
+	JTextField seedField, wTextField, hTextField;
+	JButton startServer; 
 	public static void main(String[] args) {
 		new Server();
+		
 	}
 
 	private final int port = 2000;
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
 	public GlobalConstants gc;
-
+	public int seed, worldHeight, worldWidth; 
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
 	Server() {
+		serverUI = new JFrame("Server UI");
+		serverUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		serverDrawing = new JPanel();
+		serverDrawing.setPreferredSize(new Dimension(500, 500));
+		seedField = new JTextField("Enter Seed Here", 25);
+		wTextField = new JTextField("Enter Width Here", 25);
+		hTextField = new JTextField("Enter Height Here", 25);
+		startServer = new JButton("Start");
+		startServer.setActionCommand("start");
+		startServer.addActionListener(this);
+		serverDrawing.add(seedField);
+		serverDrawing.add(wTextField);
+		serverDrawing.add(hTextField);
+		serverDrawing.add(startServer);
+
+		serverUI.add(serverDrawing);
+		serverUI.pack();
+		serverUI.setLocationRelativeTo(null);
+		serverUI.setResizable(false);
+
+		serverUI.setVisible(true);
+
+	}
+
+	public void startServer(){
+
 		this.gc = new GlobalConstants();
 
 		Timer tickTimer = new Timer(1000 / gc.TPS, this);
@@ -38,12 +72,15 @@ public class Server implements LastWish, ActionListener {
 		Timer secTimer = new Timer(1000, this);
 		secTimer.setActionCommand("secUpdate");
 		secTimer.start();
-
+		
+		seed = gc.SEED;
+		worldHeight = gc.WORLD_TILE_HEIGHT;
+		worldWidth = gc.WORLD_TILE_WIDTH;
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
-		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
-				gc.SEED)
+		map = new WorldGenerator(worldWidth, worldHeight,
+				seed)
 				.generateWorld();
 		addHitboxesToMap();
 
@@ -86,6 +123,12 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		seed = Integer.parseInt(seedField.getText());
+		worldHeight = Integer.parseInt(hTextField.getText());
+		worldWidth = Integer.parseInt(wTextField.getText());
+		if (e.getActionCommand().equals("start")){
+			startServer();
+		}
 		if (e.getActionCommand().equals("tick"))
 			tick();
 		if (e.getActionCommand().equals("secUpdate"))
@@ -148,7 +191,6 @@ public class Server implements LastWish, ActionListener {
 					SClient c = (SClient) e;
 					clients.remove(c.getID());
 				}
-
 				i--; // otherwise we would skip an entity when going to the next loop
 				continue;
 			}

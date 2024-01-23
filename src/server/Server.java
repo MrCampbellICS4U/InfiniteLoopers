@@ -31,7 +31,7 @@ public class Server implements LastWish, ActionListener {
 	private final int port = 2000;
 	private HashMap<Integer, SClient> clients = new HashMap<>(); // map from ids to clients
 	private Tile[][][] map;
-	public GlobalConstants gc;
+	public GlobalConstants gc = new GlobalConstants();
 	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
@@ -72,8 +72,6 @@ public class Server implements LastWish, ActionListener {
 	}
 
 	public void startServer() {
-		this.gc = new GlobalConstants();
-
 		gc.SEED = seed;
 		gc.WORLD_TILE_HEIGHT = worldHeight;
 		gc.WORLD_TILE_WIDTH = worldWidth;
@@ -143,38 +141,37 @@ public class Server implements LastWish, ActionListener {
 			try {
 				seed = Integer.parseInt(seedField.getText());
 			} catch(Exception a){
-				seed = 2345;
+				seed = gc.SEED;
 			}
 			try {
 				worldHeight = Integer.parseInt(hTextField.getText());
 			} catch(Exception a){
-				worldHeight = 35;
+				worldHeight = gc.WORLD_TILE_HEIGHT;
 			}
 			try {
 				worldWidth = Integer.parseInt(wTextField.getText());
 			} catch(Exception a){
-				worldWidth = 35;
+				worldWidth = gc.WORLD_TILE_WIDTH;
 			}
 			try {
 				health = Integer.parseInt(healthTextField.getText());
 			} catch(Exception a){
-				health = 5;
+				health = gc.MAX_HEALTH;
 			}
 			try {
 				bulDelay = Integer.parseInt(bulletSpamText.getText());
-
 			} catch(Exception a){
-				bulDelay = 170;
+				bulDelay = gc.SHOT_DELAY;
 			}
 			try {
 				bulSpeed = Integer.parseInt(bulletSpeed.getText());
 			} catch(Exception a){
-				bulSpeed = 10;
+				bulSpeed = gc.BULLET_SPEED;
 			}
 			try {
 				regen = Integer.parseInt(regenTime.getText());
 			} catch(Exception a){
-				regen = 7;
+				regen = gc.REGEN_TIME / 1000;
 			}
 
 			new Thread(() -> startServer()).start();
@@ -277,6 +274,10 @@ public class Server implements LastWish, ActionListener {
 
 	private int nextID() {
 		return id++;
+	}
+
+	public boolean existsClient(int id) {
+		return clients.containsKey(id);
 	}
 
 	public SClient getClient(int id) {

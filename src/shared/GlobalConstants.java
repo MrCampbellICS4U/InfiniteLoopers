@@ -43,7 +43,7 @@ public class GlobalConstants implements java.io.Serializable {
     public int BULLET_DESPAWN_TIME = 800; // ms
     public int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
                                   // might start bugging
-    public int SHOT_DELAY = 170; // ms
+    public int SHOT_DELAY = 400; // ms
 
     // can clients press P to kill themselves?
     public boolean CAN_SUICIDE = true;

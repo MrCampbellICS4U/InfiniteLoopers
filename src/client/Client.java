@@ -241,7 +241,7 @@ public class Client implements LastWish, ActionListener {
 			canvas.add(resetButton);
 			return;
 		}
-		if (me.kills >= 5) {
+		if (me.kills >= gc.KILLS_TO_WIN) {
 			ready = false; // don't send any packets
 			tickTimer.stop();
 			secTimer.stop();

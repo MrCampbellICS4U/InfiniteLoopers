@@ -38,7 +38,7 @@ public class Canvas extends JPanel {
 		winImage = Canvas.loadImage("res/Menus/Win.png");
 	}
 	public int currentKills = 0;
-	public void paintComponent(Graphics g, Client c) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
 		PlayerInfo me = client.getMe();
@@ -65,7 +65,7 @@ public class Canvas extends JPanel {
 			numKills++;
 			currentKills++;
 		}
-		if (numKills >= c.gc.KILLS_TO_WIN)
+		if (numKills >= gc.KILLS_TO_WIN)
 			drawWin(g, me);
 	}
 

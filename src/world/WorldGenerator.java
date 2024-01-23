@@ -16,12 +16,14 @@ public class WorldGenerator {
     private int width, height, depth = 3; // depth is the number of layers in the map, this should always be 3 (ground,
                                           // walls, and ceiling)
     private long seed;
+	private int bogRadius;
 
-    public WorldGenerator(int width, int height, long seed) {
+    public WorldGenerator(int width, int height, long seed, int bogRadius) {
         this.width = width;
         this.height = height;
         this.seed = seed;
         mapTiles = new Tile[width][height][depth];
+		this.bogRadius = bogRadius;
     }
 
     public Tile[][][] getMap() {
@@ -206,7 +208,6 @@ public class WorldGenerator {
             }
         }
 
-		int bogRadius = 10;
 		int bogCentreX = rand.nextInt(width);
 		int bogCentreY = rand.nextInt(height);
         // replace nulls with grass if on layer 0 else air

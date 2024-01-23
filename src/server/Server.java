@@ -13,8 +13,8 @@ import javax.swing.*;
 import shared.*;
 import packets.*;
 import client.Client;
-import game.world.WorldGenerator;
-import game.world.Tiles.Tile;
+import world.WorldGenerator;
+import world.Tiles.Tile;
 import collision.*;
 import entities.Entity;
 
@@ -79,8 +79,8 @@ public class Server implements LastWish, ActionListener {
 		this.chunker = new Chunker(gc.CHUNK_WIDTH, gc.CHUNK_HEIGHT,
 				gc.WORLD_WIDTH, gc.WORLD_HEIGHT);
 
-		map = new WorldGenerator(worldWidth, worldHeight,
-				seed)
+		map = new WorldGenerator(gc.WORLD_TILE_WIDTH, gc.WORLD_TILE_HEIGHT,
+				gc.RANDOM_SEED ? (int)(Math.random()*100000) : gc.SEED, gc.BOG_RADIUS)
 				.generateWorld();
 		addHitboxesToMap();
 

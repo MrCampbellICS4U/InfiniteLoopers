@@ -15,7 +15,7 @@ import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
-import game.world.Tiles.Tile;
+import world.Tiles.Tile;
 import entities.*;
 
 public class Client implements LastWish, ActionListener {
@@ -151,7 +151,7 @@ public class Client implements LastWish, ActionListener {
 			String ipInput = ipAddress.getText();
 			if (actionCom.equals("controls")) {
 				JOptionPane.showInternalMessageDialog(null,
-						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our Game!!",
+						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our !",
 						"Controls", JOptionPane.INFORMATION_MESSAGE);
 			}
 
@@ -256,12 +256,40 @@ public class Client implements LastWish, ActionListener {
 		map.repaint();
 	}
 
+	// colours for the map
+	private final Color UNEXPLORED_COLOUR = Color.GRAY.darker().darker().darker();
+	private final Color CRATE_COLOUR = new Color(184, 110, 26);
+	private final Color ROOF_COLOUR = Color.RED.darker();
+	private final Color SAND_COLOUR = new Color(255, 252, 158);
+	private final Color WATER_COLOUR = new Color(43, 149, 255);
+	private final Color BUSH_COLOUR = Color.GREEN.darker();
+	private Color[][] mapColours;
+	public Color[][] getMapColours() { return mapColours; }
+	public void setMapColour(Tile t) {
+		int x = t.getX();
+		int y = t.getY();
+		mapColours[x][y] = switch (t.getType()) {
+			case "roof" -> ROOF_COLOUR;
+			case "water" -> WATER_COLOUR;
+			case "crate" -> CRATE_COLOUR;
+			case "grass" -> Color.GREEN;
+			case "sand" -> SAND_COLOUR;
+			case "bush" -> BUSH_COLOUR;
+			default -> UNEXPLORED_COLOUR;
+		};
+	}
+
 	public void setGlobalConstants(GlobalConstants gc) {
 		this.gc = gc;
 		this.W = gc.DRAWING_AREA_WIDTH;
 		this.H = gc.DRAWING_AREA_HEIGHT;
 		this.canvas.gc = gc;
-
+		mapColours = new Color[gc.WORLD_TILE_WIDTH][gc.WORLD_TILE_HEIGHT];
+		for (int x = 0; x < gc.WORLD_TILE_WIDTH; x++) {
+			for (int y = 0; y < gc.WORLD_TILE_HEIGHT; y++) {
+				mapColours[x][y] = UNEXPLORED_COLOUR;
+			}
+		}
 	}
 
 	// gets called once a second
@@ -344,7 +372,7 @@ public class Client implements LastWish, ActionListener {
 
 	public static boolean mapOpen = false;
 
-	public static void toggleMap() {
+	public void toggleMap() {
 		mapOpen = !mapOpen;
 		map.setVisible(mapOpen);
 	}
@@ -395,44 +423,6 @@ public class Client implements LastWish, ActionListener {
 
 	public BufferedImage getImage() {
 		return akImage;
-	}
-
-	public ArrayList<Tile> purgeInvisibleTiles(ArrayList<Tile> tiles) { // TODO: call this
-		// removes tiles from the tiles arraylist that are out of the buffer zone
-
-		PlayerInfo me = this.getMe();
-		if (me == null || tiles.isEmpty()) // if the server hasn't given client an identity, TODO: Ethan! FIX ME!
-			return tiles;
-
-		Set<Tile> tilesToPurge = new HashSet<>();
-
-		for (Tile currentTile : tiles) {
-			if (currentTile == null || currentTile.getType().equals("air"))
-				continue;
-
-			int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
-					+ gc.DRAWING_AREA_WIDTH / 2;
-			int groundRelY = currentTile.getY() * gc.TILE_HEIGHT - me.yGlobal
-					+ gc.DRAWING_AREA_HEIGHT / 2;
-
-			// if the tile is outside the screen and beyond the tile buffer size remove it
-			// from the visible tiles array
-			if (groundRelX < -gc.TILE_WIDTH * gc.TILE_X_BUFFER
-					|| groundRelX > gc.DRAWING_AREA_WIDTH
-							+ gc.TILE_WIDTH * gc.TILE_X_BUFFER + gc.TILE_WIDTH
-					|| groundRelY < -gc.TILE_HEIGHT * gc.TILE_Y_BUFFER
-					|| groundRelY > gc.DRAWING_AREA_HEIGHT
-							+ gc.TILE_HEIGHT * gc.TILE_Y_BUFFER
-							+ gc.TILE_HEIGHT) {
-				tilesToPurge.add(currentTile);
-			}
-		}
-
-		for (Tile byebyeTile : tilesToPurge) {
-			tiles.remove(byebyeTile);
-		}
-
-		return tiles;
 	}
 
 	void setupMainMenu() {
@@ -553,7 +543,7 @@ public class Client implements LastWish, ActionListener {
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			// Draw game menu
+			// Draw menu
 			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();
@@ -572,7 +562,7 @@ public class Client implements LastWish, ActionListener {
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			// Draw game menu
+			// Draw menu
 			g2.drawImage(menuPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();

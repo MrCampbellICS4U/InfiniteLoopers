@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 import shared.GlobalConstants;
 import entities.*;
-import game.world.Tiles.*;
+import world.Tiles.*;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);
@@ -25,7 +25,6 @@ public class Canvas extends JPanel {
 
 	private Client client;
 	public GlobalConstants gc;
-	private static final int CEILING_DISAPPEARING_DISTANCE = 100;
 	private HashMap<String, BufferedImage> TileImages = loadImages();
 
 	public Canvas(Client c) {
@@ -182,6 +181,8 @@ public class Canvas extends JPanel {
 
 				// int offsetX = me.xGlobal % gridWidth;
 				// int offsetY = me.yGlobal % gridWidth;
+				
+				client.setMapColour(currentTile);
 
 				int groundRelX = currentTile.getX() * gc.TILE_WIDTH - me.xGlobal
 						+ gc.DRAWING_AREA_WIDTH / 2;
@@ -190,6 +191,7 @@ public class Canvas extends JPanel {
 
 				// if the player is close enough, don't render the ceiling
 				if (layer == 2
+						&& currentTile.getType().equals("roof")
 						&& Math.abs(groundRelX + gc.TILE_WIDTH / 2 - gc.DRAWING_AREA_WIDTH
 								/ 2) < gc.CEILING_DISAPPEARING_DISTANCE
 						&& Math.abs(groundRelY + gc.TILE_HEIGHT / 2 - gc.DRAWING_AREA_HEIGHT

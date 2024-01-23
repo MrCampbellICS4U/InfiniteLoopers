@@ -1,7 +1,7 @@
 package packets;
 
 import client.Client;
-import game.world.Tiles.Tile;
+import world.Tiles.Tile;
 
 public class SendFullClientFOV extends PacketTo<Client> {
     Tile[][][] tiles;

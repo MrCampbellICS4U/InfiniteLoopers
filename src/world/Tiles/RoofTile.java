@@ -1,4 +1,4 @@
-package game.world.Tiles;
+package world.Tiles;
 
 public class RoofTile extends Tile {
     public RoofTile(int x, int y, int z, int orientation, String state) {

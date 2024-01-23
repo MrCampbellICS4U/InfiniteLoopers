@@ -27,12 +27,14 @@ public class Chunk {
 		int checks = 0;
 		if (!changed) return checks;
 
-		for (Hitbox h : hitboxesToAdd) {
+		for (int i = 0; i < hitboxesToAdd.size(); i++) {
+			Hitbox h = hitboxesToAdd.get(i);
 			hitboxes[h.getHitboxType().ordinal()].add(h);
 		}
 		hitboxesToAdd.clear();
 
-		for (Hitbox h : hitboxesToRemove) {
+		for (int i = 0; i < hitboxesToRemove.size(); i++) {
+			Hitbox h = hitboxesToRemove.get(i);
 			hitboxes[h.getHitboxType().ordinal()].remove(h);
 		}
 		hitboxesToRemove.clear();

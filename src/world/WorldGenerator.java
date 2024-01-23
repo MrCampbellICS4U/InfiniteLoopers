@@ -143,6 +143,7 @@ public class WorldGenerator {
                 put(HovelStructure.class, HovelStructure.chance);
                 put(SingleCrate.class, SingleCrate.chance);
                 put(SingleBush.class, SingleBush.chance);
+                put(IslandPondStructure.class, IslandPondStructure.chance);
             }
         };
     }

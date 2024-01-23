@@ -1,9 +1,9 @@
-package game.world;
+package world;
 
 import java.util.Random;
 
-import game.world.Structures.*;
-import game.world.Tiles.*;
+import world.Structures.*;
+import world.Tiles.*;
 
 /**
  * The WorldGenerator class is responsible for generating the game world.

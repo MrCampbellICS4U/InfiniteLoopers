@@ -1,4 +1,4 @@
-package game.world.Tiles;
+package world.Tiles;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class Tile implements java.io.Serializable {
         Tile tile = null;
         try {
             Class<?> tileClass = Class
-                    .forName("game.world.Tiles." + type.substring(0, 1).toUpperCase() +
+                    .forName("world.Tiles." + type.substring(0, 1).toUpperCase() +
                             type.substring(1) + "Tile");
             tile = (Tile) tileClass.getConstructor(int.class, int.class, int.class,
                     int.class, String.class,

@@ -1,4 +1,4 @@
-package game.world.Tiles;
+package world.Tiles;
 
 public class BushTile extends Tile {
     public BushTile(int x, int y, int z, int id, String type, String state) {

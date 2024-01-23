@@ -10,8 +10,8 @@ import java.net.ServerSocket;
 import shared.*;
 import packets.*;
 import client.Client;
-import game.world.WorldGenerator;
-import game.world.Tiles.Tile;
+import world.WorldGenerator;
+import world.Tiles.Tile;
 import collision.*;
 import entities.Entity;
 

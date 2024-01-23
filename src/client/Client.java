@@ -15,7 +15,7 @@ import java.awt.image.*;
 import shared.*;
 import packets.*;
 import server.Server;
-import game.world.Tiles.Tile;
+import world.Tiles.Tile;
 import entities.*;
 
 public class Client implements LastWish, ActionListener {
@@ -150,7 +150,7 @@ public class Client implements LastWish, ActionListener {
 			String ipInput = ipAddress.getText();
 			if (actionCom.equals("controls")) {
 				JOptionPane.showInternalMessageDialog(null,
-						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our Game!!",
+						"CONTROLS:\n      WASD to Move\n      Space to shoot\n      Tab or M to Toggle Map\n      Press F to Toggle Names\n      Press P for fun!\n\n\n            Enjoy Our !",
 						"Controls", JOptionPane.INFORMATION_MESSAGE);
 			}
 
@@ -531,7 +531,7 @@ public class Client implements LastWish, ActionListener {
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			// Draw game menu
+			// Draw menu
 			g2.drawImage(settingsPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();
@@ -550,7 +550,7 @@ public class Client implements LastWish, ActionListener {
 			Graphics2D g2 = (Graphics2D) g;
 			// turn on antialiasing
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			// Draw game menu
+			// Draw menu
 			g2.drawImage(menuPNG, 0, 0, this.getWidth(), this.getHeight(), null);
 			W = this.getWidth();
 			H = this.getHeight();

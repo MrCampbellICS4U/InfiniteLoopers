@@ -1,4 +1,4 @@
-package game.world.Structures;
+package world.Structures;
 
 import shared.utilities.LettersToTiles;
 

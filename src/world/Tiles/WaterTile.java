@@ -1,4 +1,4 @@
-package game.world.Tiles;
+package world.Tiles;
 
 import collision.Rectangle;
 import server.WaterHitbox;

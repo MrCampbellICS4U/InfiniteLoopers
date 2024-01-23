@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 import shared.GlobalConstants;
 import entities.*;
-import game.world.Tiles.*;
+import world.Tiles.*;
 
 public class Canvas extends JPanel {
 	final private Font f = new Font("Arial", Font.PLAIN, 30);

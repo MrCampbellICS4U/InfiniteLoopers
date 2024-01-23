@@ -1,4 +1,4 @@
-package game.world.Tiles;
+package world.Tiles;
 
 public class NullTile extends Tile {
     public NullTile(int x, int y, int z, int orientation, String type, String state) {

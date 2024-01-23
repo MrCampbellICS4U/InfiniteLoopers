@@ -1,6 +1,6 @@
-package game.world.Structures;
+package world.Structures;
 
-import game.world.Tiles.Tile;
+import world.Tiles.Tile;
 
 public class Structure {
     Tile[][][] tiles;

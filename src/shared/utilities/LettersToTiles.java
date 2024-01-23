@@ -2,7 +2,7 @@ package shared.utilities;
 
 import java.util.HashMap;
 
-import game.world.Tiles.*;
+import world.Tiles.*;
 
 public class LettersToTiles {
     // hashmap of letters to tiles objects, not initialized yet

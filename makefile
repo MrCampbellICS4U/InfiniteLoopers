@@ -1,19 +1,25 @@
 SHELL := /bin/bash
 
-client:
-    cd src ; javac client/*.java
-    java -cp src client.Client
+compclient:
+	cd src ; javac client/*.java
 
-server:
-    cd src ; javac server/*.java
-    java -cp src server.Server
+client: compclient
+	java -cp src client.Client
 
-.PHONY: client server jar clean
+compserver:
+	cd src ; javac server/*.java
+
+server: compserver
+	java -cp src server.Server
+
+.PHONY: client server clientjar serverjar clean compclient compserver
 
 clean:
-    find . -name "*.class" -type f -delete
+	find . -name "*.class" -type f -delete
+	find . -name "*.jar" -type f -delete
 
-jar:
-    cd src ; javac client/*.java server/*.java
-    jar cfvm test.jar Manifest.txt -C ./src .
-    jar uf test.jar -C ./res .
+clientjar: compclient
+	jar cfe Client.jar client.Client -C ./src .
+
+serverjar: compserver
+	jar cfe Server.jar server.Server -C ./src .

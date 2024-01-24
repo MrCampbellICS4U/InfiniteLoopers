@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import collision.Rectangle;
+import shared.utilities.GetFilesInDir;
 
 public class Tile implements java.io.Serializable {
     private int x, y, z, orientation; // orientation: 0 = up, 1 = right, 2 = down, 3 = left
@@ -56,12 +57,12 @@ public class Tile implements java.io.Serializable {
     public HashMap<String, String> generateStatesMap() {
         return this.statesMap = new HashMap<String, String>() {
             {
-                for (String state : new File(
-                        "res/game/world/Tiles/" + type.substring(0, 1).toUpperCase() + type.substring(1)).list()) {
-                    put(state.substring(0, state.lastIndexOf('.')), "src/game/world/Tiles/"
-                            + type.substring(0, 1).toUpperCase() + type.substring(1) + "/" + state);
-                }
-            }
+				// broken, would need to use GetFilesInDir to fix
+ 				//String dir = "/res/game/world/Tiles/" + type.substring(0, 1).toUpperCase() + type.substring(1);
+                //	 for (String state : GetFilesInDir.gimme(dir)) {
+            	// 	     put(state.substring(0, state.lastIndexOf('.')), "src/game/world/Tiles/"
+               	//             + type.substring(0, 1).toUpperCase() + type.substring(1) + "/" + state);
+           	}
         };
     }
 

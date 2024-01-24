@@ -44,6 +44,7 @@ public class Client implements LastWish, ActionListener {
 	int H = gc.DRAWING_AREA_HEIGHT;
 	String ip = gc.SERVER_IP;
 	int port = gc.SERVER_PORT;
+	boolean isShooting = false;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
@@ -175,10 +176,11 @@ public class Client implements LastWish, ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		playerName = enterName.getText();
-		if (playerName.equals("Enter Name Here") || playerName.equals("")) {
-			playerName = "Dunce";
+		if (playerName.equals("Enter Name Here") || playerName.strip().equals("")) {
+			playerName = "Dunce" + (int) (Math.random() * 100);
 		} else {
-			playerName = enterName.getText();
+			playerName = enterName.getText().substring(0,
+					Math.min(enterName.getText().length() - 1, gc.MAX_USERNAME_LENGTH));
 			defaultName = playerName;
 		}
 
@@ -188,7 +190,7 @@ public class Client implements LastWish, ActionListener {
 			secUpdate();
 		if (e.getActionCommand().equals("respawn")) {
 			window.setVisible(false);
-			me.health = 3;
+			me.health = gc.MAX_HEALTH;
 			mainMenu.setVisible(true);
 		}
 		if (settingsMenu.isVisible()) {
@@ -304,6 +306,8 @@ public class Client implements LastWish, ActionListener {
 		setVisibleTiles(getNextVisibleTiles());
 		canvas.repaint();
 		map.repaint();
+		if (isShooting)
+			this.send(new InputPacket(Input.ATTACK));
 
 		PlayerInfo me = this.getMe();
 		if (me == null)
@@ -321,6 +325,7 @@ public class Client implements LastWish, ActionListener {
 			resetButton.setBorderPainted(false);
 			resetButton.setBounds(gc.DRAWING_AREA_WIDTH / 2 - 200, gc.DRAWING_AREA_HEIGHT - 100, 400, 50);
 			canvas.add(resetButton);
+			this.isShooting = false;
 			return;
 		}
 		if (me.kills >= gc.KILLS_TO_WIN) {
@@ -386,6 +391,7 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	boolean receivedConstants = false;
+
 	/**
 	 * Sets the global constants and initializes the necessary variables and
 	 * objects.

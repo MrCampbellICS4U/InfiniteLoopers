@@ -55,8 +55,11 @@ public class GlobalConstants implements java.io.Serializable {
                                   // might start bugging
     public int SHOT_DELAY = 200; // ms
 
+    public int MAX_USERNAME_LENGTH = 16;
+
     // can clients press P to kill themselves?
     public boolean CAN_SUICIDE = true;
+    public boolean CAN_HOLD_TO_SHOOT = true;
 
     public int BOG_SIZE = 5; // use this to control the size of the bog
     public int BOG_RADIUS = (WORLD_TILE_WIDTH + WORLD_TILE_HEIGHT) / 2 / BOG_SIZE;

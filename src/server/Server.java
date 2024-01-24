@@ -23,7 +23,7 @@ public class Server implements LastWish, ActionListener {
 	JPanel serverDrawing;
 	JTextField seedField, wTextField, hTextField, healthTextField, bulletSpamText, bulletSpeed, killsText, regenTime,
 			structureDensityText, tpsText, serverPortText, bogSizeText, maxArmourText, bulletDespawnTimeText,
-			cansuicideText;
+			cansuicideText, maxUsernameLengthText, canHoldToShootText;
 	JButton startServer;
 
 	public static void main(String[] args) {
@@ -35,8 +35,8 @@ public class Server implements LastWish, ActionListener {
 	private Tile[][][] map;
 	public GlobalConstants gc = new GlobalConstants();
 	public int seed, worldHeight, worldWidth, health, bulDelay, bulSpeed, regen, killsWin, structureDensity, maxTPS,
-			serverPort, bogSize, maxArmour, bulletDespawnTime;
-	public boolean cansuicide;
+			serverPort, bogSize, maxArmour, bulletDespawnTime, maxlen_username;
+	public boolean cansuicide, canHoldToShoot;
 	private Chunker chunker;
 	private long lastTickTime = System.currentTimeMillis();
 
@@ -47,23 +47,27 @@ public class Server implements LastWish, ActionListener {
 		serverUI = new JFrame("Server UI");
 		serverUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		serverDrawing = new JPanel();
-		serverDrawing.setPreferredSize(new Dimension(500, 500));
-		seedField = new JTextField("Enter Seed Here" + " | Default: " + gc.SEED, 25);
-		wTextField = new JTextField("Enter Width Here" + " | Default: " + gc.WORLD_TILE_WIDTH, 25);
-		hTextField = new JTextField("Enter Height Here" + " | Default: " + gc.WORLD_TILE_HEIGHT, 25);
-		healthTextField = new JTextField("Enter Starting Health" + " | Default: " + gc.MAX_HEALTH, 25);
-		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)" + " | Default: " + gc.SHOT_DELAY, 25);
-		bulletSpeed = new JTextField("Bullet Speed" + " | Default: " + gc.BULLET_SPEED, 25);
-		regenTime = new JTextField("Regeneration Time (Seconds)" + " | Default: " + gc.REGEN_TIME, 25);
-		killsText = new JTextField("Kills in a row" + " | Default: " + gc.KILLS_TO_WIN, 25);
-		structureDensityText = new JTextField("Structure Density (1-100)" + " | Default: " + gc.STRUCTURE_DENSITY, 25);
-		tpsText = new JTextField("Ticks Per Second" + " | Default: " + gc.TPS, 25);
-		serverPortText = new JTextField("Server Port" + " | Default: " + gc.SERVER_PORT, 25);
-		bogSizeText = new JTextField("Bog Size" + " | Default: " + gc.BOG_SIZE, 25);
-		maxArmourText = new JTextField("Max Armour" + " | Default: " + gc.MAX_ARMOR, 25);
-		bulletDespawnTimeText = new JTextField("Bullet Despawn Time" + " | Default: " + gc.BULLET_DESPAWN_TIME, 25);
+		serverDrawing.setPreferredSize(new Dimension(500, 650));
+		seedField = new JTextField("Enter Seed Here" + " | Default: " + gc.SEED, 35);
+		wTextField = new JTextField("Enter Width Here" + " | Default: " + gc.WORLD_TILE_WIDTH, 35);
+		hTextField = new JTextField("Enter Height Here" + " | Default: " + gc.WORLD_TILE_HEIGHT, 35);
+		healthTextField = new JTextField("Enter Starting Health" + " | Default: " + gc.MAX_HEALTH, 35);
+		bulletSpamText = new JTextField("Bullet Delay Speed (Ms)" + " | Default: " + gc.SHOT_DELAY, 35);
+		bulletSpeed = new JTextField("Bullet Speed" + " | Default: " + gc.BULLET_SPEED, 35);
+		regenTime = new JTextField("Regeneration Time (Seconds)" + " | Default: " + gc.REGEN_TIME, 35);
+		killsText = new JTextField("Kills in a row" + " | Default: " + gc.KILLS_TO_WIN, 35);
+		structureDensityText = new JTextField("Structure Density (1-100)" + " | Default: " + gc.STRUCTURE_DENSITY, 35);
+		tpsText = new JTextField("Ticks Per Second" + " | Default: " + gc.TPS, 35);
+		serverPortText = new JTextField("Server Port" + " | Default: " + gc.SERVER_PORT, 35);
+		bogSizeText = new JTextField("Bog Size" + " | Default: " + gc.BOG_SIZE, 35);
+		maxArmourText = new JTextField("Max Armour" + " | Default: " + gc.MAX_ARMOR, 35);
+		bulletDespawnTimeText = new JTextField("Bullet Despawn Time" + " | Default: " + gc.BULLET_DESPAWN_TIME, 35);
 		cansuicideText = new JTextField(
 				"Players can commit suicide (t/f | true/false)" + " | Default: " + gc.CAN_SUICIDE, 35);
+		maxUsernameLengthText = new JTextField(
+				"Username max character length" + " | Default: " + gc.MAX_USERNAME_LENGTH, 35);
+		canHoldToShootText = new JTextField(
+				"Players can hold to shoot (t/f | true/false)" + " | Default: " + gc.CAN_HOLD_TO_SHOOT, 35);
 
 		startServer = new JButton("Start");
 		startServer.setActionCommand("start");
@@ -84,6 +88,8 @@ public class Server implements LastWish, ActionListener {
 		serverDrawing.add(bulletDespawnTimeText);
 		serverDrawing.add(structureDensityText);
 		serverDrawing.add(bogSizeText);
+		serverDrawing.add(maxUsernameLengthText);
+		serverDrawing.add(canHoldToShootText);
 
 		serverDrawing.add(startServer);
 		serverUI.add(serverDrawing);
@@ -122,6 +128,8 @@ public class Server implements LastWish, ActionListener {
 		gc.MAX_ARMOR = maxArmour;
 		gc.BULLET_DESPAWN_TIME = bulletDespawnTime;
 		gc.CAN_SUICIDE = cansuicide;
+		gc.MAX_USERNAME_LENGTH = maxlen_username;
+		gc.CAN_HOLD_TO_SHOOT = canHoldToShoot;
 
 		gc.WORLD_HEIGHT = worldHeight * gc.TILE_HEIGHT;
 		gc.WORLD_WIDTH = worldWidth * gc.TILE_WIDTH;
@@ -264,6 +272,11 @@ public class Server implements LastWish, ActionListener {
 				maxArmour = gc.MAX_ARMOR;
 			}
 			try {
+				maxlen_username = Integer.parseInt(maxUsernameLengthText.getText());
+			} catch (Exception a) {
+				maxlen_username = gc.MAX_USERNAME_LENGTH;
+			}
+			try {
 				bulletDespawnTime = Integer.parseInt(bulletDespawnTimeText.getText());
 			} catch (Exception a) {
 				bulletDespawnTime = gc.BULLET_DESPAWN_TIME;
@@ -278,6 +291,18 @@ public class Server implements LastWish, ActionListener {
 					cansuicide = gc.CAN_SUICIDE;
 			} catch (Exception a) {
 				cansuicide = gc.CAN_SUICIDE;
+			}
+			try {
+
+				String text = canHoldToShootText.getText();
+				if (text.toLowerCase().equals("t") || text.toLowerCase().equals("true"))
+					canHoldToShoot = true;
+				else if (text.toLowerCase().equals("f") || text.toLowerCase().equals("false"))
+					canHoldToShoot = false;
+				else
+					canHoldToShoot = gc.CAN_HOLD_TO_SHOOT;
+			} catch (Exception a) {
+				canHoldToShoot = gc.CAN_HOLD_TO_SHOOT;
 			}
 
 			new Thread(() -> startServer()).start();

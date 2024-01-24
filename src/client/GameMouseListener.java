@@ -41,6 +41,5 @@ class GameMouseListener extends MouseAdapter {
 	 */
 	public void mouseDragged(MouseEvent e) {
 		c.handleMouseMovement(e.getX(), e.getY());
-		c.send(new InputPacket(Input.ATTACK));
 	}
 }

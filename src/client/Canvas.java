@@ -145,6 +145,8 @@ public class Canvas extends JPanel {
 		for (String type : GetFilesInDir.gimme("/res/game/world/Tiles")) {
 			try {
 				for (String state : GetFilesInDir.gimme("/res/game/world/Tiles/" + type)) {
+					// windows adds a trailing / for some reason
+					if (type.charAt(type.length()-1) == '/') type = type.substring(0, type.length() - 1);
 					String imageURL = "/res/game/world/Tiles/" + type + "/" + state;
 					BufferedImage img = loadImage(imageURL);
 					images.put(type + "_" + state, img);

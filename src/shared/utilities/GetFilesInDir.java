@@ -39,7 +39,8 @@ public class GetFilesInDir {
 				String resPath = p.toString();
 				resPath = resPath.substring(resPath.indexOf(dir) + dir.length());
 				if (resPath.equals("")) return; // the first one added will be the directory name itself
-				resPath = resPath.substring(1); // get rid of trailing /
+				// windows doesn't have a leading / but other oses do
+				if (resPath.charAt(0) == '/') resPath = resPath.substring(1);
 				files.add(resPath);
 			});
 		} catch (Exception e) {

@@ -44,6 +44,7 @@ public class Client implements LastWish, ActionListener {
 	int H = gc.DRAWING_AREA_HEIGHT;
 	String ip = gc.SERVER_IP;
 	int port = gc.SERVER_PORT;
+	boolean isShooting = false;
 
 	private ArrayList<Tile> visibleTiles = new ArrayList<>();
 	private ArrayList<Tile> nextVisibleTiles = new ArrayList<>();
@@ -75,10 +76,10 @@ public class Client implements LastWish, ActionListener {
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 
-		menuPNG = Canvas.loadImage("res/Menus/Main/image.png");
-		settingsPNG = Canvas.loadImage("res/Menus/Settings/settingsImage.png");
-		akImage = Canvas.loadImage("res/game/Guns/ak.png");
-		bImage = Canvas.loadImage("res/game/Guns/bullets.png");
+		menuPNG = Canvas.loadImage("/res/Menus/Main/image.png");
+		settingsPNG = Canvas.loadImage("/res/Menus/Settings/settingsImage.png");
+		akImage = Canvas.loadImage("/res/game/Guns/ak.png");
+		bImage = Canvas.loadImage("/res/game/Guns/bullets.png");
 
 		setupSettingsMenu();
 		setupMainMenu();
@@ -175,10 +176,11 @@ public class Client implements LastWish, ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		playerName = enterName.getText();
-		if (playerName.equals("Enter Name Here") || playerName.equals("")) {
-			playerName = "Dunce";
+		if (playerName.equals("Enter Name Here") || playerName.trim().equals("")) {
+			playerName = "Dunce" + (int) (Math.random() * 100);
 		} else {
-			playerName = enterName.getText();
+			playerName = enterName.getText().substring(0,
+					Math.min(enterName.getText().length(), gc.MAX_USERNAME_LENGTH));
 			defaultName = playerName;
 		}
 
@@ -188,7 +190,7 @@ public class Client implements LastWish, ActionListener {
 			secUpdate();
 		if (e.getActionCommand().equals("respawn")) {
 			window.setVisible(false);
-			me.health = 3;
+			me.health = gc.MAX_HEALTH;
 			mainMenu.setVisible(true);
 		}
 		if (settingsMenu.isVisible()) {
@@ -304,6 +306,8 @@ public class Client implements LastWish, ActionListener {
 		setVisibleTiles(getNextVisibleTiles());
 		canvas.repaint();
 		map.repaint();
+		if (isShooting)
+			this.send(new InputPacket(Input.ATTACK));
 
 		PlayerInfo me = this.getMe();
 		if (me == null)
@@ -321,6 +325,7 @@ public class Client implements LastWish, ActionListener {
 			resetButton.setBorderPainted(false);
 			resetButton.setBounds(gc.DRAWING_AREA_WIDTH / 2 - 200, gc.DRAWING_AREA_HEIGHT - 100, 400, 50);
 			canvas.add(resetButton);
+			this.isShooting = false;
 			return;
 		}
 		if (me.kills >= gc.KILLS_TO_WIN) {
@@ -343,6 +348,7 @@ public class Client implements LastWish, ActionListener {
 	private final Color SAND_COLOUR = new Color(255, 252, 158);
 	private final Color WATER_COLOUR = new Color(43, 149, 255);
 	private final Color BUSH_COLOUR = Color.GREEN.darker();
+	private final Color GRASS_COLOUR = Color.GREEN;
 	private int[][] exploredMap;
 
 	private BufferedImage mapImage;
@@ -371,14 +377,14 @@ public class Client implements LastWish, ActionListener {
 
 		exploredMap[x][y] = t.getZ();
 
-		Color c = switch (t.getType()) {
-			case "roof" -> ROOF_COLOUR;
-			case "water" -> WATER_COLOUR;
-			case "crate" -> CRATE_COLOUR;
-			case "grass" -> Color.GREEN;
-			case "sand" -> SAND_COLOUR;
-			case "bush" -> BUSH_COLOUR;
-			default -> UNEXPLORED_COLOUR;
+		Color c = UNEXPLORED_COLOUR;
+		switch (t.getType()) {
+			case "roof":  c = ROOF_COLOUR; break;
+			case "water": c = WATER_COLOUR; break;
+			case "crate": c = CRATE_COLOUR; break;
+			case "grass": c = GRASS_COLOUR; break;
+			case "sand":  c = SAND_COLOUR; break;
+			case "bush":  c = BUSH_COLOUR; break;
 		};
 
 		mapGraphics.setColor(c);
@@ -386,6 +392,7 @@ public class Client implements LastWish, ActionListener {
 	}
 
 	boolean receivedConstants = false;
+
 	/**
 	 * Sets the global constants and initializes the necessary variables and
 	 * objects.

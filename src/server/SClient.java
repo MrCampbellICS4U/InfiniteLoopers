@@ -216,20 +216,16 @@ class SClient extends Circle implements Entity {
 	public void handleInput(Input i, InputState is) {
 		boolean isDown = is == InputState.DOWN;
 		switch (i) {
-			case UP -> up = isDown;
-			case DOWN -> down = isDown;
-			case LEFT -> left = isDown;
-			case RIGHT -> right = isDown;
+			case UP:    up = isDown;    break;
+			case DOWN:  down = isDown;	break;
+			case LEFT:  left = isDown;	break;
+			case RIGHT: right = isDown;	break;
 
-			case ATTACK -> attack();
-			case RELOAD -> reload();
-			case USE -> useItem();
-			case DROP -> dropItem();
-			case SUICIDE -> {
-				if (gc.CAN_SUICIDE)
-					kysURSELF();
-			}
-
+			case ATTACK: attack();   break;
+			case RELOAD: reload();   break;
+			case USE:    useItem();  break;
+			case DROP:   dropItem(); break;
+			case SUICIDE: if (gc.CAN_SUICIDE) kysURSELF(); break;
 		}
 	}
 

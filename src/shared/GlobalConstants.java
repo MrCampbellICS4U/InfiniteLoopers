@@ -51,12 +51,15 @@ public class GlobalConstants implements java.io.Serializable {
 
     public int KILLS_TO_WIN = 5;
     public int BULLET_DESPAWN_TIME = 800; // ms
-    public int BULLET_SPEED = 10; // px/tick, if it's a lot bigger than 12 (radius*2), bullet collisions
+    public int BULLET_SPEED = 10; // px/tick, if it's a lot faster than 12 (radius*2), bullet collisions
                                   // might start bugging
-    public int SHOT_DELAY = 200; // ms
+    public int SHOT_DELAY = 400; // ms
+
+    public int MAX_USERNAME_LENGTH = 16;
 
     // can clients press P to kill themselves?
     public boolean CAN_SUICIDE = true;
+    public boolean CAN_HOLD_TO_SHOOT = false;
 
     public int BOG_SIZE = 5; // use this to control the size of the bog
     public int BOG_RADIUS = (WORLD_TILE_WIDTH + WORLD_TILE_HEIGHT) / 2 / BOG_SIZE;

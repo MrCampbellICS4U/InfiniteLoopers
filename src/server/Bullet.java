@@ -51,7 +51,8 @@ public class Bullet extends Circle implements Entity {
 			SClient client = (SClient) h;
 			if (client.getID() == shooterID)
 				return; // hit self
-			client.getShot(shooterID);
+			if (!client.name.substring(0, Math.min(1, client.name.length() - 1)).equals(" "))
+				client.getShot(shooterID);
 			this.remove();
 		}
 		if (h instanceof WallHitbox)

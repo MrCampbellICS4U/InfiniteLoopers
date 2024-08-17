@@ -20,24 +20,25 @@ class GameKeyListener extends KeyAdapter {
 	 */
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case KeyEvent.VK_W -> c.send(new InputPacket(Input.UP, InputState.DOWN));
-			case KeyEvent.VK_S -> c.send(new InputPacket(Input.DOWN, InputState.DOWN));
-			case KeyEvent.VK_A -> c.send(new InputPacket(Input.LEFT, InputState.DOWN));
-			case KeyEvent.VK_D -> c.send(new InputPacket(Input.RIGHT, InputState.DOWN));
-			case KeyEvent.VK_SPACE -> {
-				if (!c.gc.CAN_HOLD_TO_SHOOT)
+			case KeyEvent.VK_W: c.send(new InputPacket(Input.UP,    InputState.DOWN)); break;
+			case KeyEvent.VK_S: c.send(new InputPacket(Input.DOWN,  InputState.DOWN)); break;
+			case KeyEvent.VK_A: c.send(new InputPacket(Input.LEFT,  InputState.DOWN)); break;
+			case KeyEvent.VK_D: c.send(new InputPacket(Input.RIGHT, InputState.DOWN)); break;
+			case KeyEvent.VK_SPACE:
+				if (!c.gc.CAN_HOLD_TO_SHOOT) {
 					c.send(new InputPacket(Input.ATTACK));
-				else
+				} else {
 					c.isShooting = true;
+				}
+				break;
+			case KeyEvent.VK_R: c.send(new InputPacket(Input.RELOAD));  break;
+			case KeyEvent.VK_E: c.send(new InputPacket(Input.USE));     break;
+			case KeyEvent.VK_Q: c.send(new InputPacket(Input.DROP));    break;
+			case KeyEvent.VK_P: c.send(new InputPacket(Input.SUICIDE)); break;
 
-			}
-			case KeyEvent.VK_R -> c.send(new InputPacket(Input.RELOAD));
-			case KeyEvent.VK_E -> c.send(new InputPacket(Input.USE));
-			case KeyEvent.VK_Q -> c.send(new InputPacket(Input.DROP));
-			case KeyEvent.VK_P -> c.send(new InputPacket(Input.SUICIDE));
-			case KeyEvent.VK_BACK_QUOTE -> c.toggleStats();
-			case KeyEvent.VK_M, KeyEvent.VK_TAB -> c.toggleMap();
-			case KeyEvent.VK_F -> c.toggleName();
+			case KeyEvent.VK_BACK_QUOTE:              c.toggleStats(); break;
+			case KeyEvent.VK_F:                       c.toggleName();  break;
+			case KeyEvent.VK_M: case KeyEvent.VK_TAB: c.toggleMap();   break;
 		}
 	}
 
@@ -49,11 +50,11 @@ class GameKeyListener extends KeyAdapter {
 	 */
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case KeyEvent.VK_W -> c.send(new InputPacket(Input.UP, InputState.UP));
-			case KeyEvent.VK_S -> c.send(new InputPacket(Input.DOWN, InputState.UP));
-			case KeyEvent.VK_A -> c.send(new InputPacket(Input.LEFT, InputState.UP));
-			case KeyEvent.VK_D -> c.send(new InputPacket(Input.RIGHT, InputState.UP));
-			case KeyEvent.VK_SPACE -> c.isShooting = false;
+			case KeyEvent.VK_W: c.send(new InputPacket(Input.UP,    InputState.UP)); break;
+			case KeyEvent.VK_S: c.send(new InputPacket(Input.DOWN,  InputState.UP)); break;
+			case KeyEvent.VK_A: c.send(new InputPacket(Input.LEFT,  InputState.UP)); break;
+			case KeyEvent.VK_D: c.send(new InputPacket(Input.RIGHT, InputState.UP)); break;
+			case KeyEvent.VK_SPACE: c.isShooting = false; break;
 		}
 	}
 }

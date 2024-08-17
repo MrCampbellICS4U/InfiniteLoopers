@@ -1,13 +1,13 @@
 SHELL := /bin/bash
 
 compclient:
-	cd src ; javac client/*.java
+	cd src ; javac --release 8 client/*.java
 
 client: compclient
 	java -cp src client.Client
 
 compserver:
-	cd src ; javac server/*.java
+	cd src ; javac --release 8 server/*.java
 
 server: compserver
 	java -cp src server.Server

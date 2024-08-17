@@ -176,11 +176,11 @@ public class Client implements LastWish, ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		playerName = enterName.getText();
-		if (playerName.equals("Enter Name Here") || playerName.strip().equals("")) {
+		if (playerName.equals("Enter Name Here") || playerName.trim().equals("")) {
 			playerName = "Dunce" + (int) (Math.random() * 100);
 		} else {
 			playerName = enterName.getText().substring(0,
-					Math.min(enterName.getText().length() - 1, gc.MAX_USERNAME_LENGTH));
+					Math.min(enterName.getText().length(), gc.MAX_USERNAME_LENGTH));
 			defaultName = playerName;
 		}
 
@@ -348,6 +348,7 @@ public class Client implements LastWish, ActionListener {
 	private final Color SAND_COLOUR = new Color(255, 252, 158);
 	private final Color WATER_COLOUR = new Color(43, 149, 255);
 	private final Color BUSH_COLOUR = Color.GREEN.darker();
+	private final Color GRASS_COLOUR = Color.GREEN;
 	private int[][] exploredMap;
 
 	private BufferedImage mapImage;
@@ -376,14 +377,14 @@ public class Client implements LastWish, ActionListener {
 
 		exploredMap[x][y] = t.getZ();
 
-		Color c = switch (t.getType()) {
-			case "roof" -> ROOF_COLOUR;
-			case "water" -> WATER_COLOUR;
-			case "crate" -> CRATE_COLOUR;
-			case "grass" -> Color.GREEN;
-			case "sand" -> SAND_COLOUR;
-			case "bush" -> BUSH_COLOUR;
-			default -> UNEXPLORED_COLOUR;
+		Color c = UNEXPLORED_COLOUR;
+		switch (t.getType()) {
+			case "roof":  c = ROOF_COLOUR; break;
+			case "water": c = WATER_COLOUR; break;
+			case "crate": c = CRATE_COLOUR; break;
+			case "grass": c = GRASS_COLOUR; break;
+			case "sand":  c = SAND_COLOUR; break;
+			case "bush":  c = BUSH_COLOUR; break;
 		};
 
 		mapGraphics.setColor(c);
